@@ -159,9 +159,7 @@ public:
 
     /** fill region memory with a constant byte */
     __force_inline void fill(int c = 0)
-    {
-        std::memset(data_, c, size_);
-    }
+    { std::memset(data_, c, size_); }
 };
 
 } /* namespace plusone */
