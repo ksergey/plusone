@@ -125,7 +125,7 @@ public:
     }
 
     /** swap content of the mapped_region */
-    void swap(mapped_region& other) noexcept
+    __force_inline void swap(mapped_region& other) noexcept
     {
         std::swap(data_, other.data_);
         std::swap(size_, other.size_);

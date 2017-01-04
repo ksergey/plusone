@@ -14,6 +14,7 @@
 #include <string>
 #include <utility>
 #include "exception.hpp"
+#include "compiler.hpp"
 
 namespace plusone {
 
@@ -99,19 +100,19 @@ public:
     }
 
     /** safe bool cast */
-    explicit operator bool() const noexcept
+    __force_inline explicit operator bool() const noexcept
     { return fd_ >= 0; }
 
     /** cast to !bool */
-    bool operator!() const noexcept
+    __force_inline bool operator!() const noexcept
     { return fd_ < 0; }
 
     /** return file handle */
-    int handle() const noexcept
+    __force_inline int handle() const noexcept
     { return fd_; }
 
     /** return size of file */
-    std::size_t size() const
+    __force_inline std::size_t size() const
     {
         struct stat st;
         if (::fstat(fd_, &st) == -1) {
@@ -121,7 +122,7 @@ public:
     }
 
     /** truncate file to required size */
-    void truncate(std::size_t size)
+    __force_inline void truncate(std::size_t size)
     {
         if (::ftruncate(fd_, size) == -1) {
             throw file_error("failed to truncate file (%s)", std::strerror(errno));
