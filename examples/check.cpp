@@ -8,12 +8,24 @@
 #include <plusone/expect.hpp>
 #include <plusone/compiler.hpp>
 #include <plusone/exception.hpp>
+#include <plusone/file.hpp>
+#include <plusone/mapped_region.hpp>
 
 typedef std::array< char, 128 > buffer_t;
 typedef plusone::tagged_exception< int > tagged_exception;
 
 int main(int argc, char* argv[])
 {
+    plusone::file file{plusone::open_or_create, "./test_file"};
+    if (file.size() == 0) {
+        file.truncate(1024);
+        std::cout << "truncated\n";
+    }
+
+    plusone::mapped_region region{file};
+
+    std::cout << "region size: " << region.size() << '\n';
+
     std::cout << sizeof(bool) << '\n';
     std::cout << sizeof(std::atomic< bool >) << '\n';
     buffer_t buffer0 __aligned(16);
