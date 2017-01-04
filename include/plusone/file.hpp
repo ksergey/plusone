@@ -143,8 +143,7 @@ private:
         } else if (mode == read_write) {
             oflags |= O_RDWR;
         } else {
-            throw std::system_error(EINVAL, std::system_category(),
-                    "unknown open mode");
+            throw file_error("unknown open mode (%s)", std::strerror(EINVAL));
         }
 
         /* open file descriptor */
@@ -187,8 +186,8 @@ private:
         }
 
         if (fd_ < 0) {
-            throw std::system_error(errno, std::system_category(),
-                    "failed to open file " + path);
+            throw file_error{"failed to open file \"%s\" (%s)}",
+                path.c_str(), std::strerror(errno)};
         }
     }
 };
