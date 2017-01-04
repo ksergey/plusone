@@ -81,8 +81,8 @@ public:
         }
 
         /* mmap mapped_region */
-        auto mapped_region = ::mmap(nullptr, file_size, prot, MAP_SHARED | MAP_POPULATE,
-                fd, 0);
+        auto mapped_region = ::mmap(nullptr, file_size, prot,
+                MAP_SHARED | MAP_POPULATE | MAP_LOCKED, fd, 0);
         if (mapped_region == MAP_FAILED) {
             throw mmap_error("mmap error (%s)", std::strerror(errno));
         }
