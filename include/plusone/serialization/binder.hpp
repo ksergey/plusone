@@ -44,7 +44,7 @@ public:
             if (!value.is_null()) {
                 read_value(value, field_);
             } else {
-                throw std::runtime_error("value is null");
+                throw io_error{"value is null"};
             }
         } else {
             policy_.field_not_defined(field_);

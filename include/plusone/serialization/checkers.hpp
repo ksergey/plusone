@@ -30,7 +30,7 @@ public:
     {
         static const C< T > cmp{};
         if (__unlikely(!cmp(value, value_))) {
-            throw std::runtime_error("value not passed validation");
+            throw check_error{"value not passed validation"};
         }
     }
 };
@@ -59,7 +59,7 @@ public:
         static const Right< T > cmp_right{};
 
         if (__unlikely(!cmp_left(value, left_) || !cmp_right(value, right_))) {
-            throw std::runtime_error("value not passed validation, not inside range");
+            throw check_error{"value not passed validation, not inside range"};
         }
     }
 };
@@ -96,7 +96,7 @@ __force_inline auto not_empty_string()
 {
     return [](const std::string& str) {
         if (__unlikely(str.empty())) {
-            throw std::runtime_error("value not passed validation, empty string");
+            throw check_error{"value not passed validation, empty string"};
         }
     };
 }
@@ -105,7 +105,7 @@ __force_inline auto max_length_string(size_t max_length)
 {
     return [max_length](const std::string& str) {
         if (__unlikely(str.size() > max_length)) {
-            throw std::runtime_error("value not passed validation, string too long");
+            throw check_error{"value not passed validation, string too long"};
         }
     };
 }
@@ -116,7 +116,7 @@ __force_inline auto one_of(std::initializer_list< T > values)
     const std::set< T > values_set(values);
     return [values_set](const T& value) {
         if (__unlikely(values_set.count(value) == 0)) {
-            throw std::runtime_error("value not passed validation, out of possible values");
+            throw check_error{"value not passed validation, out of possible values"};
         }
     };
 }

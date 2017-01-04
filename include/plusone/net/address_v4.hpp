@@ -27,7 +27,7 @@ public:
     {
 #if ULONG_MAX > 0xFFFFFFFF
         if (addr > 0xFFFFFFFF) {
-            throw std::out_of_range("bad IPv4 address");
+            throw address_error{"bad IPv4 address"};
         }
 #endif /* ULONG_MAX > 0xFFFFFFFF */
 
@@ -55,7 +55,7 @@ public:
     {
         address_v4 result;
         if (inet_pton(AF_INET, str, &result.data_) != 1) {
-            throw std::runtime_error("failed to convert to address from string");
+            throw address_error{"failed to convert to address from string"};
         }
         return result;
     }

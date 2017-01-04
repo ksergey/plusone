@@ -20,7 +20,7 @@ __force_inline static socket connect(const resolver& r)
     for (auto& ep: r) {
         socket s = socket::create(ep.domain(), ep.type(), ep.proto());
         if (__unlikely(!s)) {
-            throw exception("failed to create socket");
+            throw socket_error{"failed to create socket"};
         }
 
         if (s.connect(ep.data(), ep.size())) {
@@ -39,7 +39,7 @@ __force_inline static socket bind(const resolver& r)
     for (auto& ep: r) {
         socket s = socket::create(ep.domain(), ep.type(), ep.proto());
         if (__unlikely(!s)) {
-            throw exception("failed to create socket");
+            throw socket_error{"failed to create socket"};
         }
 
         s.set_option(reuseaddr(true));
@@ -47,7 +47,7 @@ __force_inline static socket bind(const resolver& r)
             s.set_nonblock();
             s.set_cloexec();
             if (__unlikely(!s.listen())) {
-                throw exception("failed to listen");
+                throw socket_error{"failed to listen"};
             }
             return s;
         }

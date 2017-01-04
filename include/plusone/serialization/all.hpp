@@ -24,7 +24,7 @@ struct required
 {
     template< class FieldT >
     __force_inline void field_not_defined(FieldT&) const
-    { throw std::runtime_error("mandatory field not exists"); }
+    { throw policy_error{"mandatory field not exists"}; }
 
     template< class FieldT >
     __force_inline constexpr bool is_default_value(FieldT&) const
@@ -77,7 +77,6 @@ auto optional(const std::string& field_name, FieldT& field,
 {
     using policy_type = policy::optional< FieldDefaultT >;
     using binder_type = binder< FieldT, policy_type, CheckerT >;
-
     return binder_type{field_name, field, policy_type{std::move(default_value)}, std::move(checker)};
 }
 

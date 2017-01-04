@@ -23,10 +23,12 @@ namespace plusone {
 namespace net {
 
 /** socket descriptor type */
-typedef int sock_t;
+using sock_t = int;
 
-class socket;
-typedef tagged_exception< socket > exception;
+/** socket error types */
+using address_error = tagged_exception< struct address_tag >;
+using socket_error = tagged_exception< struct socket_tag >;
+using option_error = tagged_exception< struct option_tag >;
 
 /** invalid socket descriptor value */
 static constexpr const sock_t invalid_socket = -1;

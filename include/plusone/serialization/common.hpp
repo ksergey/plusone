@@ -7,6 +7,7 @@
 
 #include <stdexcept>
 #include "../compiler.hpp"
+#include "../exception.hpp"
 #include "./deps/json.hpp"
 
 namespace plusone {
@@ -14,6 +15,11 @@ namespace serialization {
 
 /* for convenience */
 using json = nlohmann::json;
+
+/* serialization error classes */
+using check_error = tagged_exception< struct check_tag >;
+using policy_error = tagged_exception< struct policy_tag >;
+using io_error = tagged_exception< struct io_tag >;
 
 } /* namespace serialization */
 } /* namespace plusone */
