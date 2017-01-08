@@ -9,3 +9,6 @@ target_link_libraries(check plusone)
 
 add_executable(sockets_mmap sockets_mmap.cpp)
 target_link_libraries(sockets_mmap plusone)
+
+add_executable(pcap_read pcap_read.cpp)
+target_link_libraries(pcap_read plusone)
