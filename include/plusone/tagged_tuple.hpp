@@ -13,7 +13,7 @@ namespace plusone {
 /*
  * Improved tuple type
  *
- * example:
+ * Example:
  *  using xtuple = plusone::tagged_tuple<
  *      plusone::pair< struct tag3, int >,
  *      plusone::pair< struct tag4, std::string >,

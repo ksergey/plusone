@@ -17,103 +17,103 @@ class op_result;
 class io_result;
 class accept_result;
 
-/** socket class */
+/** Socket class */
 class socket
 {
 private:
-    /* socket handler */
+    /* Socket handler */
     sock_t sock_{invalid_socket};
 
 public:
-    /** disable copy constructor */
+    /** Disable copy constructor */
     socket(const socket&) = delete;
 
-    /** disable copy operator */
+    /** Disable copy operator */
     socket& operator=(const socket&) = delete;
 
-    /** construct socket from lvalue reference */
+    /** Construct socket from lvalue reference */
     socket(socket&& s);
 
-    /** move operator */
+    /** Move operator */
     socket& operator=(socket&& s);
 
-    /** construct socket from native descriptor */
+    /** Construct socket from native descriptor */
     socket(sock_t d = invalid_socket);
 
-    /** socket destructor */
+    /** Socket destructor */
     ~socket();
 
-    /** return true if socket initialized */
+    /** Return true if socket initialized */
     bool valid() const noexcept;
 
-    /** same as valid() */
+    /** Same as valid() */
     explicit operator bool() const noexcept;
 
-    /** same as !valid() */
+    /** Same as !valid() */
     bool operator!() const noexcept;
 
-    /**  return native socket handler */
+    /** Return native socket handler */
     sock_t get() noexcept;
 
-    /** close the socket */
+    /** Close the socket */
     void close() noexcept;
 
-    /** switch the socket non-blocking mode */
+    /** Switch the socket non-blocking mode */
     bool set_nonblock(bool flag = true) noexcept;
 
-    /** switch the socket cloexec mode */
+    /** Switch the socket cloexec mode */
     bool set_cloexec(bool flag = true) noexcept;
 
-    /** create socket */
+    /** Create socket */
     static socket create(int family, int socktype, int protocol);
 
-    /** create socket */
+    /** Create socket */
     static socket create(const protocol& p);
 
-    /** establish connection */
+    /** Establish connection */
     op_result connect(const sockaddr* addr, socklen_t addrlen) noexcept;
 
-    /** bind socket */
+    /** Bind socket */
     op_result bind(const sockaddr* addr, socklen_t addrlen) noexcept;
 
-    /** bind socket */
+    /** Bind socket */
     op_result bind(uint16_t port, const address_v4& addr = address_v4::any()) noexcept;
 
-    /** place socket in a listen state */
+    /** Place socket in a listen state */
     op_result listen(int backlog = 10) noexcept;
 
-    /** accept incomming connection */
+    /** Accept incomming connection */
     accept_result accept(sockaddr* addr = nullptr, socklen_t* addrlen = nullptr) noexcept;
 
-    /** send data into socket */
+    /** Send data into socket */
     io_result send(const void* buf, size_t len) noexcept;
 
-    /** send data into socket */
+    /** Send data into socket */
     io_result sendto(const void* buf, size_t len,
             const sockaddr* dest_addr, socklen_t addrlen) noexcept;
 
-    /** send data into socket */
+    /** Send data into socket */
     io_result sendmsg(const msghdr* message) noexcept;
 
-    /** recv data from socket */
+    /** Recv data from socket */
     io_result recv(void* buf, size_t len) noexcept;
 
-    /** recv data from socket */
+    /** Recv data from socket */
     io_result recvfrom(void* buf, size_t len,
             sockaddr* src_addr, socklen_t* addrlen) noexcept;
 
-    /** recv data from socket */
+    /** Recv data from socket */
     io_result recvmsg(msghdr* message) noexcept;
 
-    /** recv multiple data from socket */
+    /** Recv multiple data from socket */
     io_result recvmmsg(mmsghdr* msgvec, unsigned int vlen,
             timespec* timeout = nullptr) noexcept;
 
-    /** set socket option */
+    /** Set socket option */
     template< typename OptionT >
     op_result set_option(const OptionT& option) noexcept;
 
-    /** get socket option */
+    /** Get socket option */
     template< typename OptionT >
     op_result get_option(OptionT& option) noexcept;
 };

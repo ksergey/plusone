@@ -10,129 +10,128 @@
 namespace plusone {
 namespace net {
 
-/** socket result object */
+/** Socket result object */
 class socket_result
 {
 private:
-    /* error code */
+    /* Error code */
     int code_;
 
 public:
-    /** construct object with error code */
+    /** Construct object with error code */
     socket_result(int code = 0)
         : code_(code)
     {}
 
-    /** return error code */
+    /** Return error code */
     int code() const noexcept
     { return code_; }
 
-    /** return error code description */
+    /** Return error code description */
     const char* str() const noexcept
     { return ::strerror(code_); }
 
-    /** return true if error is EINTR */
-    bool is_interrupted() const noexcept
+    /** Return true if error is EINTR */
+    bool interrupted() const noexcept
     { return code_ == EINTR; }
 
-    /** return true if error is EAGAIN or EWOULDBLOCK */
-    bool is_again() const noexcept
+    /** Return true if error is EAGAIN or EWOULDBLOCK */
+    bool again() const noexcept
     { return code_ == EAGAIN || code_ == EWOULDBLOCK; }
 };
 
-/** socket operation result */
+/** Socket operation result */
 class op_result final
     : public socket_result
 {
 private:
-    /* result holder */
+    /* Result holder */
     int value_;
 
 public:
-    /** construct op_result */
+    /** Construct op_result */
     op_result(int value = 0)
         : socket_result(value != 0 ? errno : 0)
         , value_(value)
     {}
 
-    /** return true if operation finished successful */
+    /** Return true if operation finished successful */
     __force_inline bool success() const noexcept
     { return value_ == 0; }
 
-    /** return success() */
+    /** Return success() */
     __force_inline explicit operator bool() const noexcept
     { return success(); }
 
-    /** return !success() */
+    /** Return !success() */
     __force_inline bool operator!() const noexcept
     { return !success(); }
 };
 
-
-/** socket input/output operation result */
+/** Socket input/output operation result */
 class io_result final
     : public socket_result
 {
 private:
-    /* result holder */
+    /* Result holder */
     ssize_t value_;
 
 public:
-    /** construct io_result */
+    /** Construct io_result */
     io_result(ssize_t value = 0)
         : socket_result(value != 0 ? errno : 0)
         , value_(value)
     {}
 
-    /** return true if operation finished successful */
+    /** Return true if operation finished successful */
     __force_inline bool success() const noexcept
     { return value_ > 0; }
 
-    /** return success() */
+    /** Return success() */
     __force_inline explicit operator bool() const noexcept
     { return success(); }
 
-    /** return !success() */
+    /** Return !success() */
     __force_inline bool operator!() const noexcept
     { return !success(); }
 
-    /** return read/write bytes count */
+    /** Return read/write bytes count */
     __force_inline size_t bytes() const noexcept
     { return value_; }
 
-    /** return true if disconnect happend */
+    /** Return true if disconnect happend */
     __force_inline bool is_disconnected() const noexcept
     { return value_ == 0; }
 };
 
-/** socket accept operation result */
+/** Socket accept operation result */
 class accept_result final
     : public socket_result
 {
 private:
-    /* accepted socket */
+    /* Accepted socket */
     socket sock_;
 
 public:
-    /** construct accept_result */
+    /** Construct accept_result */
     accept_result(sock_t s = invalid_socket)
         : socket_result(s == invalid_socket ? errno : 0)
         , sock_(s)
     {}
 
-    /** return true if operation finished successful */
+    /** Return true if operation finished successful */
     __force_inline bool success() const noexcept
     { return sock_.valid(); }
 
-    /** return success() */
+    /** Return success() */
     __force_inline explicit operator bool() const noexcept
     { return success(); }
 
-    /** return !success() */
+    /** Return !success() */
     __force_inline bool operator!() const noexcept
     { return !success(); }
 
-    /** return accepted socket */
+    /** Return accepted socket */
     __force_inline socket&& get() noexcept
     { return std::move(sock_); }
 };

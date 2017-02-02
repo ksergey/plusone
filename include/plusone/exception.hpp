@@ -32,7 +32,7 @@ __force_inline std::string string_printf(const char* fmt, const Args&... args)
 
 } /* namespace detail */
 
-/** exception class */
+/** Exception class */
 class exception
     : public std::exception
 {
@@ -40,19 +40,19 @@ private:
     std::string what_;
 
 public:
-    /** empty string constructor */
+    /** Empty string constructor */
     exception() = default;
 
-    /** printf-like message formatter */
+    /** Printf-like message formatter */
     template< class... Args >
     explicit exception(const char* fmt, const Args&... args)
         : what_(detail::string_printf< 10 >(fmt, args...))
     {}
 
-    /** destructor */
+    /** Destructor */
     virtual ~exception() noexcept = default;
 
-    /** stream like message formatter */
+    /** Stream like message formatter */
     template< class T >
     __force_inline exception& operator<<(const T& value)
     {
@@ -62,12 +62,12 @@ public:
         return *this;
     }
 
-    /** return exception description */
+    /** Return exception description */
     virtual const char* what() const noexcept override
     { return what_.c_str(); }
 };
 
-/** make unique exception class */
+/** Make unique exception class */
 template< class... Tags >
 struct tagged_exception
     : exception

@@ -10,22 +10,22 @@
 namespace plusone {
 namespace net {
 
-/** tcp oriented socket creators */
+/** TCP oriented socket creators */
 struct tcp
 {
-    /** connect socket to host */
+    /** Connect socket to host */
     __force_inline static socket connect(const std::string& node)
     { return detail::connect(resolver(tcp_any, node)); }
 
-    /** connect socket to host */
+    /** Connect socket to host */
     __force_inline static socket connect(const std::string& node, const std::string& service)
     { return detail::connect(resolver(tcp_any, node, service)); }
 
-    /** bind socket */
+    /** Bind socket */
     __force_inline static socket bind(const std::string& node)
     { return detail::bind(resolver(tcp_any, node, AI_PASSIVE)); }
 
-    /** bind socket */
+    /** Bind socket */
     __force_inline static socket bind(const std::string& node, const std::string& service)
     { return detail::bind(resolver(tcp_any, node, service, AI_PASSIVE)); }
 };

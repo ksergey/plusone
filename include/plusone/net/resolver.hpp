@@ -11,39 +11,39 @@
 namespace plusone {
 namespace net {
 
-/** hostname resolver */
+/** Hostname resolver */
 class resolver
 {
 private:
-    /* resolver data */
+    /* Resolver data */
     addrinfo* data_{nullptr};
 
 public:
-    /** resolver iterator type */
+    /** Resolver iterator type */
     using const_iterator = detail::resolver_iterator;
 
     resolver(const resolver&) = delete;
     resolver& operator=(const resolver&) = delete;
 
-    /** construct resolver from rvalue reference */
+    /** Construct resolver from rvalue reference */
     __force_inline resolver(resolver&& r) noexcept
     { std::swap(data_, r.data_); }
 
-    /** move operator */
+    /** Move operator */
     __force_inline resolver& operator=(resolver&& r) noexcept
     {
         std::swap(data_, r.data_);
         return *this;
     }
 
-    /** default constructor */
+    /** Default constructor */
     resolver() = default;
 
-    /** construct resolver */
+    /** Construct resolver */
     resolver(const protocol& p, const std::string& node, const std::string& service, int flags = 0)
     { resolv(p, node.c_str(), service.c_str(), flags); }
 
-    /** construct resolver */
+    /** Construct resolver */
     resolver(const protocol& p, const std::string& node, int flags = 0)
     {
         size_t found = node.rfind(':');
@@ -54,7 +54,7 @@ public:
         }
     }
 
-    /** destructor */
+    /** Destructor */
     ~resolver()
     {
         if (data_) {
@@ -62,23 +62,23 @@ public:
         }
     }
 
-    /** return true if data resolver */
+    /** Return true if data resolver */
     __force_inline bool valid() const noexcept
     { return data_ != nullptr; }
 
-    /** return true if data resolver */
+    /** Return true if data resolver */
     __force_inline explicit operator bool() const noexcept
     { return valid(); }
 
-    /** return true if data not resolver */
+    /** Return true if data not resolver */
     __force_inline bool operator!() const noexcept
     { return !valid(); }
 
-    /** return iterator to begin */
+    /** Return iterator to begin */
     __force_inline const_iterator begin() const noexcept
     { return const_iterator(data_); }
 
-    /** return iterator to past the end */
+    /** Return iterator to past the end */
     __force_inline const_iterator end() const noexcept
     { return const_iterator(); }
 
