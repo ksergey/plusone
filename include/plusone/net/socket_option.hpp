@@ -18,6 +18,8 @@ using join_group = detail::multicast_request_v4_option< IP_ADD_MEMBERSHIP >;
 using leave_group = detail::multicast_request_v4_option< IP_DROP_MEMBERSHIP >;
 using join_source_group = detail::multicast_source_request_v4_option< IP_ADD_SOURCE_MEMBERSHIP >;
 using leave_source_group = detail::multicast_source_request_v4_option< IP_DROP_SOURCE_MEMBERSHIP >;
+using timestamp = detail::boolean_option< SOL_SOCKET, SO_TIMESTAMP >;
+using timestamp_ns = detail::boolean_option< SOL_SOCKET, SO_TIMESTAMPNS >;
 
 } /* namespace net */
 } /* namespace plusone */
