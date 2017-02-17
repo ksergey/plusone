@@ -18,3 +18,6 @@ target_link_libraries(sockets_udp_test_1 plusone)
 
 add_executable(sockets_udp_test_2 sockets_udp_test_2.cpp)
 target_link_libraries(sockets_udp_test_2 plusone)
+
+add_executable(arg_parser arg_parser.cpp)
+target_link_libraries(arg_parser plusone)
