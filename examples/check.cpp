@@ -11,6 +11,7 @@
 #include <plusone/file.hpp>
 #include <plusone/mapped_region.hpp>
 #include <plusone/static_vector.hpp>
+#include <plusone/object_pool.hpp>
 #include <plusone/tagged_tuple.hpp>
 #include <plusone/ns_alias.hpp>
 
@@ -43,6 +44,9 @@ int main(int argc, char* argv[])
     for (int i: {77, 1, 2, 3, 4}) {
         std::cout << vec.emplace_back(i) << '\n';
     }
+    for (auto i: vec) {
+        std::cout << " " << i << '\n';
+    }
 
     using xtuple = p1::tagged_tuple<
         p1::pair< struct tag3, int >,
@@ -55,6 +59,8 @@ int main(int argc, char* argv[])
     std::cout << std::get< 0 >(test) << '\n';
     std::cout << std::get< 1 >(test) << '\n';
     std::cout << std::get< 2 >(test) << '\n';
+
+    p1::object_pool< xtuple > pool{128};
 
     return 0;
 }

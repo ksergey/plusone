@@ -7,22 +7,84 @@
 
 #include <stdexcept>
 #include <type_traits>
+#include <iterator>
 #include "compiler.hpp"
 
 namespace plusone {
+
+namespace detail {
+
+/** Iterator implementation for static_vector */
+template< class T >
+class static_vector_iterator final
+    : std::iterator< std::random_access_iterator_tag, T >
+{
+private:
+    using storage_type = typename std::aligned_storage< sizeof(T), alignof(T) >::type;
+    using iterator = static_vector_iterator< T >;
+
+    storage_type* pos_{nullptr};
+
+public:
+    static_vector_iterator() = default;
+    ~static_vector_iterator() = default;
+
+    explicit static_vector_iterator(storage_type* value)
+        : pos_{value}
+    {}
+
+    /** Increment operation */
+    __force_inline iterator& operator++() noexcept
+    { ++pos_; return *this; }
+
+    /** Decrement operation */
+    __force_inline iterator& operator--() noexcept
+    { --pos_; return *this; }
+
+    /** Equal operator */
+    __force_inline bool operator==(const iterator& it) const noexcept
+    { return pos_ == it.pos_; }
+
+    /** Not equal operator */
+    __force_inline bool operator!=(const iterator& it) const noexcept
+    { return pos_ != it.pos_; }
+
+    /** Operator derefernce */
+    __force_inline const T& operator*() const noexcept
+    { return *reinterpret_cast< const T* >(pos_); }
+
+    /** Operator derefernce */
+    __force_inline T& operator*() noexcept
+    { return *reinterpret_cast< T* >(pos_); }
+
+    /** Operator access member */
+    __force_inline const T* operator->() const noexcept
+    { return reinterpret_cast< const T* >(pos_); }
+
+    /** Operator access member */
+    __force_inline T* operator->() noexcept
+    { return reinterpret_cast< T* >(pos_); }
+};
+
+} /* namespace detail */
 
 /** Vector without reallocations and erasings */
 template< class T >
 class static_vector
 {
 private:
-    using storage = typename std::aligned_storage< sizeof(T), alignof(T) >::type;
+    using storage_type = typename std::aligned_storage< sizeof(T), alignof(T) >::type;
 
-    storage* data_{nullptr};
+    storage_type* data_{nullptr};
     std::size_t capacity_{0};
     std::size_t size_{0};
 
 public:
+    /** Iterator type */
+    using iterator = detail::static_vector_iterator< T >;
+    /** Const iterator type */
+    using const_iterator = detail::static_vector_iterator< const T >;
+
     static_vector(const static_vector&) = delete;
     static_vector& operator=(const static_vector&) = delete;
 
@@ -46,10 +108,10 @@ public:
     explicit static_vector(std::size_t capacity)
         : capacity_{capacity}
         , size_{0}
-    { data_ = new storage[capacity_]; }
+    { data_ = new storage_type[capacity_]; }
 
     /** Destructor */
-    ~static_vector()
+    __force_inline ~static_vector()
     {
         if (data_) {
             clear();
@@ -118,6 +180,30 @@ public:
         std::swap(capacity_, other.capacity_);
         std::swap(size_, other.size_);
     }
+
+    /** Return iterator to begin element */
+    __force_inline iterator begin() noexcept
+    { return iterator{data_}; }
+
+    /** Return iterator to next after last element */
+    __force_inline iterator end() noexcept
+    { return iterator{data_ + size_}; }
+
+    /** Return const iterator to begin element */
+    __force_inline const_iterator begin() const noexcept
+    { return const_iterator{data_}; }
+
+    /** Return const iterator to next after last element */
+    __force_inline const_iterator end() const noexcept
+    { return const_iterator{data_ + size_}; }
+
+    /** Return const iterator to begin element */
+    __force_inline const_iterator cbegin() const noexcept
+    { return const_iterator{data_}; }
+
+    /** Return const iterator to next after last element */
+    __force_inline const_iterator cend() const noexcept
+    { return const_iterator{data_ + size_}; }
 };
 
 } /* namespace plusone */
