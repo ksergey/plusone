@@ -11,7 +11,7 @@
 namespace plusone {
 namespace serialization {
 
-/* check if a class have a serialize method */
+/* Check if a class have a serialize method */
 
 template< class T, class DTO, typename = void >
 struct has_serialize

@@ -14,7 +14,7 @@
 namespace plusone {
 namespace serialization {
 
-/** stl-based checker */
+/** STL-based checker */
 template< class T, template< class > class C >
 class stl_comparator
 {
@@ -35,7 +35,7 @@ public:
     }
 };
 
-/** check value inside of a range */
+/** Check value inside of a range */
 template<
     class T,
     template< class > class Left,

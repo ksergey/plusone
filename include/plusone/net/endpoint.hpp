@@ -10,11 +10,11 @@
 namespace plusone {
 namespace net {
 
-/** endpoint (address + port) */
+/** Endpoint (address + port) */
 class endpoint final
 {
 private:
-    /* endpoint data */
+    /* Endpoint data */
     union {
         sockaddr in;
         sockaddr_in in4;
@@ -22,13 +22,13 @@ private:
     } data_{};
 
 public:
-    /** default constructor */
+    /** Default constructor */
     endpoint() = default;
 
-    /** destructor */
+    /** Destructor */
     ~endpoint() = default;
 
-    /** construct endpoint */
+    /** Construct endpoint */
     endpoint(const std::string& addr, uint16_t port)
     {
         if (::inet_pton(AF_INET6, addr.c_str(), &data_.in6.sin6_addr) == 1) {
@@ -42,31 +42,31 @@ public:
         }
     }
 
-    /** return true if endpoint initialized */
+    /** Return true if endpoint initialized */
     __force_inline bool valid() const noexcept
     { return domain() == AF_INET || domain() == AF_INET6; }
 
-    /** return true if endpoint initialized */
+    /** Return true if endpoint initialized */
     __force_inline explicit operator bool() const noexcept
     { return valid(); }
 
-    /** return true if endpoint not initialized */
+    /** Return true if endpoint not initialized */
     __force_inline bool operator!() const noexcept
     { return !valid(); }
 
-    /** endpoint domain */
+    /** Endpoint domain */
     __force_inline int domain() const noexcept
     { return data_.in.sa_family; }
 
-    /** endpoint data */
+    /** Endpoint data */
     __force_inline const sockaddr* data() const noexcept
     { return &data_.in; }
 
-    /** endpoint data */
+    /** Endpoint data */
     __force_inline sockaddr* data() noexcept
     { return &data_.in; }
 
-    /** endpoint data size */
+    /** Endpoint data size */
     __force_inline size_t size() const noexcept
     {
         if (domain() == AF_INET) {
@@ -78,7 +78,7 @@ public:
         return 0;
     }
 
-    /** return endpoint as string */
+    /** Return endpoint as string */
     __force_inline std::string str(char delim = ' ') const noexcept
     {
         if (data_.in.sa_family == AF_INET) {

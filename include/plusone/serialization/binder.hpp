@@ -16,17 +16,17 @@ template< class FieldT, class PolicyT, class CheckerT >
 class binder final
 {
 private:
-    /* field name */
+    /* Field name */
     std::string field_name_;
-    /* field reference */
+    /* Field reference */
     FieldT& field_;
-    /* presence policy */
+    /* Presence policy */
     PolicyT policy_;
-    /* field value checker */
+    /* Field value checker */
     CheckerT checker_;
 
 public:
-    /** construct the binder */
+    /** Construct the binder */
     binder(const std::string& field_name, FieldT& field,
             PolicyT&& policy, CheckerT&& checker)
         : field_name_(field_name)
@@ -35,7 +35,7 @@ public:
         , checker_(std::move(checker))
     {}
 
-    /** read value from json object */
+    /** Read value from json object */
     void read_from(const json& object) const
     {
         auto found = object.find(field_name_);
@@ -53,7 +53,7 @@ public:
         checker_(field_);
     }
 
-    /** write value into json object */
+    /** Write value into json object */
     void write_to(json& object) const
     {
         checker_(field_);

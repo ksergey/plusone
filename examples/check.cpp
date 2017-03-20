@@ -10,19 +10,22 @@
 #include <plusone/exception.hpp>
 #include <plusone/file.hpp>
 #include <plusone/mapped_region.hpp>
+#include <plusone/static_vector.hpp>
+#include <plusone/tagged_tuple.hpp>
+#include <plusone/ns_alias.hpp>
 
 typedef std::array< char, 128 > buffer_t;
-typedef plusone::tagged_exception< int > tagged_exception;
+typedef p1::tagged_exception< int > tagged_exception;
 
 int main(int argc, char* argv[])
 {
-    plusone::file file{plusone::open_or_create, "./test_file"};
+    p1::file file{p1::open_or_create, "./test_file"};
     if (file.size() == 0) {
         file.truncate(1024);
         std::cout << "truncated\n";
     }
 
-    plusone::mapped_region region{file};
+    p1::mapped_region region{file};
 
     std::cout << "region size: " << region.size() << '\n';
 
@@ -35,6 +38,23 @@ int main(int argc, char* argv[])
 
     tagged_exception("msg %s %d %d", "test", 512, 137) << "  hahahaha " << 31337;
     tagged_exception() << "  hahahaha " << 31337;
+
+    p1::static_vector< int > vec{5};
+    for (int i: {77, 1, 2, 3, 4}) {
+        std::cout << vec.emplace_back(i) << '\n';
+    }
+
+    using xtuple = p1::tagged_tuple<
+        p1::pair< struct tag3, int >,
+        p1::pair< struct tag4, std::string >,
+        p1::pair< struct tag5, std::string >
+    >;
+    xtuple test{999, "hello", "zzzz"};
+    p1::get< tag3 >(test) = 64;
+    std::cout << p1::get< tag3 >(test) << ' ' << p1::get< tag4 >(test) << ' ' << p1::get< tag5 >(test) << '\n';
+    std::cout << std::get< 0 >(test) << '\n';
+    std::cout << std::get< 1 >(test) << '\n';
+    std::cout << std::get< 2 >(test) << '\n';
 
     return 0;
 }

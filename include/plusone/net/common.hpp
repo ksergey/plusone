@@ -22,27 +22,27 @@
 namespace plusone {
 namespace net {
 
-/** socket descriptor type */
+/** Socket descriptor type */
 using sock_t = int;
 
-/** socket error types */
+/** Socket error types */
 using address_error = tagged_exception< struct address_tag >;
 using socket_error = tagged_exception< struct socket_tag >;
 using option_error = tagged_exception< struct option_tag >;
 
-/** invalid socket descriptor value */
+/** Invalid socket descriptor value */
 static constexpr const sock_t invalid_socket = -1;
 
 namespace detail {
 
-/** prevent process termination during SIGPIPE signal */
+/** Prevent process termination during SIGPIPE signal */
 struct sigpipe_initializer final
 {
     sigpipe_initializer()
     { std::signal(SIGPIPE, SIG_IGN); }
 };
 
-/* trick */
+/* Trick */
 static const sigpipe_initializer sigpipe_initialized{};
 
 } /* namespace detail */

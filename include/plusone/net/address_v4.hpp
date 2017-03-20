@@ -14,19 +14,19 @@ namespace net {
 class address_v4 final
 {
 private:
-    /* address data */
+    /* Address data */
     in_addr data_;
 
 public:
-    /** construct default address (unspecified) */
-    address_v4()
+    /** Construct default address (unspecified) */
+    __force_inline address_v4()
     { data_.s_addr = 0; }
 
-    /** construct address */
-    explicit address_v4(unsigned long addr)
+    /** Construct address */
+    __force_inline explicit address_v4(unsigned long addr)
     {
 #if ULONG_MAX > 0xFFFFFFFF
-        if (addr > 0xFFFFFFFF) {
+        if (__unlikely(addr > 0xFFFFFFFF)) {
             throw address_error{"bad IPv4 address"};
         }
 #endif /* ULONG_MAX > 0xFFFFFFFF */
@@ -35,13 +35,13 @@ public:
     }
 
     /** IPv4 address to unsigned long */
-    unsigned long to_ulong() const
+    __force_inline unsigned long to_ulong() const
     { return ntohl(data_.s_addr); }
 
     /** IPv4 address to string dot-notation */
-    std::string to_string() const
+    __force_inline std::string to_string() const
     {
-        /* placeholder for result */
+        /* Placeholder for result */
         char addr_str[INET_ADDRSTRLEN];
         const char* addr = inet_ntop(AF_INET, &data_, addr_str, sizeof(addr_str));
         if (addr == nullptr) {
@@ -50,58 +50,58 @@ public:
         return addr;
     }
 
-    /** convert address from const char* */
-    static address_v4 from_string(const char* str)
+    /** Convert address from const char* */
+    __force_inline static address_v4 from_string(const char* str)
     {
         address_v4 result;
         if (inet_pton(AF_INET, str, &result.data_) != 1) {
-            throw address_error{"failed to convert to address from string"};
+            throw address_error{"Convert to address from string error"};
         }
         return result;
     }
 
-    /** convert address from std::string */
-    static address_v4 from_string(const std::string& str)
+    /** Convert address from std::string */
+    __force_inline static address_v4 from_string(const std::string& str)
     { return from_string(str.c_str()); }
 
-    /** convert address from const char* */
-    static bool from_string(const char* str, address_v4& result)
+    /** Convert address from const char* */
+    __force_inline static bool from_string(const char* str, address_v4& result)
     { return inet_pton(AF_INET, str, &result.data_) == 1; }
 
-    /** convert address from std::string */
-    static bool from_string(const std::string& str, address_v4& result)
+    /** Convert address from std::string */
+    __force_inline static bool from_string(const std::string& str, address_v4& result)
     { return from_string(str.c_str(), result); }
 
-    /** return true if address is loopback */
-    bool is_loopback() const
+    /** Return true if address is loopback */
+    __force_inline bool is_loopback() const
     { return (to_ulong() & 0xFF000000u) == 0x7F000000u; }
 
-    /** return true if address is unspecified */
-    bool is_unspecified() const
+    /** Return true if address is unspecified */
+    __force_inline bool is_unspecified() const
     { return to_ulong() == 0; }
 
-    /** return true if address is a-class */
-    bool is_class_a() const
+    /** Return true if address is a-class */
+    __force_inline bool is_class_a() const
     { return (to_ulong() & 0x80000000u) == 0; }
 
-    /** return true if address is b-class */
-    bool is_class_b() const
+    /** Return true if address is b-class */
+    __force_inline bool is_class_b() const
     { return (to_ulong() & 0xC0000000u) == 0x80000000u; }
 
-    /** return true if address is c-class */
-    bool is_class_c() const
+    /** Return true if address is c-class */
+    __force_inline bool is_class_c() const
     { return (to_ulong() & 0xE0000000u) == 0xC0000000u; }
 
-    /** return true if address is multicast group */
-    bool is_multicast() const
+    /** Return true if address is multicast group */
+    __force_inline bool is_multicast() const
     { return (to_ulong() & 0xF0000000u) == 0xE0000000u; }
 
-    /** construct unspecified address */
-    static address_v4 any()
+    /** Construct unspecified address */
+    __force_inline static address_v4 any()
     { return address_v4(); }
 
-    /** construct loopback address */
-    static address_v4 loopback()
+    /** Construct loopback address */
+    __force_inline static address_v4 loopback()
     { return address_v4(0x7F000001); }
 };
 

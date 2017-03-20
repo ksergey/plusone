@@ -11,55 +11,59 @@
 
 namespace plusone {
 
-/** nanosecond period */
+/** Nanosecond period */
 struct ns
 {
-    static constexpr uint64_t ratio = 1u;
-    static constexpr uint64_t in_sec = 1000000000ul / ratio;
+    static constexpr std::uint64_t ratio = 1u;
+    static constexpr std::uint64_t in_sec = 1000000000ul / ratio;
 };
 
-/** microsecond period */
+/** Microsecond period */
 struct us
 {
-    static constexpr uint64_t ratio = 1000ul;
-    static constexpr uint64_t in_sec = 1000000000ul / ratio;
+    static constexpr std::uint64_t ratio = 1000ul;
+    static constexpr std::uint64_t in_sec = 1000000000ul / ratio;
 };
 
-/** millisecond period */
+/** Millisecond period */
 struct ms
 {
-    static constexpr uint64_t ratio = 1000000ul;
-    static constexpr uint64_t in_sec = 1000000000ul / ratio;
+    static constexpr std::uint64_t ratio = 1000000ul;
+    static constexpr std::uint64_t in_sec = 1000000000ul / ratio;
 };
 
-/** second period */
+/** Second period */
 struct sec
 {
-    static constexpr uint64_t ratio = 1000000000ul;
-    static constexpr uint64_t in_sec = 1000000000ul / ratio;
+    static constexpr std::uint64_t ratio = 1000000000ul;
+    static constexpr std::uint64_t in_sec = 1000000000ul / ratio;
 };
 
+/**
+ * Return current time
+ * @param[in] clock_id - clock is (@see man clock_gettime)
+ */
 template< class PeriodT >
-__force_inline uint64_t clock_now(clockid_t clock_id)
+__force_inline std::uint64_t clock_now(clockid_t clock_id)
 {
     timespec ts;
     clock_gettime(clock_id, &ts);
     return ts.tv_sec * PeriodT::in_sec + ts.tv_nsec / PeriodT::ratio;
 }
 
-/** return monotonic time */
+/** Return monotonic time */
 template< class PeriodT >
-__force_inline uint64_t clock_mono()
+__force_inline std::uint64_t clock_mono()
 { return clock_now< PeriodT >(CLOCK_MONOTONIC); }
 
-/** return system-wide current time */
+/** Return system-wide current time */
 template< class PeriodT >
-__force_inline uint64_t clock_time()
+__force_inline std::uint64_t clock_time()
 { return clock_now< PeriodT >(CLOCK_REALTIME); }
 
-/** return system-wide current time faster but less precise */
+/** Return system-wide current time faster but less precise */
 template< class PeriodT >
-__force_inline uint64_t fastclock_time()
+__force_inline std::uint64_t fastclock_time()
 { return clock_now< PeriodT >(CLOCK_REALTIME_COARSE); }
 
 } /* namespace plusone */

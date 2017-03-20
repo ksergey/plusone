@@ -7,14 +7,15 @@
 
 #include <csignal>
 #include <cstring>
+#include "compiler.hpp"
 
 namespace plusone {
 
-/** signal callback function */
+/** Signal callback function type */
 typedef void (*signal_handler)(int sig);
 
-/** change signal handler */
-inline void setup_signal(int sig, signal_handler cb)
+/** Set signal handler */
+__force_inline void setup_signal(int sig, signal_handler cb)
 {
     struct sigaction sa{};
     std::memset(&sa, 0, sizeof(sa));
@@ -22,22 +23,20 @@ inline void setup_signal(int sig, signal_handler cb)
     ::sigaction(sig, &sa, nullptr);
 }
 
-/** change signal handler for set of signals */
-inline void setup_signal(std::initializer_list< int > sigs, signal_handler cb)
+/** Set signal handler for set of signals */
+__force_inline void setup_signal(std::initializer_list< int > sigs, signal_handler cb)
 {
     for (auto sig: sigs) {
         setup_signal(sig, cb);
     }
 }
 
-/** reset to default signal handler */
-inline void reset_signal(int sig)
-{
-    setup_signal(sig, SIG_DFL);
-}
+/** Reset to default signal handler */
+__force_inline void reset_signal(int sig)
+{ setup_signal(sig, SIG_DFL); }
 
-/** reset to default signal handler for set of signals */
-inline void reset_signal(std::initializer_list< int > sigs)
+/** Reset to default signal handler for set of signals */
+__force_inline void reset_signal(std::initializer_list< int > sigs)
 {
     for (auto sig: sigs) {
         reset_signal(sig);

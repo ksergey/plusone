@@ -12,7 +12,7 @@
 namespace plusone {
 namespace serialization {
 
-/** input object */
+/** Input object */
 class input final
 {
 private:
@@ -25,13 +25,10 @@ public:
 
     template< class BinderT >
     input& operator&(const BinderT& binder)
-    {
-        binder.read_from(object_);
-        return *this;
-    }
+    { binder.read_from(object_); return *this; }
 };
 
-/** input object */
+/** Output object */
 class output final
 {
 private:
@@ -44,13 +41,10 @@ public:
 
     template< class BinderT >
     output& operator&(const BinderT& binder)
-    {
-        binder.write_to(object_);
-        return *this;
-    }
+    { binder.write_to(object_); return *this; }
 };
 
-/* integral types */
+/* Integral types */
 
 template< class T >
 __force_inline void read_value(const json& object, T& value,

@@ -11,9 +11,7 @@
 
 namespace plusone {
 
-/**
- * abort function for any assert-like macroses
- */
+/** Abort function for any assert-like macroses */
 __force_inline void abort(const char* file, int line, const char* expr, const char* text = nullptr)
 {
     std::cerr << "\n *** expression \"" << expr << "\" at \"" << file << ':' << line << "\" failed ***\n";

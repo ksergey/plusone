@@ -10,24 +10,7 @@
 
 namespace plusone {
 
-/*
- * Improved tuple type
- *
- * Example:
- *  using xtuple = plusone::tagged_tuple<
- *      plusone::pair< struct tag3, int >,
- *      plusone::pair< struct tag4, std::string >,
- *      plusone::pair< struct tag5, std::string >
- *  >;
- *  xtuple test{999, "hello", "zzzz"};
- *  plusone::get< tag3 >(test) = 64;
- *
- *  std::cout
- *      << plusone::get< tag3 >(test) << ' '
- *      << plusone::get< tag4 >(test) << ' '
- *      << plusone::get< tag5 >(test) << '\n';
- */
-
+/** Key and Value type holder */
 template< class K, class V >
 struct pair
 {
@@ -98,6 +81,23 @@ using type_of = typename std::tuple_element<
 
 } /* namespace detail */
 
+/**
+ * Improved tuple type
+ *
+ * Example:
+ *  using xtuple = plusone::tagged_tuple<
+ *      plusone::pair< struct tag3, int >,
+ *      plusone::pair< struct tag4, std::string >,
+ *      plusone::pair< struct tag5, std::string >
+ *  >;
+ *  xtuple test{999, "hello", "zzzz"};
+ *  plusone::get< tag3 >(test) = 64;
+ *
+ *  std::cout
+ *      << plusone::get< tag3 >(test) << ' '
+ *      << plusone::get< tag4 >(test) << ' '
+ *      << plusone::get< tag5 >(test) << '\n';
+ */
 template< class... Ts >
 struct tagged_tuple
     : std::tuple< typename Ts::second_type... >

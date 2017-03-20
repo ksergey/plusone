@@ -19,7 +19,7 @@ template< class FieldT, class FieldDefaultT >
 void set_default_value(FieldT& field, FieldDefaultT&& def)
 { field = std::move(def); }
 
-/** required field policy */
+/** Required field policy */
 struct required
 {
     template< class FieldT >
@@ -32,7 +32,7 @@ struct required
 };
 
 /**
- * optional field policy.
+ * Optional field policy.
  * if value not exists in json object use default value
  */
 template< class FieldDefaultT >
@@ -53,7 +53,7 @@ public:
 
 } /* namespace policy */
 
-/** default checker */
+/** Default checker */
 struct null_checker final
 {
     template< class FieldT >
@@ -61,7 +61,7 @@ struct null_checker final
     {}
 };
 
-/** required field type */
+/** Required field type */
 template< class FieldT, class CheckerT = null_checker >
 auto required(const std::string& field_name, FieldT& field,
         CheckerT&& checker = CheckerT{})
@@ -70,7 +70,7 @@ auto required(const std::string& field_name, FieldT& field,
     return binder_type{field_name, field, policy::required{}, std::move(checker)};
 }
 
-/** optional field type */
+/** Optional field type */
 template< class FieldT, class FieldDefaultT, class CheckerT = null_checker >
 auto optional(const std::string& field_name, FieldT& field,
         FieldDefaultT default_value, CheckerT&& checker = CheckerT{})
@@ -80,7 +80,7 @@ auto optional(const std::string& field_name, FieldT& field,
     return binder_type{field_name, field, policy_type{std::move(default_value)}, std::move(checker)};
 }
 
-/** convert msg to json formated string */
+/** Convert msg to json formated string */
 template< class MsgT >
 __force_inline std::string to_json(const MsgT& msg, int indent = -1)
 {
@@ -90,7 +90,7 @@ __force_inline std::string to_json(const MsgT& msg, int indent = -1)
     return object.dump(indent);
 }
 
-/** parse msg from json formated string */
+/** Parse msg from json formated string */
 template< class MsgT >
 __force_inline void from_json(const std::string& str, MsgT& msg)
 {
@@ -99,7 +99,7 @@ __force_inline void from_json(const std::string& str, MsgT& msg)
     serialize(in, msg);
 }
 
-/** parse msg from json formated string */
+/** Parse msg from json formated string */
 template< class MsgT >
 __force_inline MsgT from_json(const std::string& str)
 {
@@ -108,12 +108,12 @@ __force_inline MsgT from_json(const std::string& str)
     return result;
 }
 
-/** serialize message to stream */
+/** Serialize message to stream */
 template< class MsgT >
 __force_inline void to_stream(std::ostream& os, const MsgT& msg, int indent = -1)
 { os << to_json(msg, indent); }
 
-/** parse message from stream */
+/** Parse message from stream */
 template< class MsgT >
 __force_inline void from_stream(std::istream& is, MsgT& msg)
 {
@@ -123,7 +123,7 @@ __force_inline void from_stream(std::istream& is, MsgT& msg)
     serialize(in, msg);
 }
 
-/** parse message from stream */
+/** Parse message from stream */
 template< class MsgT >
 __force_inline MsgT from_stream(std::istream& is)
 {

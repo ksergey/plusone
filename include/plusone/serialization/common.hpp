@@ -13,10 +13,10 @@
 namespace plusone {
 namespace serialization {
 
-/* for convenience */
+/* For convenience */
 using json = nlohmann::json;
 
-/* serialization error classes */
+/* Serialization error classes */
 using check_error = tagged_exception< struct check_tag >;
 using policy_error = tagged_exception< struct policy_tag >;
 using io_error = tagged_exception< struct io_tag >;
