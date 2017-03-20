@@ -12,126 +12,126 @@ namespace plusone {
 namespace net {
 namespace detail {
 
-/** boolean option type */
+/** Boolean option type */
 template< int Level, int Name >
 class boolean_option
 {
 private:
-    /* option value */
+    /* Option value */
     int value_{0};
 
 public:
-    /** default constructor */
     boolean_option() = default;
-
-    /** destructor */
     ~boolean_option() = default;
 
-    /** construct boolean option */
+    /** Construct boolean option */
     explicit boolean_option(bool value)
         : value_(value ? 1 : 0)
     {}
 
-    /** return option value */
+    /** Return option value */
     __force_inline bool value() const noexcept
     { return !!value_; }
 
-    /** cast to bool */
+    /** Cast to bool */
     __force_inline explicit operator bool() const noexcept
     { return !!value_; }
 
-    /** option level */
+    /** Option level */
     __force_inline int level() const noexcept
     { return Level; }
 
-    /** option name */
+    /** Option name */
     __force_inline int name() const noexcept
     { return Name; }
 
-    /** option data */
+    /** Option data */
     __force_inline void* data() noexcept
     { return &value_; }
 
-    /** option data */
+    /** Option data */
     __force_inline const void* data() const noexcept
     { return &value_; }
 
-    /** option size */
+    /** Option size */
     __force_inline size_t size() const noexcept
     { return sizeof(value_); }
 
-    /** resize option data */
+    /** Resize option data */
     __force_inline void resize(size_t size)
     {
         if (size != sizeof(value_)) {
-            throw option_error{"boolean socket option resize"};
+            throw option_error{"Boolean socket option resize"};
         }
     }
 };
 
-/** integer option type */
+/** Integer option type */
 template< int Level, int Name >
 class integer_option
 {
 private:
-    /* option value */
+    /* Option value */
     int value_{0};
 
 public:
-    /** default constructor */
     integer_option() = default;
-
-    /** destructor */
     ~integer_option() = default;
 
-    /** construct integer option */
+    /** Construct integer option */
     explicit integer_option(bool value)
         : value_(value)
     {}
 
-    /** return option value */
-    __force_inline int value() const noexcept { return value_; }
+    /** Teturn option value */
+    __force_inline int value() const noexcept
+    { return value_; }
 
-    /** cast to bool */
-    __force_inline explicit operator bool() const noexcept { return !!value_; }
+    /** Cast to bool */
+    __force_inline explicit operator bool() const noexcept
+    { return !!value_; }
 
-    /** option level */
-    __force_inline int level() const noexcept { return Level; }
+    /** Option level */
+    __force_inline int level() const noexcept
+    { return Level; }
 
-    /** option name */
-    __force_inline int name() const noexcept { return Name; }
+    /** Option name */
+    __force_inline int name() const noexcept
+    { return Name; }
 
-    /** option data */
-    __force_inline void* data() noexcept { return &value_; }
+    /** Option data */
+    __force_inline void* data() noexcept
+    { return &value_; }
 
-    /** option data */
-    __force_inline const void* data() const noexcept { return &value_; }
+    /** Option data */
+    __force_inline const void* data() const noexcept
+    { return &value_; }
 
-    /** option size */
-    __force_inline size_t size() const noexcept { return sizeof(value_); }
+    /** Option size */
+    __force_inline size_t size() const noexcept
+    { return sizeof(value_); }
 
-    /** resize option data */
+    /** Resize option data */
     __force_inline void resize(size_t size)
     {
         if (size != sizeof(value_)) {
-            throw option_error{"integer socket option resize"};
+            throw option_error{"Integer socket option resize"};
         }
     }
 };
 
-/** multicast request type */
+/** Multicast request type */
 template< int Name >
 class multicast_request_v4_option
 {
 private:
-    /* option value */
+    /* Option value */
     ip_mreq value_{};
 
 public:
-    /** default constructor */
     multicast_request_v4_option() = default;
 
-    /** construct multicast option */
+    /** Construct multicast option */
     explicit multicast_request_v4_option(const address_v4& multicast_address,
             const address_v4& network_interface = address_v4::any())
         : multicast_request_v4_option()
@@ -140,32 +140,35 @@ public:
         value_.imr_interface.s_addr = htonl(network_interface.to_ulong());
     }
 
-    /** option level */
-    __force_inline int level() const noexcept { return IPPROTO_IP; }
+    /** Option level */
+    __force_inline int level() const noexcept
+    { return IPPROTO_IP; }
 
-    /** option name */
-    __force_inline int name() const noexcept { return Name; }
+    /** Option name */
+    __force_inline int name() const noexcept
+    { return Name; }
 
-    /** option data */
-    __force_inline const void* data() const noexcept { return &value_; }
+    /** Option data */
+    __force_inline const void* data() const noexcept
+    { return &value_; }
 
-    /** option size */
-    __force_inline size_t size() const noexcept { return sizeof(value_); }
+    /** Option size */
+    __force_inline size_t size() const noexcept
+    { return sizeof(value_); }
 };
 
-/** multicast source request type */
+/** Multicast source request type */
 template< int Name >
 class multicast_source_request_v4_option
 {
 private:
-    /* option value */
+    /* Option value */
     ip_mreq_source value_{};
 
 public:
-    /** default constructor */
     multicast_source_request_v4_option() = default;
 
-    /** construct option */
+    /** Construct option */
     multicast_source_request_v4_option(const address_v4& multicast_address,
             const address_v4& multicast_source_address,
             const address_v4& network_interface = address_v4::any())
@@ -176,20 +179,24 @@ public:
         value_.imr_sourceaddr.s_addr = htonl(multicast_source_address.to_ulong());
     }
 
-    /** option level */
-    __force_inline int level() const noexcept { return IPPROTO_IP; }
+    /** Option level */
+    __force_inline int level() const noexcept
+    { return IPPROTO_IP; }
 
-    /** option name */
-    __force_inline int name() const noexcept { return Name; }
+    /** Option name */
+    __force_inline int name() const noexcept
+    { return Name; }
 
-    /** option data */
-    __force_inline const void* data() const noexcept { return &value_; }
+    /** Option data */
+    __force_inline const void* data() const noexcept
+    { return &value_; }
 
-    /** option size */
-    __force_inline size_t size() const noexcept { return sizeof(value_); }
+    /** Option size */
+    __force_inline size_t size() const noexcept
+    { return sizeof(value_); }
 };
 
-/** generic option type */
+/** Generic option type */
 class generic_socket_option
 {
 private:
@@ -199,10 +206,9 @@ private:
     std::size_t size_{0};
 
 public:
-    /** default constructor */
     generic_socket_option() = default;
 
-    /** construct option */
+    /** Construct option */
     generic_socket_option(int name, int level, const void* data, std::size_t size)
         : level_(level)
         , name_(name)
@@ -210,7 +216,7 @@ public:
         , size_(size)
     {}
 
-    /** construct option */
+    /** Construct option */
     template< class T >
     generic_socket_option(int level, int name, const T& value)
         : level_(level)
@@ -219,17 +225,21 @@ public:
         , size_(sizeof(value))
     {}
 
-    /** option level */
-    __force_inline int level() const noexcept { return level_; }
+    /** Option level */
+    __force_inline int level() const noexcept
+    { return level_; }
 
-    /** option name */
-    __force_inline int name() const noexcept { return name_; }
+    /** Option name */
+    __force_inline int name() const noexcept
+    { return name_; }
 
-    /** option data */
-    __force_inline const void* data() const noexcept { return data_; }
+    /** Option data */
+    __force_inline const void* data() const noexcept
+    { return data_; }
 
-    /** option size */
-    __force_inline size_t size() const noexcept { return size_; }
+    /** Option size */
+    __force_inline size_t size() const noexcept
+    { return size_; }
 };
 
 } /* namespace detail */

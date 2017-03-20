@@ -10,20 +10,17 @@
 namespace plusone {
 namespace net {
 
-inline socket::socket(socket&& s)
+__force_inline socket::socket(socket&& s)
 { std::swap(sock_, s.sock_); }
 
-inline socket& socket::operator=(socket&& s)
-{
-    std::swap(sock_, s.sock_);
-    return *this;
-}
+__force_inline socket& socket::operator=(socket&& s)
+{ std::swap(sock_, s.sock_); return *this; }
 
-inline socket::socket(sock_t d)
+__force_inline socket::socket(sock_t d)
     : sock_(d)
 {}
 
-inline socket::~socket()
+__force_inline socket::~socket()
 { close(); }
 
 __force_inline bool socket::valid() const noexcept

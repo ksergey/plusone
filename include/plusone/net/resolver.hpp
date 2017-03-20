@@ -83,7 +83,7 @@ public:
     { return const_iterator(); }
 
 private:
-    void resolv(const protocol& p, const char* node, const char* service, int flags)
+    __force_inline void resolv(const protocol& p, const char* node, const char* service, int flags)
     {
         addrinfo hints = {};
         hints.ai_family = p.domain;

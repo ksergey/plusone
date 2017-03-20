@@ -12,27 +12,27 @@ namespace plusone {
 namespace net {
 namespace detail {
 
-/** resolver endpoint iterator */
+/** Resolver endpoint iterator */
 class resolver_iterator final
     : std::iterator< std::forward_iterator_tag, resolver_endpoint >
 {
 private:
-    /* resolver endpoint iterator data */
+    /* Resolver endpoint iterator data */
     resolver_endpoint ep_;
 
 public:
-    /** default constructor */
+    /** Default constructor */
     resolver_iterator() = default;
 
-    /** default destructor */
+    /** Default destructor */
     ~resolver_iterator() = default;
 
-    /** construct iterator */
+    /** Construct iterator */
     explicit resolver_iterator(const addrinfo* data)
         : ep_(data)
     {}
 
-    /** increment operation ++ */
+    /** Increment operation ++ */
     __force_inline resolver_iterator& operator++() noexcept
     {
         if (ep_.data_ != nullptr) {
@@ -41,19 +41,19 @@ public:
         return *this;
     }
 
-    /** equal operator */
+    /** Equal operator */
     __force_inline bool operator==(const resolver_iterator& it) const noexcept
     { return ep_.data_ == it.ep_.data_; }
 
-    /** not equal operator */
+    /** Not equal operator */
     __force_inline bool operator!=(const resolver_iterator& it) const noexcept
     { return ep_.data_ != it.ep_.data_; }
 
-    /** operator derefernce */
+    /** Operator derefernce */
     __force_inline const resolver_endpoint& operator*() const noexcept
     { return ep_; }
 
-    /** operator access member */
+    /** Operator access member */
     __force_inline const resolver_endpoint* operator->() const noexcept
     { return &ep_; }
 };

@@ -19,24 +19,24 @@ private:
 
 public:
     /** Construct object with error code */
-    socket_result(int code = 0)
+    __force_inline socket_result(int code = 0)
         : code_(code)
     {}
 
     /** Return error code */
-    int code() const noexcept
+    __force_inline int code() const noexcept
     { return code_; }
 
     /** Return error code description */
-    const char* str() const noexcept
+    __force_inline const char* str() const noexcept
     { return ::strerror(code_); }
 
     /** Return true if error is EINTR */
-    bool interrupted() const noexcept
+    __force_inline bool interrupted() const noexcept
     { return code_ == EINTR; }
 
     /** Return true if error is EAGAIN or EWOULDBLOCK */
-    bool again() const noexcept
+    __force_inline bool again() const noexcept
     { return code_ == EAGAIN || code_ == EWOULDBLOCK; }
 };
 

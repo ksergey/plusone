@@ -10,14 +10,14 @@
 namespace plusone {
 namespace net {
 
-/** protocol description */
+/** Protocol description */
 struct protocol
 {
-    /** protocol domain (ie AF_INET, AF_INET6) */
+    /** Protocol domain (ie AF_INET, AF_INET6) */
     int domain;
-    /** protocol type (ie SOCK_STREAM) */
+    /** Protocol type (ie SOCK_STREAM) */
     int type;
-    /** protocol id (almost always 0) */
+    /** Protocol id (almost always 0) */
     int proto;
 };
 

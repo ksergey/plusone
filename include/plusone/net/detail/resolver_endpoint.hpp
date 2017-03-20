@@ -16,56 +16,55 @@ namespace detail {
 class resolver_endpoint final
 {
 private:
-    /* resolver endpoint data */
+    /* Resolver endpoint data */
     const addrinfo* data_{nullptr};
 
     friend class resolver_iterator;
 
 public:
-    /** default constructor */
+    /** Default constructor */
     resolver_endpoint() = default;
-
-    /** destructor */
+    /** Destructor */
     ~resolver_endpoint() = default;
 
-    /** construct resolver endpoint */
+    /** Construct resolver endpoint */
     explicit resolver_endpoint(const addrinfo* data)
         : data_(data)
     {}
 
-    /** return true if endpoint is initialized */
+    /** Return true if endpoint is initialized */
     __force_inline bool valid() const noexcept
     { return data_ != nullptr; }
 
-    /** return true if endpoint is initialized */
+    /** Return true if endpoint is initialized */
     __force_inline explicit operator bool() const noexcept
     { return valid(); }
 
-    /** return true if endpoint is not initialized */
+    /** Return true if endpoint is not initialized */
     __force_inline bool operator!() const noexcept
     { return !valid(); }
 
-    /** return socket protocol family */
+    /** Return socket protocol family */
     __force_inline int domain() const noexcept
     { return data_->ai_family; }
 
-    /** return socket type */
+    /** Return socket type */
     __force_inline int type() const noexcept
     { return data_->ai_socktype; }
 
-    /** return socket protocol */
+    /** Return socket protocol */
     __force_inline int proto() const noexcept
     { return data_->ai_protocol; }
 
-    /** return endpoint data */
+    /** Return endpoint data */
     __force_inline const sockaddr* data() const noexcept
     { return data_->ai_addr; }
 
-    /** return endpoint data size */
+    /** Return endpoint data size */
     __force_inline size_t size() const noexcept
     { return data_->ai_addrlen; }
 
-    /** return endpoint as string */
+    /** Return endpoint as string */
     __force_inline std::string str(char delim = ' ') const noexcept
     {
         const struct in_addr* address;
