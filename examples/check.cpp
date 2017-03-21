@@ -14,6 +14,8 @@
 #include <plusone/object_pool.hpp>
 #include <plusone/tagged_tuple.hpp>
 #include <plusone/ns_alias.hpp>
+#include <plusone/clock.hpp>
+#include <plusone/clock_io.hpp>
 
 typedef std::array< char, 128 > buffer_t;
 typedef p1::tagged_exception< int > tagged_exception;
@@ -61,6 +63,13 @@ int main(int argc, char* argv[])
     std::cout << std::get< 2 >(test) << '\n';
 
     p1::object_pool< xtuple > pool{128};
+
+    std::cout << p1::clock_fmt<>(p1::clock_time< p1::ns >()) << '\n';
+    std::cout << p1::clock_fmt< p1::ns, p1::ms, false >(p1::clock_time< p1::ns >()) << '\n';
+    std::cout << p1::clock_fmt< p1::ns, p1::sec, false >(p1::clock_time< p1::ns >()) << '\n';
+    std::cout << p1::clock_fmt< p1::sec, p1::sec, false >(p1::clock_time< p1::sec >()) << '\n';
+    std::cout << p1::clock_fmt< p1::sec, p1::ns, false >(p1::clock_time< p1::sec >()) << '\n';
+    std::cout << p1::clock_fmt< p1::ms, p1::ns, false >(p1::clock_time< p1::ms >()) << '\n';
 
     return 0;
 }

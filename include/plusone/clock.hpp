@@ -61,6 +61,11 @@ template< class PeriodT >
 __force_inline std::uint64_t clock_time()
 { return clock_now< PeriodT >(CLOCK_REALTIME); }
 
+/** Return system-wide current time, sec */
+template<>
+__force_inline std::uint64_t clock_time< sec >()
+{ return time(nullptr); }
+
 /** Return system-wide current time faster but less precise */
 template< class PeriodT >
 __force_inline std::uint64_t fastclock_time()
