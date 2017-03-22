@@ -127,6 +127,14 @@ public:
     __force_inline std::size_t size() const noexcept
     { return size_; }
 
+    /** Return true if vector empty */
+    __force_inline bool empty() const noexcept
+    { return size_ == 0; }
+
+    /** Return true if vector full */
+    __force_inline bool full() const noexcept
+    { return size_ == capacity_; }
+
     /** Return element from vector at index */
     __force_inline const T& operator[](std::size_t index) const noexcept
     { return *reinterpret_cast< const T* >(data_ + index); }
