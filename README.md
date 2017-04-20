@@ -1,6 +1,6 @@
-# plusone
+# Plusone
 
-My personal utility classes
+My personal utility library used in my proprietary projects
 
 # Requirements
 
