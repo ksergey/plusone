@@ -5,6 +5,7 @@
 #ifndef MADLIFE_socket_option_061116002548_MADLIFE
 #define MADLIFE_socket_option_061116002548_MADLIFE
 
+#include <linux/if_packet.h> /* SOL_PACKET:PACKET_TIMESTAMP */
 #include "detail/socket_option_types.hpp"
 
 namespace plusone {
@@ -20,6 +21,7 @@ using join_source_group = detail::multicast_source_request_v4_option< IP_ADD_SOU
 using leave_source_group = detail::multicast_source_request_v4_option< IP_DROP_SOURCE_MEMBERSHIP >;
 using timestamp = detail::boolean_option< SOL_SOCKET, SO_TIMESTAMP >;
 using timestamp_ns = detail::boolean_option< SOL_SOCKET, SO_TIMESTAMPNS >;
+using packet_timestamp = detail::integer_option< SOL_PACKET, PACKET_TIMESTAMP >;
 
 } /* namespace net */
 } /* namespace plusone */
