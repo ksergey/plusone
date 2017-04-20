@@ -13,12 +13,13 @@
 #include <plusone/static_vector.hpp>
 #include <plusone/object_pool.hpp>
 #include <plusone/tagged_tuple.hpp>
-#include <plusone/ns_alias.hpp>
 #include <plusone/clock.hpp>
 #include <plusone/clock_io.hpp>
 
+namespace p1 = plusone;
+
 typedef std::array< char, 128 > buffer_t;
-typedef p1::tagged_exception< int > tagged_exception;
+typedef plusone::tagged_exception< int > tagged_exception;
 
 int main(int argc, char* argv[])
 {

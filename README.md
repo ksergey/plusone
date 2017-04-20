@@ -1,3 +1,3 @@
-# plusone / p1
+# plusone
 
-my personal utility classes
+My personal utility classes
