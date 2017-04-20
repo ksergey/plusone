@@ -6,6 +6,8 @@
 #define MADLIFE_protocol_051116233028_MADLIFE
 
 #include <sys/socket.h>
+#include <linux/if_packet.h>
+#include <net/ethernet.h>
 
 namespace plusone {
 namespace net {

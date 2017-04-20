@@ -3,10 +3,14 @@
  */
 
 #include <iostream>
+#include "packet_source.hpp"
+
+using namespace better_poll;
 
 int main(int argc, char* argv[])
 {
     try {
+        packet_source source;
 
     } catch (const std::exception& e) {
         std::cout << "ERROR: " << e.what() << '\n';
