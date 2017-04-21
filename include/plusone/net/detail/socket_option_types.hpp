@@ -54,11 +54,11 @@ public:
     { return &value_; }
 
     /** Option size */
-    __force_inline size_t size() const noexcept
+    __force_inline std::size_t size() const noexcept
     { return sizeof(value_); }
 
     /** Resize option data */
-    __force_inline void resize(size_t size)
+    __force_inline void resize(std::size_t size)
     {
         if (size != sizeof(value_)) {
             throw option_error{"Boolean socket option resize"};
@@ -79,7 +79,7 @@ public:
     ~integer_option() = default;
 
     /** Construct integer option */
-    explicit integer_option(bool value)
+    explicit integer_option(int value)
         : value_(value)
     {}
 
@@ -108,11 +108,11 @@ public:
     { return &value_; }
 
     /** Option size */
-    __force_inline size_t size() const noexcept
+    __force_inline std::size_t size() const noexcept
     { return sizeof(value_); }
 
     /** Resize option data */
-    __force_inline void resize(size_t size)
+    __force_inline void resize(std::size_t size)
     {
         if (size != sizeof(value_)) {
             throw option_error{"Integer socket option resize"};
@@ -153,7 +153,7 @@ public:
     { return &value_; }
 
     /** Option size */
-    __force_inline size_t size() const noexcept
+    __force_inline std::size_t size() const noexcept
     { return sizeof(value_); }
 };
 
@@ -192,7 +192,7 @@ public:
     { return &value_; }
 
     /** Option size */
-    __force_inline size_t size() const noexcept
+    __force_inline std::size_t size() const noexcept
     { return sizeof(value_); }
 };
 
@@ -209,7 +209,7 @@ public:
     generic_socket_option() = default;
 
     /** Construct option */
-    generic_socket_option(int name, int level, const void* data, std::size_t size)
+    generic_socket_option(int level, int name, const void* data, std::size_t size)
         : level_(level)
         , name_(name)
         , data_(data)
@@ -238,7 +238,7 @@ public:
     { return data_; }
 
     /** Option size */
-    __force_inline size_t size() const noexcept
+    __force_inline std::size_t size() const noexcept
     { return size_; }
 };
 
