@@ -9,7 +9,7 @@
 #include <cstring>
 #include <cassert>
 #include <cmath>
-#include <plusone/net/socket_option.hpp>
+#include <plusone/net/socket_options.hpp>
 
 namespace sample {
 
@@ -101,40 +101,41 @@ void packet_source::setup_socket(const char* netdev)
     //    std::cout << "Set socket option timestamp_ns error (" << option_result.str() << ")\n";
     //}
 
-    auto option_result = socket_.set_option(plusone::net::packet_timestamp{SOF_TIMESTAMPING_RAW_HARDWARE | SOF_TIMESTAMPING_RX_HARDWARE});
+    auto option_result = socket_.set_option(plusone::net::socket_options::packet::timestamp{SOF_TIMESTAMPING_RAW_HARDWARE | SOF_TIMESTAMPING_RX_HARDWARE});
     if (__unlikely(!option_result)) {
         std::cout << "Set socket option packet_timestamp error (" << option_result.str() << ")\n";
     }
 
     /* TPACKET_V3 do not delivery immediate (buffering), use TPACKET_V2 (or V1) instead */
-    option_result = socket_.set_option(plusone::net::packet_version{TPACKET_V3});
+    option_result = socket_.set_option(plusone::net::socket_options::packet::version{TPACKET_V3});
     if (__unlikely(!option_result)) {
         throw std::runtime_error("TPACKET_V3");
     }
 
-    std::memset(&req_, 0, sizeof(req_));
-    req_.tp_block_size = blocksiz;
-    req_.tp_frame_size = framesiz;
-    req_.tp_block_nr = blocknum;
-	req_.tp_frame_nr = (blocksiz * blocknum) / framesiz;
-	req_.tp_retire_blk_tov = 0;
-	//req_.tp_retire_blk_tov = 60;
-	req_.tp_feature_req_word = TP_FT_REQ_FILL_RXHASH;
-    option_result = socket_.set_option(generic_socket_option(SOL_PACKET, PACKET_RX_RING, &req_, sizeof(req_)));
+    plusone::net::detail::struct_option<
+        SOL_PACKET, PACKET_RX_RING, tpacket_req3
+    > req_rx_ring;
+    auto& req = req_rx_ring.value();
+
+    std::memset(&req, 0, sizeof(req));
+    req.tp_block_size = blocksiz;
+    req.tp_frame_size = framesiz;
+    req.tp_block_nr = blocknum;
+	req.tp_frame_nr = (blocksiz * blocknum) / framesiz;
+	req.tp_retire_blk_tov = 60;
+	req.tp_feature_req_word = TP_FT_REQ_FILL_RXHASH;
+    option_result = socket_.set_option(req_rx_ring);
     if (__unlikely(!option_result)) {
         throw std::runtime_error("PACKET_RX_RING failed");
     }
 
-    region_ = plusone::mapped_region{socket_.get(), req_.tp_block_size * req_.tp_block_nr};
+    region_ = plusone::mapped_region{socket_.get(), req.tp_block_size * req.tp_block_nr};
     assert( region_.data() != nullptr );
     std::cout << region_.size() << '\n';
-    //rd_.resize(req_.tp_block_nr);
-	rd_ = (struct iovec*) malloc(req_.tp_block_nr * sizeof(*rd_));
-    std::cout << req_.tp_block_nr << '\n';
-    assert( rd_ );
-    for (std::size_t i = 0; i < req_.tp_block_nr; ++i) {
-        rd_[i].iov_base = region_.data() + (i * req_.tp_block_size);
-        rd_[i].iov_len = req_.tp_block_size;
+    rd_.resize(req.tp_block_nr);
+    for (std::size_t i = 0; i < req.tp_block_nr; ++i) {
+        rd_[i].iov_base = region_.data() + (i * req.tp_block_size);
+        rd_[i].iov_len = req.tp_block_size;
     }
 
     struct sockaddr_ll ll;

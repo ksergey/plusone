@@ -15,9 +15,7 @@ class packet_source final
 private:
     plusone::net::socket socket_;
     plusone::mapped_region region_;
-    struct tpacket_req3 req_;
-    //std::vector< struct iovec > rd_;
-    struct iovec* rd_{nullptr};
+    std::vector< struct iovec > rd_;
     unsigned int block_num_{0};
 
     pollfd pfd_;

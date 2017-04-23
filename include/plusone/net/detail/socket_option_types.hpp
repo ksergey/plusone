@@ -26,7 +26,7 @@ public:
 
     /** Construct boolean option */
     explicit boolean_option(bool value)
-        : value_(value ? 1 : 0)
+        : value_{value ? 1 : 0}
     {}
 
     /** Return option value */
@@ -80,10 +80,10 @@ public:
 
     /** Construct integer option */
     explicit integer_option(int value)
-        : value_(value)
+        : value_{value}
     {}
 
-    /** Teturn option value */
+    /** Return option value */
     __force_inline int value() const noexcept
     { return value_; }
 
@@ -118,6 +118,50 @@ public:
             throw option_error{"Integer socket option resize"};
         }
     }
+};
+
+/** Struct option type */
+template< int Level, int Name, class StructT >
+class struct_option
+{
+protected:
+    StructT value_{};
+
+public:
+    struct_option() = default;
+
+    /** Construct option */
+    explicit struct_option(const StructT& value)
+        : value_{value}
+    {}
+
+    /** Return option value */
+    __force_inline const StructT& value() const noexcept
+    { return value_; }
+
+    /** Return option value for modification */
+    __force_inline StructT& value() noexcept
+    { return value_; }
+
+    /** Option level */
+    __force_inline int level() const noexcept
+    { return Level; }
+
+    /** Option name */
+    __force_inline int name() const noexcept
+    { return Name; }
+
+    /** Option data */
+    __force_inline void* data() noexcept
+    { return &value_; }
+
+    /** Option data */
+    __force_inline const void* data() const noexcept
+    { return &value_; }
+
+    /** Option size */
+    __force_inline std::size_t size() const noexcept
+    { return sizeof(value_); }
 };
 
 /** Multicast request type */
