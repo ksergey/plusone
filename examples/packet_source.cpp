@@ -43,6 +43,7 @@ static void display(struct tpacket3_hdr *ppd)
     getnameinfo((struct sockaddr *) &sd, sizeof(sd),
             dbuff, sizeof(dbuff), NULL, 0, NI_NUMERICHOST);
 
+    printf("%u.%09u ", ppd->tp_sec, ppd->tp_nsec);
     printf("%s -> %s, ", sbuff, dbuff);
 
 	printf("rxhash: 0x%x\n", ppd->hv1.tp_rxhash);
@@ -78,14 +79,10 @@ void packet_source::run()
 
     struct block_desc* pbd = (struct block_desc *) rd_[block_num_].iov_base;
 
-    //std::cout << index_ << ' ' << pbd->h1.block_status << ' ' << TP_STATUS_USER << '\n';
-
     if ((pbd->h1.block_status & TP_STATUS_USER) == 0) {
         auto rc = ::poll(&pfd_, 1, -1);
         return;
     }
-
-    std::cout << block_num_ << " xxx\n";
 
     walk_block(pbd, block_num_);
     flush_block(pbd);
@@ -99,9 +96,18 @@ void packet_source::setup_socket(const char* netdev)
 
     socket_ = plusone::net::socket::create(AF_PACKET, SOCK_DGRAM, htons(ETH_P_IP));
 
-    auto option_result = socket_.set_option(plusone::net::packet_version{TPACKET_V3});
-    //int val = TPACKET_V3;
-    //auto option_result = socket_.set_option(generic_socket_option(SOL_PACKET, PACKET_VERSION, val));
+    //auto option_result = socket_.set_option(plusone::net::timestamp_ns{true});
+    //if (__unlikely(!option_result)) {
+    //    std::cout << "Set socket option timestamp_ns error (" << option_result.str() << ")\n";
+    //}
+
+    auto option_result = socket_.set_option(plusone::net::packet_timestamp{SOF_TIMESTAMPING_RAW_HARDWARE | SOF_TIMESTAMPING_RX_HARDWARE});
+    if (__unlikely(!option_result)) {
+        std::cout << "Set socket option packet_timestamp error (" << option_result.str() << ")\n";
+    }
+
+    /* TPACKET_V3 do not delivery immediate (buffering), use TPACKET_V2 (or V1) instead */
+    option_result = socket_.set_option(plusone::net::packet_version{TPACKET_V3});
     if (__unlikely(!option_result)) {
         throw std::runtime_error("TPACKET_V3");
     }
@@ -111,7 +117,8 @@ void packet_source::setup_socket(const char* netdev)
     req_.tp_frame_size = framesiz;
     req_.tp_block_nr = blocknum;
 	req_.tp_frame_nr = (blocksiz * blocknum) / framesiz;
-	req_.tp_retire_blk_tov = 60;
+	req_.tp_retire_blk_tov = 0;
+	//req_.tp_retire_blk_tov = 60;
 	req_.tp_feature_req_word = TP_FT_REQ_FILL_RXHASH;
     option_result = socket_.set_option(generic_socket_option(SOL_PACKET, PACKET_RX_RING, &req_, sizeof(req_)));
     if (__unlikely(!option_result)) {
