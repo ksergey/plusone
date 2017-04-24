@@ -18,7 +18,8 @@ int main(int argc, char* argv[])
     try {
         signal(SIGINT, sighandler);
 
-        plusone::net::mmap_rx rx{nullptr, 1 << 22, 64, 1 << 11};
+        /* TODO: hardcore some of params */
+        plusone::net::mmap_rx rx{nullptr, getpagesize(), 64, getpagesize()};
 
         //sample::packet_source_v3 source{"enp0s31f6"};
 

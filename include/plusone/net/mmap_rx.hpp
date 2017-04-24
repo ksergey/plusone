@@ -24,7 +24,7 @@ private:
     /* Timestamping option */
     static constexpr int timestamp_option = SOF_TIMESTAMPING_RAW_HARDWARE | SOF_TIMESTAMPING_RX_HARDWARE;
 
-    std::size_t blocks_count_{0};
+    const std::size_t blocks_count_{0};
     socket socket_;
     mapped_region region_;
     static_vector< struct iovec > rd_;
@@ -56,17 +56,10 @@ public:
         /* Prepare RX ring config */
         tpacket_req req;
         std::memset(&req, 0, sizeof(req));
-        /*
         req.tp_block_size = block_size;
         req.tp_block_nr = blocks_count;
         req.tp_frame_size = frame_size;
-        req.tp_frame_nr = req.tp_block_size * req.tp_block_nr / req.tp_frame_size;
-        */
-        req.tp_frame_size = (1 << 11);
-        req.tp_frame_nr = (1 << 9);
-        req.tp_block_size = (1 << 12);
-        req.tp_block_nr = req.tp_frame_nr / (req.tp_block_size / req.tp_frame_size);
-        blocks_count_ = req.tp_block_nr;
+        req.tp_frame_nr = (req.tp_block_size * req.tp_block_nr) / req.tp_frame_size;
 
         /* Apply PACKET_RX_RING option */
         option_result = socket_.set_option(rx_ring_request{req});
@@ -117,11 +110,8 @@ public:
         if ((header->tp_status & TP_STATUS_USER) == 0) {
             return;
         }
-        if ((header->tp_status & (TP_STATUS_COPY | TP_STATUS_LOSING)) != 0) {
-            return ;
-        }
 
-        std::cout << header->tp_sec << '.' << header->tp_nsec << " packet\n";
+        std::cout << block_num_ << ' ' << header->tp_sec << '.' << header->tp_nsec << " packet\n";
 
         header->tp_status = TP_STATUS_KERNEL;
         block_num_ = (block_num_ + 1) % blocks_count_;
