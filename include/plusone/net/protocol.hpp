@@ -23,12 +23,12 @@ struct protocol
     int proto;
 };
 
-static constexpr const protocol tcp_any = protocol{AF_UNSPEC,  SOCK_STREAM, 0};
-static constexpr const protocol tcp_v4  = protocol{AF_INET,    SOCK_STREAM, 0};
-static constexpr const protocol tcp_v6  = protocol{AF_INET6,   SOCK_STREAM, 0};
-static constexpr const protocol udp_any = protocol{AF_UNSPEC,  SOCK_DGRAM,  0};
-static constexpr const protocol udp_v4  = protocol{AF_INET,    SOCK_DGRAM,  0};
-static constexpr const protocol udp_v6  = protocol{AF_INET6,   SOCK_DGRAM,  0};
+static constexpr protocol tcp_any = protocol{AF_UNSPEC,  SOCK_STREAM, 0};
+static constexpr protocol tcp_v4  = protocol{AF_INET,    SOCK_STREAM, 0};
+static constexpr protocol tcp_v6  = protocol{AF_INET6,   SOCK_STREAM, 0};
+static constexpr protocol udp_any = protocol{AF_UNSPEC,  SOCK_DGRAM,  0};
+static constexpr protocol udp_v4  = protocol{AF_INET,    SOCK_DGRAM,  0};
+static constexpr protocol udp_v6  = protocol{AF_INET6,   SOCK_DGRAM,  0};
 
 } /* namespace net */
 } /* namespace plusone */

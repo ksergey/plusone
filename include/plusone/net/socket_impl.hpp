@@ -75,7 +75,7 @@ __force_inline socket socket::create(int family, int socktype, int protocol)
 {
     sock_t s = ::socket(family, socktype, protocol);
     if (s == invalid_socket) {
-        throw socket_error{"failed to create socket"};
+        throw socket_error{"Failed to create socket"};
     }
     return s;
 }
