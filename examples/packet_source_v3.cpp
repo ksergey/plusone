@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Sergey Kovalevich <inndie@gmail.com>
  */
 
-#include "packet_source.hpp"
+#include "packet_source_v3.hpp"
 #include <net/if.h>
 #include <linux/ip.h>
 #include <unistd.h>
@@ -66,14 +66,14 @@ static void walk_block(struct block_desc* pbd, const int block_num)
 	}
 }
 
-packet_source::packet_source(const char* netdev)
+packet_source_v3::packet_source_v3(const char* netdev)
 {
     std::cout << netdev << '\n';
     setup_socket(netdev);
     setup_poll();
 }
 
-void packet_source::run()
+void packet_source_v3::run()
 {
 	unsigned int blocks = 64;
 
@@ -89,7 +89,7 @@ void packet_source::run()
     block_num_ = (block_num_ + 1) %blocks;
 }
 
-void packet_source::setup_socket(const char* netdev)
+void packet_source_v3::setup_socket(const char* netdev)
 {
 	unsigned int blocksiz = 1 << 22, framesiz = 1 << 11;
 	unsigned int blocknum = 64;
@@ -154,7 +154,7 @@ void packet_source::setup_socket(const char* netdev)
     assert(socket_);
 }
 
-void packet_source::setup_poll()
+void packet_source_v3::setup_poll()
 {
     std::memset(&pfd_, 0, sizeof(pfd_));
     pfd_.fd = socket_.get();

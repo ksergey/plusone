@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <csignal>
-#include "packet_source.hpp"
+#include "packet_source_v3.hpp"
 
 static sig_atomic_t sigint = 0;
 
@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
     try {
         signal(SIGINT, sighandler);
 
-        sample::packet_source source{"enp0s31f6"};
+        sample::packet_source_v3 source{"enp0s31f6"};
 
         while (__likely(!sigint)) {
             source.run();
