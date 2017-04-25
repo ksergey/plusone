@@ -14,10 +14,19 @@ static void sighandler(int num)
 
 int main(int argc, char* argv[])
 {
+    char* iface = nullptr;
+    if (argc == 2) {
+        iface = argv[1];
+    }
+
     try {
         signal(SIGINT, sighandler);
 
-        plusone::net::mmap_rx rx{nullptr, 1024 * 1024};
+        if (iface) {
+            std::cout << "interface " << iface << '\n';
+        }
+
+        plusone::net::mmap_rx rx{iface, 1024 * 1024};
 
         while (__likely(!sigint)) {
             rx.run_once();

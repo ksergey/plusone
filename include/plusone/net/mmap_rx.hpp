@@ -6,6 +6,7 @@
 #define KSERGEY_mmap_rx_240417160759
 
 #include <net/if.h>
+#include <netinet/ip.h>
 #include <unistd.h>
 #include <cmath>
 #include <cassert>
@@ -67,7 +68,7 @@ public:
         tpacket_req req;
         std::memset(&req, 0, sizeof(req));
         /* Calculate minimum power-of-two aligned size for frames */
-        req.tp_frame_size = upper_power_of_two(TPACKET_ALIGN(TPACKET_HDRLEN) + TPACKET_ALIGN(max_packet_size));
+        req.tp_frame_size = upper_power_of_two(TPACKET_ALIGN(TPACKET2_HDRLEN) + TPACKET_ALIGN(max_packet_size));
         /* Calculate minimum contiguous pages needed to enclose a frame */
         const std::size_t page_size = getpagesize();
         const std::size_t page_nr = page_size > req.tp_frame_size ? 1 : ((req.tp_frame_size + page_size - 1) / page_size);
@@ -127,9 +128,14 @@ public:
             return;
         }
 
-        std::cout << block_num_ << ' ' << header->tp_sec << '.' << header->tp_nsec << " packet\n";
+        iphdr* ip = reinterpret_cast< iphdr* >(rd_[block_num_] + header->tp_mac);
+
+        std::cout << block_num_ << ' ' << header->tp_sec << '.' << header->tp_nsec << " len=" <<
+            header->tp_len << " snaplen=" << header->tp_snaplen << '\n';
+        std::cout << "   proto: " << int(ip->protocol) << ' ' << ip->saddr << ' ' << ip->daddr << '\n';
 
         header->tp_status = TP_STATUS_KERNEL;
+        __sync_synchronize();
         block_num_ = (block_num_ + 1) % frame_nr_;
     }
 };
