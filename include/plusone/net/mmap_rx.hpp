@@ -6,10 +6,14 @@
 #define KSERGEY_mmap_rx_240417160759
 
 #include <net/if.h>
+#include <unistd.h>
+#include <cmath>
+#include <cassert>
 #include "socket.hpp"
 #include "socket_options.hpp"
 #include "../mapped_region.hpp"
 #include "../static_vector.hpp"
+#include "../math.hpp"
 
 namespace plusone {
 namespace net {
@@ -24,10 +28,17 @@ private:
     /* Timestamping option */
     static constexpr int timestamp_option = SOF_TIMESTAMPING_RAW_HARDWARE | SOF_TIMESTAMPING_RX_HARDWARE;
 
-    const std::size_t blocks_count_{0};
+    /* RX socket */
     socket socket_;
+    /* Shared memory mapping */
     mapped_region region_;
-    static_vector< struct iovec > rd_;
+    /* Array of pointer to packet */
+    static_vector< char* > rd_;
+    /* Frame size */
+    std::size_t frame_size_{0};
+    /* Frames count */
+    std::size_t frame_nr_{0};
+    /* Active frame */
     std::size_t block_num_{0};
 
 public:
@@ -35,8 +46,7 @@ public:
     mmap_rx& operator=(const mmap_rx&) = delete;
 
     /** Construct memory mmaped RX queue */
-    mmap_rx(const char* netdev, std::size_t block_size, std::size_t blocks_count, std::size_t frame_size)
-        : blocks_count_{blocks_count}
+    mmap_rx(const char* netdev, std::size_t buffer_size, std::size_t max_packet_size = 2048)
     {
         /* Create socket */
         socket_ = socket::create(AF_PACKET, SOCK_DGRAM, htons(ETH_P_IP));
@@ -56,10 +66,18 @@ public:
         /* Prepare RX ring config */
         tpacket_req req;
         std::memset(&req, 0, sizeof(req));
-        req.tp_block_size = block_size;
-        req.tp_block_nr = blocks_count;
-        req.tp_frame_size = frame_size;
-        req.tp_frame_nr = (req.tp_block_size * req.tp_block_nr) / req.tp_frame_size;
+        /* Calculate minimum power-of-two aligned size for frames */
+        req.tp_frame_size = upper_power_of_two(TPACKET_ALIGN(TPACKET_HDRLEN) + TPACKET_ALIGN(max_packet_size));
+        /* Calculate minimum contiguous pages needed to enclose a frame */
+        const std::size_t page_size = getpagesize();
+        const std::size_t page_nr = page_size > req.tp_frame_size ? 1 : ((req.tp_frame_size + page_size - 1) / page_size);
+        /* buffer_size should be greater than page size */
+        buffer_size = std::max(buffer_size, page_size);
+        req.tp_block_size = page_size << int(std::ceil(std::log2(page_nr)));
+        req.tp_block_nr = buffer_size / req.tp_block_size;
+        req.tp_frame_nr = (req.tp_block_nr * req.tp_block_size) / req.tp_frame_size;
+        frame_size_ = req.tp_frame_size;
+        frame_nr_ = req.tp_frame_nr;
 
         /* Apply PACKET_RX_RING option */
         option_result = socket_.set_option(rx_ring_request{req});
@@ -71,11 +89,9 @@ public:
         region_ = plusone::mapped_region{socket_.get(), req.tp_block_size * req.tp_block_nr};
 
         /* Prepare iovec buffers */
-        rd_ = static_vector< struct iovec >{req.tp_block_nr};
-        for (std::size_t i = 0; i < req.tp_block_nr; ++i) {
-            auto& entry = rd_.emplace_back();
-            entry.iov_base = region_.data() + (i * req.tp_block_size);
-            entry.iov_len = req.tp_block_size;
+        rd_ = static_vector< char* >{req.tp_frame_nr};
+        for (std::size_t i = 0; i < req.tp_frame_nr; ++i) {
+            rd_.emplace_back(region_.data() + (i * req.tp_frame_size));
         }
 
         /* Bind socket */
@@ -106,7 +122,7 @@ public:
     /* TEST */
     void run_once()
     {
-        tpacket2_hdr* header = reinterpret_cast< tpacket2_hdr* >(rd_[block_num_].iov_base);
+        tpacket2_hdr* header = reinterpret_cast< tpacket2_hdr* >(rd_[block_num_]);
         if ((header->tp_status & TP_STATUS_USER) == 0) {
             return;
         }
@@ -114,7 +130,7 @@ public:
         std::cout << block_num_ << ' ' << header->tp_sec << '.' << header->tp_nsec << " packet\n";
 
         header->tp_status = TP_STATUS_KERNEL;
-        block_num_ = (block_num_ + 1) % blocks_count_;
+        block_num_ = (block_num_ + 1) % frame_nr_;
     }
 };
 
