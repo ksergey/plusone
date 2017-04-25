@@ -6,7 +6,6 @@
 #define KSERGEY_mmap_rx_240417160759
 
 #include <net/if.h>
-#include <netinet/ip.h>
 #include <unistd.h>
 #include <cmath>
 #include <cassert>
@@ -19,7 +18,11 @@
 namespace plusone {
 namespace net {
 
-/** Memory mapped RX queue packet receiver */
+/**
+ * Memory mapped RX queue packet receiver
+ *
+ * @see https://www.kernel.org/doc/Documentation/networking/packet_mmap.txt
+ */
 class mmap_rx
 {
 private:
@@ -34,15 +37,93 @@ private:
     /* Shared memory mapping */
     mapped_region region_;
     /* Array of pointer to packet */
-    static_vector< char* > rd_;
+    static_vector< struct iovec > rd_;
     /* Frame size */
     std::size_t frame_size_{0};
     /* Frames count */
     std::size_t frame_nr_{0};
     /* Active frame */
-    std::size_t block_num_{0};
+    std::size_t frame_index_{0};
 
 public:
+    /** Mmap RX packet */
+    class packet final
+    {
+    private:
+        tpacket2_hdr* data_{nullptr};
+
+    public:
+        packet(const packet&) = delete;
+        packet& operator=(const packet&) = delete;
+
+        /** Move constructor */
+        packet(packet&& v) noexcept
+        { std::swap(v.data_, data_); }
+
+        /** Move operator */
+        packet& operator=(packet&& v) noexcept
+        {
+            std::swap(v.data_, data_);
+            return *this;
+        }
+
+        /** Construct non-valid packet */
+        packet() = default;
+
+        /** Construct packet from native header */
+        packet(tpacket2_hdr* data)
+            : data_{data}
+        {}
+
+        /** Destructor */
+        ~packet()
+        { assert( (data_ ? data_->tp_status == TP_STATUS_KERNEL : true) && "packet not commited" ); }
+
+        /** Return true if packet valid */
+        __force_inline explicit operator bool() const noexcept
+        { return data_ != nullptr; }
+
+        /** Return true if packet not valid */
+        __force_inline bool operator!() const noexcept
+        { return data_ == nullptr; }
+
+        /** Return packet timestamp */
+        __force_inline std::uint32_t sec() const noexcept
+        {
+            assert( data_ );
+            return data_->tp_sec;
+        }
+
+        /** Return packet timestamp (nanosecond part) */
+        __force_inline std::uint32_t nsec() const noexcept
+        {
+            assert( data_ );
+            return data_->tp_nsec;
+        }
+
+        /** Return packet data (started from ip header) */
+        __force_inline const std::uint8_t* data() const noexcept
+        {
+            assert( data_ );
+            return reinterpret_cast< const std::uint8_t* >(data_) + data_->tp_mac;
+        }
+
+        /** Return packet data size */
+        __force_inline std::size_t size() const noexcept
+        {
+            assert( data_ );
+            return data_->tp_len;
+        }
+
+        /** Return packet to RX ring */
+        __force_inline void commit() noexcept
+        {
+            assert( data_ );
+            data_->tp_status = TP_STATUS_KERNEL;
+            __sync_synchronize();
+        }
+    };
+
     mmap_rx(const mmap_rx&) = delete;
     mmap_rx& operator=(const mmap_rx&) = delete;
 
@@ -90,9 +171,11 @@ public:
         region_ = plusone::mapped_region{socket_.get(), req.tp_block_size * req.tp_block_nr};
 
         /* Prepare iovec buffers */
-        rd_ = static_vector< char* >{req.tp_frame_nr};
+        rd_ = static_vector< struct iovec >{req.tp_frame_nr};
         for (std::size_t i = 0; i < req.tp_frame_nr; ++i) {
-            rd_.emplace_back(region_.data() + (i * req.tp_frame_size));
+            auto& entry = rd_.emplace_back();
+            entry.iov_base = region_.data() + (i * req.tp_frame_size);
+            entry.iov_len = req.tp_frame_size;
         }
 
         /* Bind socket */
@@ -120,23 +203,18 @@ public:
     /** Destructor */
     virtual ~mmap_rx() = default;
 
-    /* TEST */
-    void run_once()
+    /** Get next packet */
+    __force_inline packet get() noexcept
     {
-        tpacket2_hdr* header = reinterpret_cast< tpacket2_hdr* >(rd_[block_num_]);
-        if ((header->tp_status & TP_STATUS_USER) == 0) {
-            return;
+        tpacket2_hdr* header = reinterpret_cast< tpacket2_hdr* >(rd_[frame_index_].iov_base);
+
+        if (__likely((header->tp_status & TP_STATUS_USER) == TP_STATUS_USER)) {
+            /* TODO: if frame_nr_ is power-of-two -> make bitwise */
+            frame_index_ = (frame_index_ + 1) % frame_nr_;
+            return packet{header};
+        } else {
+            return packet{};
         }
-
-        iphdr* ip = reinterpret_cast< iphdr* >(rd_[block_num_] + header->tp_mac);
-
-        std::cout << block_num_ << ' ' << header->tp_sec << '.' << header->tp_nsec << " len=" <<
-            header->tp_len << " snaplen=" << header->tp_snaplen << '\n';
-        std::cout << "   proto: " << int(ip->protocol) << ' ' << ip->saddr << ' ' << ip->daddr << '\n';
-
-        header->tp_status = TP_STATUS_KERNEL;
-        __sync_synchronize();
-        block_num_ = (block_num_ + 1) % frame_nr_;
     }
 };
 

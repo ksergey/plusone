@@ -2,6 +2,7 @@
  * Copyright (c) 2017 Sergey Kovalevich <inndie@gmail.com>
  */
 
+#include <netinet/ip.h>
 #include <cstdlib>
 #include <csignal>
 #include <iostream>
@@ -29,7 +30,15 @@ int main(int argc, char* argv[])
         plusone::net::mmap_rx rx{iface, 1024 * 1024};
 
         while (__likely(!sigint)) {
-            rx.run_once();
+            auto packet = rx.get();
+            if (__likely(packet)) {
+                const iphdr* ip = reinterpret_cast< const iphdr* >(packet.data());
+                if (ip->protocol == IPPROTO_ICMP) {
+                    std::cout << packet.sec() << '.' << packet.nsec() << ' ' << "Packet received {size=" << packet.size() << "}\n";
+                }
+                //std::cout << "   protocol = " << int(ip->protocol) << '\n';
+                packet.commit();
+            }
         }
 
     } catch (const std::exception& e) {
