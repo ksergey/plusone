@@ -47,74 +47,62 @@ private:
     std::size_t frame_index_{0};
 
 public:
-    /** Mmap RX packet */
-    class packet final
+    /** Mmap RX frame */
+    class frame final
     {
     private:
         tpacket2_hdr* data_{nullptr};
 
     public:
-        packet(const packet&) = delete;
-        packet& operator=(const packet&) = delete;
+        frame(const frame&) = delete;
+        frame& operator=(const frame&) = delete;
 
         /** Move constructor */
-        packet(packet&& v) noexcept
+        frame(frame&& v) noexcept
         { std::swap(v.data_, data_); }
 
         /** Move operator */
-        packet& operator=(packet&& v) noexcept
+        frame& operator=(frame&& v) noexcept
         {
             std::swap(v.data_, data_);
             return *this;
         }
 
-        /** Construct non-valid packet */
-        packet() = default;
+        /** Construct non-valid frame */
+        frame() = default;
 
-        /** Construct packet from native header */
-        packet(tpacket2_hdr* data)
+        /** Construct frame from native header */
+        frame(tpacket2_hdr* data)
             : data_{data}
         {}
 
         /** Destructor */
-        ~packet()
-        { assert( (data_ ? data_->tp_status == TP_STATUS_KERNEL : true) && "packet not commited" ); }
+        ~frame()
+        { assert( (data_ ? data_->tp_status == TP_STATUS_KERNEL : true) && "frame not commited" ); }
 
-        /** Return true if packet valid */
+        /** Return true if frame valid */
         __force_inline explicit operator bool() const noexcept
         { return data_ != nullptr; }
 
-        /** Return true if packet not valid */
+        /** Return true if frame not valid */
         __force_inline bool operator!() const noexcept
         { return data_ == nullptr; }
 
-        /** Return packet timestamp */
+        /** Return frame receiving timestamp */
         __force_inline std::uint32_t sec() const noexcept
-        {
-            assert( data_ );
-            return data_->tp_sec;
-        }
+        { assert( data_ ); return data_->tp_sec; }
 
-        /** Return packet timestamp (nanosecond part) */
+        /** Return frame receiving timestamp (nanosecond part) */
         __force_inline std::uint32_t nsec() const noexcept
-        {
-            assert( data_ );
-            return data_->tp_nsec;
-        }
+        { assert( data_ ); return data_->tp_nsec; }
 
-        /** Return packet data (started from ip header) */
+        /** Return frame data (started from ip header) */
         __force_inline const std::uint8_t* data() const noexcept
-        {
-            assert( data_ );
-            return reinterpret_cast< const std::uint8_t* >(data_) + data_->tp_mac;
-        }
+        { assert( data_ ); return reinterpret_cast< const std::uint8_t* >(data_) + data_->tp_mac; }
 
-        /** Return packet data size */
+        /** Return frame data size */
         __force_inline std::size_t size() const noexcept
-        {
-            assert( data_ );
-            return data_->tp_len;
-        }
+        { assert( data_ ); return data_->tp_len; }
 
         /** Return struct as required type */
         template< class T >
@@ -125,7 +113,7 @@ public:
             return *reinterpret_cast< const T* >(data() + offset);
         }
 
-        /** Return packet to RX ring */
+        /** Return frame to RX ring */
         __force_inline void commit() noexcept
         {
             assert( data_ );
@@ -213,17 +201,17 @@ public:
     /** Destructor */
     virtual ~mmap_rx() = default;
 
-    /** Get next packet */
-    __force_inline packet get() noexcept
+    /** Get next frame */
+    __force_inline frame get_next_frame() noexcept
     {
         tpacket2_hdr* header = reinterpret_cast< tpacket2_hdr* >(rd_[frame_index_].iov_base);
         if (__likely((header->tp_status & TP_STATUS_USER) == TP_STATUS_USER)) {
             /* TODO: if frame_nr_ is power-of-two -> make bitwise */
             frame_index_ = (frame_index_ + 1) % frame_nr_;
-            return packet{header};
+            return frame{header};
         } else {
             __sync_synchronize();
-            return packet{};
+            return frame{};
         }
     }
 };

@@ -13,6 +13,16 @@ static sig_atomic_t sigint = 0;
 static void sighandler(int num)
 { sigint = 1; }
 
+static void process(const plusone::net::mmap_rx::frame& frame)
+{
+    assert( frame );
+
+    auto& ip = frame.as< iphdr >();
+    if (ip.protocol == IPPROTO_ICMP) {
+        std::cout << frame.sec() << '.' << frame.nsec() << ' ' << "Packet received {size=" << frame.size() << "}\n";
+    }
+}
+
 int main(int argc, char* argv[])
 {
     char* iface = nullptr;
@@ -30,17 +40,21 @@ int main(int argc, char* argv[])
         plusone::net::mmap_rx rx{iface, 1024 * 1024};
 
         while (__likely(!sigint)) {
-            auto packet = rx.get();
-            if (__likely(packet)) {
-                auto& ip = packet.as< iphdr >();
-                if (ip.protocol == IPPROTO_ICMP) {
-                    std::cout << packet.sec() << '.' << packet.nsec() << ' ' << "Packet received {size=" << packet.size() << "}\n";
-                }
-                packet.commit();
+            auto frame = rx.get_next_frame();
+
+            /* Check if frame available */
+            if (__unlikely(!frame)) {
+                continue;
             }
+
+            /* Process frame */
+            process(frame);
+
+            /* Make frame available for re-use */
+            frame.commit();
         }
     } catch (const std::exception& e) {
-        std::cout << "error: " << e.what() << '\n';
+        std::cout << "Error: " << e.what() << '\n';
         return EXIT_FAILURE;
     }
 
