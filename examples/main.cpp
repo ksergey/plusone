@@ -39,7 +39,6 @@ int main(int argc, char* argv[])
                 packet.commit();
             }
         }
-
     } catch (const std::exception& e) {
         std::cout << "error: " << e.what() << '\n';
         return EXIT_FAILURE;

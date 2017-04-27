@@ -217,12 +217,12 @@ public:
     __force_inline packet get() noexcept
     {
         tpacket2_hdr* header = reinterpret_cast< tpacket2_hdr* >(rd_[frame_index_].iov_base);
-
         if (__likely((header->tp_status & TP_STATUS_USER) == TP_STATUS_USER)) {
             /* TODO: if frame_nr_ is power-of-two -> make bitwise */
             frame_index_ = (frame_index_ + 1) % frame_nr_;
             return packet{header};
         } else {
+            __sync_synchronize();
             return packet{};
         }
     }
