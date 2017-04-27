@@ -1,6 +1,6 @@
 file(GLOB_RECURSE sources "*.cpp")
 file(GLOB_RECURSE headers "*.hpp")
-set(target "mmap_rx")
+set(target "dispatch")
 
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -march=native -mtune=native")
