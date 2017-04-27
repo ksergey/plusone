@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <cmath>
 #include <cassert>
+#include <type_traits>
 #include "socket.hpp"
 #include "socket_options.hpp"
 #include "../mapped_region.hpp"
@@ -113,6 +114,15 @@ public:
         {
             assert( data_ );
             return data_->tp_len;
+        }
+
+        /** Return struct as required type */
+        template< class T >
+        __force_inline const T& as(std::size_t offset = 0) const noexcept
+        {
+            static_assert( std::is_trivially_copyable< T >::value, "class T must be trivially copyable" );
+            assert( data_ && offset + sizeof(T) <= size() );
+            return *reinterpret_cast< const T* >(data() + offset);
         }
 
         /** Return packet to RX ring */

@@ -32,11 +32,10 @@ int main(int argc, char* argv[])
         while (__likely(!sigint)) {
             auto packet = rx.get();
             if (__likely(packet)) {
-                const iphdr* ip = reinterpret_cast< const iphdr* >(packet.data());
-                if (ip->protocol == IPPROTO_ICMP) {
+                auto& ip = packet.as< iphdr >();
+                if (ip.protocol == IPPROTO_ICMP) {
                     std::cout << packet.sec() << '.' << packet.nsec() << ' ' << "Packet received {size=" << packet.size() << "}\n";
                 }
-                //std::cout << "   protocol = " << int(ip->protocol) << '\n';
                 packet.commit();
             }
         }
