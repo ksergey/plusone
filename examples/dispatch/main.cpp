@@ -7,7 +7,8 @@
 #include <csignal>
 #include <iostream>
 #include <plusone/net/mmap_rx.hpp>
-#include "multicast_channel.hpp"
+#include "multicast_channel_group.hpp"
+#include "channel_group.hpp"
 
 static sig_atomic_t sigint = 0;
 
@@ -28,10 +29,13 @@ int main(int argc, char* argv[])
             std::cout << "interface " << iface << '\n';
         }
 
-        dispatch::multicast_channel channel;
+        plusone::net::mmap_rx rx_queue{iface, 1024 * 1024 * 128};
+        dispatch::channel_group<> group{rx_queue};
 
         while (__likely(!sigint)) {
+            group.run_once();
         }
+
     } catch (const std::exception& e) {
         std::cout << "Error: " << e.what() << '\n';
         return EXIT_FAILURE;

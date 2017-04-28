@@ -28,6 +28,14 @@ private:
     leave_source_group leave_request_;
 
 public:
+    /** Config */
+    struct config
+    {
+        std::string ip;
+        std::uint16_t port;
+        std::string src_ip;
+    };
+
     /** Construct non-valid channel */
     multicast_channel() = default;
 
@@ -48,6 +56,11 @@ public:
     }
 
     /** Construct channel */
+    explicit multicast_channel(const config& cfg)
+        : multicast_channel{cfg.ip, cfg.port, cfg.src_ip}
+    {}
+
+    /** Construct channel */
     multicast_channel(const std::string& ip, std::uint16_t port,
             const std::string& src_ip)
         : address_{ip, port}
@@ -63,6 +76,10 @@ public:
         join_request_ = join_source_group{group_ip, group_src_ip};
         leave_request_ = leave_source_group{group_ip, group_src_ip};
     }
+
+    /** Return channel underlyin socket */
+    plusone::net::socket& socket() noexcept
+    { return socket_; }
 
     /** Return multicast channel address (ipv4:port) */
     __force_inline const endpoint_v4& address() const noexcept
