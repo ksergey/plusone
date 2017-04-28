@@ -15,6 +15,26 @@ static sig_atomic_t sigint = 0;
 static void sighandler(int num)
 { sigint = 1; }
 
+template< class Tag >
+class generic_handler
+{
+private:
+    const char* tag_;
+    const std::uint16_t port_;
+
+public:
+    explicit generic_handler(const char* tag, std::uint16_t port)
+        : tag_{tag}
+        , port_{port}
+    {}
+
+    bool contain(const dispatch::endpoint_v4& ep) const
+    { return ep.port() >= port_; }
+
+    void process(std::uint64_t timestamp, const std::uint8_t* data, std::size_t size)
+    { std::cout << tag_ << " message received\n"; }
+};
+
 int main(int argc, char* argv[])
 {
     char* iface = nullptr;
@@ -29,8 +49,14 @@ int main(int argc, char* argv[])
             std::cout << "interface " << iface << '\n';
         }
 
+        generic_handler< struct X > hx{"X", 50000};
+        generic_handler< struct Y > hy{"Y", 40000};
+        generic_handler< struct Z > hz{"Z", 1};
+
         plusone::net::mmap_rx rx_queue{iface, 1024 * 1024 * 128};
-        dispatch::channel_group<> group{rx_queue};
+        dispatch::channel_group<
+            decltype(hx), decltype(hy), decltype(hz)
+        > group{rx_queue, hx, hy, hz};
 
         while (__likely(!sigint)) {
             group.run_once();

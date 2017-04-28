@@ -11,7 +11,7 @@
 namespace dispatch {
 
 /** Group of multicast channels */
-class multicast_channel_group final
+class multicast_channel_group
 {
 private:
     plusone::static_vector< multicast_channel > channels_;
