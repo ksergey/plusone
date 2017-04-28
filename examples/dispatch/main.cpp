@@ -8,7 +8,7 @@
 #include <iostream>
 #include <plusone/net/mmap_rx.hpp>
 #include "multicast_channel_group.hpp"
-#include "channel_group.hpp"
+#include "packet_dispatcher.hpp"
 
 static sig_atomic_t sigint = 0;
 
@@ -31,8 +31,9 @@ public:
     bool contain(const dispatch::endpoint_v4& ep) const
     { return ep.port() >= port_; }
 
-    void process(std::uint64_t timestamp, const std::uint8_t* data, std::size_t size)
-    { std::cout << tag_ << " message received\n"; }
+    void process_packet(const dispatch::endpoint_v4& address, std::uint64_t timestamp,
+            const std::uint8_t* data, std::size_t size)
+    { std::cout << tag_ << " message received to address " << address << "\n"; }
 };
 
 int main(int argc, char* argv[])
@@ -54,12 +55,13 @@ int main(int argc, char* argv[])
         generic_handler< struct Z > hz{"Z", 1};
 
         plusone::net::mmap_rx rx_queue{iface, 1024 * 1024 * 128};
-        dispatch::channel_group<
+
+        dispatch::packet_dispatcher<
             decltype(hx), decltype(hy), decltype(hz)
         > group{rx_queue, hx, hy, hz};
 
         while (__likely(!sigint)) {
-            group.run_once();
+            group.dispatch();
         }
 
     } catch (const std::exception& e) {
