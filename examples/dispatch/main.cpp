@@ -7,13 +7,11 @@
 #include <csignal>
 #include <iostream>
 #include <plusone/net/mmap_rx.hpp>
+#include <plusone/signal.hpp>
 #include "multicast_channel_group.hpp"
 #include "packet_dispatcher.hpp"
 
 static sig_atomic_t sigint = 0;
-
-static void sighandler(int num)
-{ sigint = 1; }
 
 template< class Tag >
 class generic_handler
@@ -44,7 +42,9 @@ int main(int argc, char* argv[])
     }
 
     try {
-        signal(SIGINT, sighandler);
+        plusone::signal::setup([](int sig) {
+            sigint = 1;
+        });
 
         if (iface) {
             std::cout << "interface " << iface << '\n';
