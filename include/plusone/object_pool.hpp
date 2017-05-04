@@ -97,7 +97,7 @@ public:
 
 private:
     static_vector< value_type > storage_;
-    object_queue< T > queue_;
+    object_queue< value_type > queue_;
 
 public:
     object_pool(const object_pool&) = delete;
