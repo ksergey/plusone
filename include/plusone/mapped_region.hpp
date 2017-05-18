@@ -74,17 +74,17 @@ public:
         } else if (mode == read_write) {
             prot = PROT_WRITE | PROT_READ;
         } else {
-            throw mmap_error("unknown open mode (%s)", std::strerror(EINVAL));
+            throw mmap_error("Unknown open mode (%s)", std::strerror(EINVAL));
         }
 
         /* Mmap region */
-        auto mapped_region = ::mmap(nullptr, file_size, prot,
+        auto region = ::mmap(nullptr, file_size, prot,
                 MAP_SHARED | MAP_POPULATE | MAP_LOCKED, fd, 0);
-        if (mapped_region == MAP_FAILED) {
-            throw mmap_error("mmap error (%s)", std::strerror(errno));
+        if (region == MAP_FAILED) {
+            throw mmap_error("Mmap error (%s)", std::strerror(errno));
         }
 
-        data_ = reinterpret_cast< char* >(mapped_region);
+        data_ = reinterpret_cast< char* >(region);
         size_ = file_size;
     }
 
