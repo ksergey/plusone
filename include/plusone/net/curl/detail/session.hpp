@@ -50,6 +50,13 @@ public:
 
     __force_inline operator CURL*() noexcept
     { return session_; }
+
+    template< class ValueT >
+    __force_inline void set_option(CURLMoption option, ValueT value)
+    {
+        __expect( session_ );
+        curl_easy_setopt(session_, option, value);
+    }
 };
 
 class multi_session

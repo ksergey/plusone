@@ -37,9 +37,18 @@ public:
     /** Service destructor */
     ~service() noexcept;
 
+    /**
+     * Run service once
+     * @param[in] timeout_ms is wait timeout
+     */
+    void run_once(int timeout_ms = -1);
+
 private:
+    /* Epoll operations with socket */
+    void socket_op(curl_socket_t socket, int op, int events = 0);
+
     /* CURL internal socket callback */
-    static int socket_callback(CURL* session, curl_socket_t socket, int action,
+    static int socket_callback(CURL* session, curl_socket_t socket, int what,
             void* user_data, void* socket_data);
 };
 

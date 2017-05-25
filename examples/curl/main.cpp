@@ -21,9 +21,9 @@ int main(int argc, char* argv[])
         plusone::net::curl::cleanup curl_cleanup;
         plusone::net::curl::service service;
 
-        //while (__likely(!sigint)) {
-        //    group.dispatch();
-        //}
+        while (__likely(!sigint)) {
+            service.run_once(1000);
+        }
 
     } catch (const std::exception& e) {
         std::cout << "Error: " << e.what() << '\n';
