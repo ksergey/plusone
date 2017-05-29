@@ -9,7 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Options
-option(PLUSONE_BUILD_EXAMPLES "Build library examples" ON)
+option(BUILD_EXAMPLES "Build library examples" ON)
 
 # Libraries
 set(libs)
@@ -20,7 +20,7 @@ target_include_directories(plusone INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include
 target_link_libraries(plusone INTERFACE ${libs})
 
 # Build examples
-if (PLUSONE_BUILD_EXAMPLES)
+if (BUILD_EXAMPLES)
     message(STATUS "Plusone: build examples (yes)")
     add_subdirectory(examples)
 else()
