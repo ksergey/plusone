@@ -10,7 +10,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Options
 option(PLUSONE_BUILD_EXAMPLES "Build library examples" ON)
-option(PLUSONE_USE_CURL "Enable Curl extension" ON)
 
 # Libraries
 set(libs)
