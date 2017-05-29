@@ -16,7 +16,7 @@ __force_inline socket::socket(socket&& s)
 __force_inline socket& socket::operator=(socket&& s)
 { std::swap(sock_, s.sock_); return *this; }
 
-__force_inline socket::socket(sock_t d)
+__force_inline socket::socket(int d)
     : sock_(d)
 {}
 
@@ -32,7 +32,7 @@ __force_inline socket::operator bool() const noexcept
 __force_inline bool socket::operator!() const noexcept
 { return !valid(); }
 
-__force_inline sock_t socket::get() noexcept
+__force_inline int socket::get() noexcept
 { return sock_; }
 
 __force_inline void socket::close() noexcept
@@ -73,7 +73,7 @@ __force_inline bool socket::set_cloexec(bool flag) noexcept
 
 __force_inline socket socket::create(int family, int socktype, int protocol)
 {
-    sock_t s = ::socket(family, socktype, protocol);
+    int s = ::socket(family, socktype, protocol);
     if (s == invalid_socket) {
         throw socket_error{"Failed to create socket"};
     }

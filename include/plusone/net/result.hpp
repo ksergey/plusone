@@ -114,7 +114,7 @@ private:
 
 public:
     /** Construct accept_result */
-    accept_result(sock_t s = invalid_socket)
+    accept_result(int s = invalid_socket)
         : socket_result(s == invalid_socket ? errno : 0)
         , sock_(s)
     {}

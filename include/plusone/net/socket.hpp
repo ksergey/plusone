@@ -21,8 +21,8 @@ class accept_result;
 class socket
 {
 private:
-    /* Socket handler */
-    sock_t sock_{invalid_socket};
+    /* Socket descriptor */
+    int sock_{invalid_socket};
 
 public:
     /** Disable copy constructor */
@@ -38,7 +38,7 @@ public:
     socket& operator=(socket&& s);
 
     /** Construct socket from native descriptor */
-    socket(sock_t d = invalid_socket);
+    socket(int d = invalid_socket);
 
     /** Socket destructor */
     ~socket();
@@ -52,8 +52,8 @@ public:
     /** Same as !valid() */
     bool operator!() const noexcept;
 
-    /** Return native socket handler */
-    sock_t get() noexcept;
+    /** Return native socket descriptor */
+    int get() noexcept;
 
     /** Close the socket */
     void close() noexcept;
