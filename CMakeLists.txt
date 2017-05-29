@@ -15,13 +15,6 @@ option(PLUSONE_USE_CURL "Enable Curl extension" ON)
 # Libraries
 set(libs)
 
-# CURL extension
-if (PLUSONE_USE_CURL)
-    find_package(CURL REQUIRED)
-    include_directories(${CURL_INCLUDE_DIR})
-    set(libs ${libs} ${CURL_LIBRARIES})
-endif()
-
 # Create library entry
 add_library(plusone INTERFACE)
 target_include_directories(plusone INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
