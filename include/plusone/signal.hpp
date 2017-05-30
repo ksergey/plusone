@@ -9,6 +9,7 @@
 #include <cstring>
 #include <functional>
 #include <initializer_list>
+#include "compiler.hpp"
 
 namespace plusone {
 
