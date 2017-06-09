@@ -17,10 +17,6 @@
 #   define __packed __attribute__((packed))
 #endif
 
-#ifndef __unused
-#   define __unused __attribute__((unused))
-#endif
-
 #ifndef __aligned
 #   define __aligned(amt) __attribute__((aligned(amt)))
 #endif
