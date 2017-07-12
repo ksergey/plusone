@@ -121,6 +121,6 @@ public:
 } /* namespace net */
 } /* namespace plusone */
 
-#include "socket_impl.hpp"
+#include "impl/socket.ipp"
 
 #endif /* MADLIFE_socket_051116231354_MADLIFE */

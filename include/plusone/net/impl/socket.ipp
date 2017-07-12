@@ -5,7 +5,7 @@
 #ifndef MADLIFE_socket_impl_051116234321_MADLIFE
 #define MADLIFE_socket_impl_051116234321_MADLIFE
 
-#include "result.hpp"
+#include "../result.hpp"
 
 namespace plusone {
 namespace net {
