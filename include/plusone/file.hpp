@@ -5,16 +5,8 @@
 #ifndef KSERGEY_file_050117013737
 #define KSERGEY_file_050117013737
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <cerrno>
-#include <cstring>
 #include <string>
-#include <utility>
 #include "exception.hpp"
-#include "compiler.hpp"
 
 namespace plusone {
 
@@ -39,7 +31,7 @@ static const open_or_create_tag open_or_create = {};
 /** Default file create permissions */
 static constexpr const int default_permissions = S_IRUSR | S_IWUSR;
 
-/* File exception class */
+/** File exception class */
 using file_error = tagged_exception< struct file_tag >;
 
 /**
@@ -57,125 +49,49 @@ public:
     file& operator=(const file&) = delete;
 
     /** Move constuctor */
-    __force_inline file(file&& other) noexcept
-        : fd_(other.fd_)
-    { other.fd_ = -1; }
+    file(file&& other) noexcept;
 
     /** Move operator */
-    __force_inline file& operator=(file&& other) noexcept
-    { std::swap(fd_, other.fd_); return *this; }
+    file& operator=(file&& other) noexcept;
 
     /** Construct file */
     file(const create_only_tag&, const std::string& path, open_mode mode = read_write,
-            int perms = default_permissions)
-    { init(do_create, path, mode, perms); }
+            int perms = default_permissions);
 
     /** Construct file */
-    file(const open_only_tag&, const std::string& path, open_mode mode = read_write)
-    { init(do_open, path, mode); }
+    file(const open_only_tag&, const std::string& path, open_mode mode = read_write);
 
     /** Construct file */
     file(const open_or_create_tag&, const std::string& path, open_mode mode = read_write,
-            int perms = default_permissions)
-    { init(do_open_or_create, path, mode, perms); }
+            int perms = default_permissions);
 
     /** Destructor */
-    virtual ~file() noexcept
-    {
-        if (fd_ >= 0) {
-            ::close(fd_);
-        }
-    }
+    virtual ~file() noexcept;
 
     /** Safe bool cast */
-    __force_inline explicit operator bool() const noexcept
-    { return fd_ >= 0; }
+    explicit operator bool() const noexcept;
 
     /** Cast to !bool */
-    __force_inline bool operator!() const noexcept
-    { return fd_ < 0; }
+    bool operator!() const noexcept;
 
     /** Return file handle */
-    __force_inline int handle() const noexcept
-    { return fd_; }
+    int handle() const noexcept;
 
     /** Return size of file */
-    __force_inline std::size_t size() const
-    {
-        struct stat st;
-        if (::fstat(fd_, &st) == -1) {
-            throw file_error{"Read file size error (%s)", std::strerror(errno)};
-        }
-        return st.st_size;
-    }
+    std::size_t size() const;
 
     /** Truncate file to required size */
-    __force_inline void truncate(std::size_t size)
-    {
-        if (::ftruncate(fd_, size) == -1) {
-            throw file_error{"Truncate file error(%s)", std::strerror(errno)};
-        }
-    }
+    void truncate(std::size_t size);
 
 private:
     enum what_do { do_open, do_create, do_open_or_create };
 
-    __force_inline void init(what_do what, const std::string& path, open_mode mode,
-            int perms = default_permissions)
-    {
-        /* Setup open flags */
-        int oflags = 0;
-        if (mode == read_only) {
-            oflags |= O_RDONLY;
-        } else if (mode == read_write) {
-            oflags |= O_RDWR;
-        } else {
-            throw file_error{"Unknown open mode (%s)", std::strerror(EINVAL)};
-        }
-
-        /* Open file */
-        switch (what) {
-            case do_open:
-                {
-                    fd_ = ::open(path.c_str(), oflags, perms);
-                }
-                break;
-            case do_create:
-                {
-                    oflags |= (O_CREAT | O_EXCL);
-                    fd_ = ::open(path.c_str(), oflags, perms);
-                    if (fd_ >= 0) {
-                        ::fchmod(fd_, perms);
-                    }
-                }
-                break;
-            case do_open_or_create:
-                {
-                    while (true) {
-                        fd_ = ::open(path.c_str(), oflags | O_CREAT | O_EXCL, perms);
-                        if (fd_ >= 0) {
-                            ::fchmod(fd_, perms);
-                        } else if (errno == EEXIST) {
-                            fd_ = ::open(path.c_str(), oflags, perms);
-                            if (fd_ < 0 && errno == ENOENT) {
-                                continue;
-                            }
-                        }
-                        break;
-                    }
-                }
-                break;
-            default:
-                break;
-        }
-
-        if (fd_ < 0) {
-            throw file_error{"Open file \"%s\" error (%s)}",
-                path.c_str(), std::strerror(errno)};
-        }
-    }
+    void init(what_do what, const std::string& path, open_mode mode,
+            int perms = default_permissions);
 };
 
 } /* namespace plusone */
+
+#include "impl/file.ipp"
 
 #endif /* KSERGEY_file_050117013737 */

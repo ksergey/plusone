@@ -5,66 +5,14 @@
 #ifndef KSERGEY_static_vector_030217004526
 #define KSERGEY_static_vector_030217004526
 
-#include <stdexcept>
 #include <type_traits>
-#include <iterator>
-#include "compiler.hpp"
 
 namespace plusone {
-
 namespace detail {
 
 /** Iterator implementation for static_vector */
 template< class T >
-class static_vector_iterator final
-    : std::iterator< std::random_access_iterator_tag, T >
-{
-private:
-    using storage_type = typename std::aligned_storage< sizeof(T), alignof(T) >::type;
-    using iterator = static_vector_iterator< T >;
-
-    storage_type* pos_{nullptr};
-
-public:
-    static_vector_iterator() = default;
-    ~static_vector_iterator() = default;
-
-    explicit static_vector_iterator(storage_type* value)
-        : pos_{value}
-    {}
-
-    /** Increment operation */
-    __force_inline iterator& operator++() noexcept
-    { ++pos_; return *this; }
-
-    /** Decrement operation */
-    __force_inline iterator& operator--() noexcept
-    { --pos_; return *this; }
-
-    /** Equal operator */
-    __force_inline bool operator==(const iterator& it) const noexcept
-    { return pos_ == it.pos_; }
-
-    /** Not equal operator */
-    __force_inline bool operator!=(const iterator& it) const noexcept
-    { return pos_ != it.pos_; }
-
-    /** Operator derefernce */
-    __force_inline const T& operator*() const noexcept
-    { return *reinterpret_cast< const T* >(pos_); }
-
-    /** Operator derefernce */
-    __force_inline T& operator*() noexcept
-    { return *reinterpret_cast< T* >(pos_); }
-
-    /** Operator access member */
-    __force_inline const T* operator->() const noexcept
-    { return reinterpret_cast< const T* >(pos_); }
-
-    /** Operator access member */
-    __force_inline T* operator->() noexcept
-    { return reinterpret_cast< T* >(pos_); }
-};
+class static_vector_iterator;
 
 } /* namespace detail */
 
@@ -80,8 +28,13 @@ private:
     std::size_t size_{0};
 
 public:
+    using value_type = T;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+
     /** Iterator type */
     using iterator = detail::static_vector_iterator< T >;
+
     /** Const iterator type */
     using const_iterator = detail::static_vector_iterator< const T >;
 
@@ -92,128 +45,78 @@ public:
     static_vector() = default;
 
     /** Move constructor */
-    __force_inline static_vector(static_vector&& v)
-    { swap(v); }
+    static_vector(static_vector&& v) noexcept;
 
     /** Move operator */
-    __force_inline static_vector& operator=(static_vector&& v)
-    {
-        if (__likely(&v != this)) {
-            swap(v);
-        }
-        return *this;
-    }
+    static_vector& operator=(static_vector&& v) noexcept;
 
     /** Construct vector of specific capacity */
-    explicit static_vector(std::size_t capacity)
-        : capacity_{capacity}
-        , size_{0}
-    { data_ = new storage_type[capacity_]; }
+    explicit static_vector(std::size_t capacity);
 
     /** Destructor */
-    __force_inline ~static_vector()
-    {
-        if (data_) {
-            clear();
-            delete[] data_;
-        }
-    }
+    virtual ~static_vector();
 
     /** Return vector capacity */
-    __force_inline std::size_t capacity() const noexcept
-    { return capacity_; }
+    std::size_t capacity() const noexcept;
 
     /** Return vector size */
-    __force_inline std::size_t size() const noexcept
-    { return size_; }
+    std::size_t size() const noexcept;
 
     /** Return true if vector empty */
-    __force_inline bool empty() const noexcept
-    { return size_ == 0; }
+    bool empty() const noexcept;
 
     /** Return true if vector full */
-    __force_inline bool full() const noexcept
-    { return size_ == capacity_; }
+    bool full() const noexcept;
 
     /** Return element from vector at index */
-    __force_inline const T& operator[](std::size_t index) const noexcept
-    { return *reinterpret_cast< const T* >(data_ + index); }
+    const_reference operator[](std::size_t index) const noexcept;
 
     /** Return element from vector at index */
-    __force_inline T& operator[](std::size_t index) noexcept
-    { return *reinterpret_cast< T* >(data_ + index); }
+    reference operator[](std::size_t index) noexcept;
 
     /** Return front element of vector */
-    __force_inline const T& front() const noexcept
-    { return *reinterpret_cast< const T* >(data_); }
+    const_reference front() const noexcept;
 
     /** Return front element of vector */
-    __force_inline T& front() noexcept
-    { return *reinterpret_cast< T* >(data_); }
+    reference front() noexcept;
 
     /** Return back element of vector */
-    __force_inline const T& back() const noexcept
-    { return *reinterpret_cast< const T* >(data_ + size_ - 1); }
+    const_reference back() const noexcept;
 
     /** Return back element of vector */
-    __force_inline T& back() noexcept
-    { return *reinterpret_cast< T* >(data_ + size_ - 1); }
+    reference back() noexcept;
 
     /** Push back a new element */
     template< class... Args >
-    __force_inline T& emplace_back(Args&&... args)
-    {
-        if (__unlikely(size_ < capacity_)) {
-            new (data_ + size_) T(std::forward< Args >(args)...);
-            ++size_;
-        } else {
-            throw std::bad_alloc{};
-        }
-        return back();
-    }
+    reference emplace_back(Args&&... args);
 
     /** Clear vector */
-    __force_inline void clear()
-    {
-        for (std::size_t index = 0; index < size_; ++index) {
-            reinterpret_cast< T* >(data_ + index)->~T();
-        }
-        size_ = 0;
-    }
+    void clear();
 
     /** Swap content with another vector */
-    __force_inline void swap(static_vector& other)
-    {
-        std::swap(data_, other.data_);
-        std::swap(capacity_, other.capacity_);
-        std::swap(size_, other.size_);
-    }
+    void swap(static_vector& other) noexcept;
 
     /** Return iterator to begin element */
-    __force_inline iterator begin() noexcept
-    { return iterator{data_}; }
+    iterator begin() noexcept;
 
     /** Return iterator to next after last element */
-    __force_inline iterator end() noexcept
-    { return iterator{data_ + size_}; }
+    iterator end() noexcept;
 
     /** Return const iterator to begin element */
-    __force_inline const_iterator begin() const noexcept
-    { return const_iterator{data_}; }
+    const_iterator begin() const noexcept;
 
     /** Return const iterator to next after last element */
-    __force_inline const_iterator end() const noexcept
-    { return const_iterator{data_ + size_}; }
+    const_iterator end() const noexcept;
 
     /** Return const iterator to begin element */
-    __force_inline const_iterator cbegin() const noexcept
-    { return const_iterator{data_}; }
+    const_iterator cbegin() const noexcept;
 
     /** Return const iterator to next after last element */
-    __force_inline const_iterator cend() const noexcept
-    { return const_iterator{data_ + size_}; }
+    const_iterator cend() const noexcept;
 };
 
 } /* namespace plusone */
+
+#include "impl/static_vector.ipp"
 
 #endif /* KSERGEY_static_vector_030217004526 */

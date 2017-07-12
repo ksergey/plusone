@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <plusone/perf_stat.hpp>
+#include <plusone/clock.hpp>
+#include <plusone/clock_io.hpp>
 
 int main(int argc, char* argv[])
 {

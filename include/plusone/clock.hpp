@@ -5,72 +5,43 @@
 #ifndef MADLIFE_clock_091116011342_MADLIFE
 #define MADLIFE_clock_091116011342_MADLIFE
 
-#include <ctime>
 #include <cstdint>
-#include "compiler.hpp"
 
 namespace plusone {
 
 /** Nanosecond period */
-struct ns
-{
-    static constexpr std::uint64_t ratio = 1u;
-    static constexpr std::uint64_t in_sec = 1000000000ul / ratio;
-};
+struct ns;
 
 /** Microsecond period */
-struct us
-{
-    static constexpr std::uint64_t ratio = 1000ul;
-    static constexpr std::uint64_t in_sec = 1000000000ul / ratio;
-};
+struct us;
 
 /** Millisecond period */
-struct ms
-{
-    static constexpr std::uint64_t ratio = 1000000ul;
-    static constexpr std::uint64_t in_sec = 1000000000ul / ratio;
-};
+struct ms;
 
 /** Second period */
-struct sec
-{
-    static constexpr std::uint64_t ratio = 1000000000ul;
-    static constexpr std::uint64_t in_sec = 1000000000ul / ratio;
-};
+struct sec;
 
 /**
  * Return current time
  * @param[in] clock_id - clock is (@see man clock_gettime)
  */
 template< class PeriodT >
-__force_inline std::uint64_t clock_now(clockid_t clock_id)
-{
-    timespec ts;
-    clock_gettime(clock_id, &ts);
-    return ts.tv_sec * PeriodT::in_sec + ts.tv_nsec / PeriodT::ratio;
-}
+std::uint64_t clock_now(clockid_t clock_id) noexcept;
 
 /** Return monotonic time */
 template< class PeriodT >
-__force_inline std::uint64_t clock_mono()
-{ return clock_now< PeriodT >(CLOCK_MONOTONIC); }
+std::uint64_t clock_mono() noexcept;
 
 /** Return system-wide current time */
 template< class PeriodT >
-__force_inline std::uint64_t clock_time()
-{ return clock_now< PeriodT >(CLOCK_REALTIME); }
-
-/** Return system-wide current time, sec */
-template<>
-__force_inline std::uint64_t clock_time< sec >()
-{ return time(nullptr); }
+std::uint64_t clock_time() noexcept;
 
 /** Return system-wide current time faster but less precise */
 template< class PeriodT >
-__force_inline std::uint64_t fastclock_time()
-{ return clock_now< PeriodT >(CLOCK_REALTIME_COARSE); }
+std::uint64_t fastclock_time() noexcept;
 
 } /* namespace plusone */
+
+#include "impl/clock.ipp"
 
 #endif /* MADLIFE_clock_091116011342_MADLIFE */

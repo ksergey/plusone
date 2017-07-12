@@ -5,13 +5,8 @@
 #ifndef KSERGEY_perf_stat_230617002140
 #define KSERGEY_perf_stat_230617002140
 
-#include <linux/hw_breakpoint.h>
 #include <linux/perf_event.h>
-#include <asm/unistd.h>
-#include <sys/ioctl.h>
 #include <unistd.h>
-#include <cerrno>
-#include <cstring>
 #include <map>
 #include <tuple>
 #include "file_descriptor.hpp"
@@ -50,94 +45,36 @@ public:
 
     /** Setup perf stat entry */
     template< __u32 Type = PERF_TYPE_HARDWARE >
-    __force_inline void setup(__u64 config)
-    {
-        int fd = create_event(std::make_tuple(config, Type));
-        if (group_fd_ == -1) {
-            group_fd_ = fd;
-        }
-    }
+    void setup(__u64 config);
 
     /** Setup many events */
     template< __u32 Type = PERF_TYPE_HARDWARE >
-    __force_inline void setup(std::initializer_list< __u64 > configs)
-    {
-        for (__u64 config: configs) {
-            setup< Type >(config);
-        }
-    }
+    void setup(std::initializer_list< __u64 > configs);
 
     /** Get event value */
     template< __u32 Type = PERF_TYPE_HARDWARE >
-    __force_inline long long value(__u64 config) const
-    {
-        auto found = mapping_.find(std::make_tuple(config, Type));
-        if (__unlikely(found == mapping_.end())) {
-            throw error{"Entry not exists"};
-        }
-        return found->second.value;
-    }
+    long long value(__u64 config) const;
 
     /** Start recording stats */
-    __force_inline void start()
-    {
-        if (__unlikely(group_fd_ == -1)) {
-            return;
-        }
-
-        ioctl(group_fd_, PERF_EVENT_IOC_RESET, 0);
-        ioctl(group_fd_, PERF_EVENT_IOC_ENABLE, 0);
-    }
+    void start();
 
     /** Stop recording stats */
-    __force_inline void stop()
-    {
-        if (__unlikely(group_fd_ == -1)) {
-            return;
-        }
-
-        ioctl(group_fd_, PERF_EVENT_IOC_DISABLE, 0);
-
-        for (auto& e: mapping_) {
-            read(e.second.fd, &e.second.value, sizeof(e.second.value));
-        }
-    }
+    void stop();
 
 private:
     /*
      * Create event
      * return file descriptor of created event
      */
-    inline int create_event(const key_type& in)
-    {
-        perf_event_attr attr{0};
-        attr.type = std::get< 1 >(in);
-        attr.size = sizeof(perf_event_attr);
-        attr.config = std::get< 0 >(in);
-        attr.exclude_kernel = 1;
-        attr.exclude_hv = 1;
-        attr.disabled = (group_fd_ == -1) ? 1 : 0;
-
-        file_descriptor fd = perf_event_open(&attr, 0, -1, group_fd_, 0);
-        if (__unlikely(!fd)) {
-            throw error{"Perf event error (%s)", ::strerror(errno)};
-        }
-
-        auto result = mapping_.emplace(in, entry{});
-        if (__unlikely(!result.second)) {
-            throw error{"Entry already exists"};
-        }
-
-        auto& entry = result.first->second;
-        entry.fd = std::move(fd);
-        return entry.fd.get();
-    }
+    int create_event(const key_type& in);
 
     /* Syscall wrapper */
-    static long perf_event_open(perf_event_attr* hw_event, pid_t pid, int cpu, int group_fd, unsigned long flags)
-    { return syscall(__NR_perf_event_open, hw_event, pid, cpu, group_fd, flags); }
+    static long perf_event_open(perf_event_attr* hw_event, pid_t pid,
+            int cpu, int group_fd, unsigned long flags);
 };
 
 } /* namespace plusone */
+
+#include "impl/perf_stat.ipp"
 
 #endif /* KSERGEY_perf_stat_230617002140 */

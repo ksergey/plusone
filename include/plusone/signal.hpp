@@ -5,11 +5,8 @@
 #ifndef MADLIFE_signal_101116205803_MADLIFE
 #define MADLIFE_signal_101116205803_MADLIFE
 
-#include <csignal>
-#include <cstring>
 #include <functional>
 #include <initializer_list>
-#include "compiler.hpp"
 
 namespace plusone {
 
@@ -24,35 +21,19 @@ private:
 public:
     /** Setup signal handler */
     template< class Callback >
-    static __force_inline void setup(std::initializer_list< int > sigs, Callback&& callback)
-    {
-        global_callback_ = callback;
-
-        for (auto sig: sigs) {
-            struct sigaction sa{};
-            std::memset(&sa, 0, sizeof(sa));
-            sa.sa_handler = native_signal_handler;
-            ::sigaction(sig, &sa, nullptr);
-        }
-    }
+    static void setup(std::initializer_list< int > sigs, Callback&& callback);
 
     /** Setup handler for SIGINT and SIGTERM signals */
     template< class Callback >
-    static __force_inline void setup(Callback&& callback)
-    { setup({SIGINT, SIGTERM}, std::forward< Callback >(callback)); }
+    static void setup(Callback&& callback);
 
 private:
     /* Native signal handler func */
-    static void native_signal_handler(int sig)
-    {
-        if (global_callback_) {
-            global_callback_(sig);
-        }
-    }
+    static void native_signal_handler(int sig);
 };
 
-signal::callback_type signal::global_callback_{};
-
 } /* namespace plusone */
+
+#include "impl/signal.ipp"
 
 #endif /* MADLIFE_signal_101116205803_MADLIFE */
