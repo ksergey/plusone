@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 3.0)
 
 # Project name
-project(plusone)
+project(plusone VERSION 1 LANGUAGES CXX)
+
+# Default build type
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build" FORCE)
+endif()
 
 # Setting the cpp standard
 set(CMAKE_CXX_STANDARD 14)
@@ -21,8 +26,5 @@ target_link_libraries(plusone INTERFACE ${libs})
 
 # Build examples
 if (BUILD_EXAMPLES)
-    message(STATUS "Plusone: build examples (yes)")
     add_subdirectory(examples)
-else()
-    message(STATUS "Plusone: build examples (no)")
 endif()
