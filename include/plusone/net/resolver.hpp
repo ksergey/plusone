@@ -5,6 +5,7 @@
 #ifndef MADLIFE_resolver_061116025430_MADLIFE
 #define MADLIFE_resolver_061116025430_MADLIFE
 
+#include <string>
 #include "protocol.hpp"
 #include "detail/resolver_iterator.hpp"
 
@@ -26,78 +27,45 @@ public:
     resolver& operator=(const resolver&) = delete;
 
     /** Construct resolver from rvalue reference */
-    __force_inline resolver(resolver&& r) noexcept
-    { std::swap(data_, r.data_); }
+    resolver(resolver&& r) noexcept;
 
     /** Move operator */
-    __force_inline resolver& operator=(resolver&& r) noexcept
-    {
-        std::swap(data_, r.data_);
-        return *this;
-    }
+    resolver& operator=(resolver&& r) noexcept;
 
     /** Default constructor */
     resolver() = default;
 
     /** Construct resolver */
-    resolver(const protocol& p, const std::string& node, const std::string& service, int flags = 0)
-    { resolv(p, node.c_str(), service.c_str(), flags); }
+    resolver(const protocol& p, const std::string& node, const std::string& service, int flags = 0);
 
     /** Construct resolver */
-    resolver(const protocol& p, const std::string& node, int flags = 0)
-    {
-        size_t found = node.rfind(':');
-        if (found != std::string::npos) {
-            resolv(p, node.substr(0, found).c_str(), node.c_str() + found + 1, flags);
-        } else {
-            resolv(p, node.c_str(), nullptr, flags);
-        }
-    }
+    resolver(const protocol& p, const std::string& node, int flags = 0);
 
     /** Destructor */
-    ~resolver()
-    {
-        if (data_) {
-            freeaddrinfo(data_);
-        }
-    }
+    virtual ~resolver() noexcept;
 
     /** Return true if data resolver */
-    __force_inline bool valid() const noexcept
-    { return data_ != nullptr; }
+    bool valid() const noexcept;
 
     /** Return true if data resolver */
-    __force_inline explicit operator bool() const noexcept
-    { return valid(); }
+    explicit operator bool() const noexcept;
 
     /** Return true if data not resolver */
-    __force_inline bool operator!() const noexcept
-    { return !valid(); }
+    bool operator!() const noexcept;
 
     /** Return iterator to begin */
-    __force_inline const_iterator begin() const noexcept
-    { return const_iterator(data_); }
+    const_iterator begin() const noexcept;
 
     /** Return iterator to past the end */
-    __force_inline const_iterator end() const noexcept
-    { return const_iterator(); }
+    const_iterator end() const noexcept;
 
 private:
-    __force_inline void resolv(const protocol& p, const char* node, const char* service, int flags)
-    {
-        addrinfo hints = {};
-        hints.ai_family = p.domain;
-        hints.ai_socktype = p.type;
-        hints.ai_flags = flags;
-        hints.ai_protocol = p.proto;
-        hints.ai_canonname = nullptr;
-        hints.ai_addr = nullptr;
-        hints.ai_next = nullptr;
-        getaddrinfo(node, service, &hints, &data_);
-    }
+    void resolv(const protocol& p, const char* node, const char* service, int flags);
 };
 
 } /* namespace net */
 } /* namespace plusone */
+
+#include "impl/resolver.ipp"
 
 #endif /* MADLIFE_resolver_061116025430_MADLIFE */
