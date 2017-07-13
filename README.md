@@ -13,17 +13,25 @@ Plusone is header-only so there are no libraries to build or link with. To use P
 Alternatively, bring Plusone into your Git repository using the `git submodule` command.
 
 Plusone `#include` lines will look like this:
-```
+```cpp
 #include <plusone/compiler.hpp>
 #include <plusone/static_vector.hpp>
 ```
 
-For the examples, Plusone provides build scripts for CMake.
-```
+For the examples, Plusone provides build scripts for CMake:
+```sh
 mkdir build
 cd build
 cmake ..
 make
+```
+
+For using Plusone in scope a CMake project:
+```cmake
+add_subdirectory(external/plusone EXCLUDE_FROM_ALL)
+...
+add_executable(app main.cpp)
+target_link_libraries(app plusone)
 ```
 
 # License
