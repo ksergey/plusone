@@ -5,6 +5,7 @@
 #ifndef KSERGEY_file_050117013737
 #define KSERGEY_file_050117013737
 
+#include <fcntl.h>
 #include <string>
 #include "exception.hpp"
 
