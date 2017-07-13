@@ -46,9 +46,6 @@ private:
     int fd_{-1};
 
 public:
-    file(const file&) = delete;
-    file& operator=(const file&) = delete;
-
     /** Move constuctor */
     file(file&& other) noexcept;
 

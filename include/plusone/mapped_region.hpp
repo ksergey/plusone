@@ -23,8 +23,22 @@ private:
     std::size_t size_{0};
 
 public:
-    mapped_region(const mapped_region&) = delete;
-    mapped_region& operator=(const mapped_region&) = delete;
+    struct options
+    {
+        /** Shared or private mapping flag */
+        bool shared{true};
+        /** Mapping mode */
+        open_mode mode{read_write};
+        /** Populate page tables */
+        bool prefault{false};
+        /** Lock the pages of the mapped region into memory */
+        bool locked{false};
+        /** Fix map at this adress, if not nullptr */
+        void* address{nullptr};
+
+        options()
+        {}
+    };
 
     /** Move constructor */
     mapped_region(mapped_region&& other) noexcept;
@@ -36,16 +50,16 @@ public:
     mapped_region() = default;
 
     /** Construct the mapped region from file descriptor */
-    mapped_region(int fd, std::size_t file_size, open_mode mode = read_write);
+    mapped_region(int fd, std::size_t file_size, const options& opts = options());
 
     /** Construct the mapped region from file descriptor */
-    explicit mapped_region(int fd, open_mode mode = read_write);
+    explicit mapped_region(int fd, const options& opts = options());
 
     /** Construct the mapped region from file object */
-    mapped_region(file& f, std::size_t file_size, open_mode mode = read_write);
+    mapped_region(file& f, std::size_t file_size, const options& opts = options());
 
     /** Construct the mapped region from file object */
-    explicit mapped_region(file& f, open_mode mode = read_write);
+    explicit mapped_region(file& f, const options& opts = options());
 
     /** Destructor */
     virtual ~mapped_region() noexcept;
