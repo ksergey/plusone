@@ -5,10 +5,6 @@
 #ifndef KSERGEY_file_descriptor_230617002324
 #define KSERGEY_file_descriptor_230617002324
 
-#include <unistd.h>
-#include <algorithm>
-#include "compiler.hpp"
-
 namespace plusone {
 
 /**
@@ -27,71 +23,45 @@ public:
     file_descriptor(const file_descriptor&) = delete;
     file_descriptor& operator=(const file_descriptor&) = delete;
 
-    __force_inline file_descriptor(file_descriptor&& value) noexcept
-    { swap(value); }
-
-    __force_inline file_descriptor& operator=(file_descriptor&& value) noexcept
-    {
-        if (__likely(this != &value)) {
-            swap(value);
-        }
-        return *this;
-    }
+    file_descriptor(file_descriptor&& value) noexcept;
+    file_descriptor& operator=(file_descriptor&& value) noexcept;
 
     file_descriptor() = default;
 
-    __force_inline file_descriptor(int fd) noexcept
-        : fd_{fd}
-    {}
-
-    __force_inline ~file_descriptor() noexcept
-    {
-        if (fd_ != invalid_descriptor) {
-            /*
-             * Actually close could return error
-             */
-            ::close(fd_);
-        }
-    }
+    file_descriptor(int fd) noexcept;
+    ~file_descriptor() noexcept;
 
     /**
      * Cast to OS native descriptor
      */
-    __force_inline int get() noexcept
-    { return fd_; }
+    int get() noexcept;
 
     /**
      * Cast to OS native descriptor
      */
-    __force_inline operator int() noexcept
-    { return get(); }
+    operator int() noexcept;
 
     /**
      * Cast to bool.
      * return true if descriptor valid
      */
-    __force_inline explicit operator bool() const noexcept
-    { return fd_ != invalid_descriptor; }
+    explicit operator bool() const noexcept;
 
     /**
      * Cast to bool.
      * return true if descriptor invalid
      */
-    __force_inline bool operator!() const noexcept
-    { return fd_ == invalid_descriptor; }
+    bool operator!() const noexcept;
 
     /** Swap descriptors */
-    __force_inline void swap(file_descriptor& value) noexcept
-    { std::swap(fd_, value.fd_); }
+    void swap(file_descriptor& value) noexcept;
 
     /** Replace file descriptor with another */
-    __force_inline void reset(int fd = invalid_descriptor) noexcept
-    {
-        file_descriptor other{fd};
-        swap(other);
-    }
+    void reset(int fd = invalid_descriptor) noexcept;
 };
 
 } /* namespace plusone */
+
+#include "impl/file_descriptor.ipp"
 
 #endif /* KSERGEY_file_descriptor_230617002324 */

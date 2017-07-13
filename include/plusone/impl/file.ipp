@@ -28,24 +28,24 @@ __force_inline file& file::operator=(file&& other) noexcept
     return *this;
 }
 
-inline file::file(const create_only_tag&, const std::string& path, open_mode mode,
+__force_inline file::file(const create_only_tag&, const std::string& path, open_mode mode,
         int perms)
 {
     init(do_create, path, mode, perms);
 }
 
-inline file::file(const open_only_tag&, const std::string& path, open_mode mode)
+__force_inline file::file(const open_only_tag&, const std::string& path, open_mode mode)
 {
     init(do_open, path, mode);
 }
 
-inline file::file(const open_or_create_tag&, const std::string& path, open_mode mode,
+__force_inline file::file(const open_or_create_tag&, const std::string& path, open_mode mode,
         int perms)
 {
     init(do_open_or_create, path, mode, perms);
 }
 
-inline file::~file() noexcept
+__force_inline file::~file() noexcept
 {
     if (fd_ >= 0) {
         ::close(fd_);

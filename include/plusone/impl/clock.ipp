@@ -66,7 +66,6 @@ __force_inline std::uint64_t fastclock_time() noexcept
     return clock_now< PeriodT >(CLOCK_REALTIME_COARSE);
 }
 
-
 } /* namespace plusone */
 
 #endif /* KSERGEY_clock_120717232211 */

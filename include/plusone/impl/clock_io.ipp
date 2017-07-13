@@ -31,10 +31,15 @@ struct io_clock_wrapper
 
 template< bool UTC >
 __force_inline void get_tm(time_t value, struct tm* tm)
-{ localtime_r(&value, tm); }
+{
+    localtime_r(&value, tm);
+}
+
 template<>
 __force_inline void get_tm< true >(time_t value, struct tm* tm)
-{ gmtime_r(&value, tm); }
+{
+    gmtime_r(&value, tm);
+}
 
 template< class OutPrecisionT >
 __force_inline void put_subsec(std::ostream& os, unsigned value_ns)
@@ -44,6 +49,7 @@ __force_inline void put_subsec(std::ostream& os, unsigned value_ns)
         << (value_ns / OutPrecisionT::ratio)
         << std::setfill(' ') << std::setw(0);
 }
+
 template<>
 __force_inline void put_subsec< sec >(std::ostream& os, unsigned value_ns)
 {}
