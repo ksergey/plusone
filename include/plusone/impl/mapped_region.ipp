@@ -17,7 +17,7 @@ __force_inline std::size_t get_size(int fd)
 {
     struct stat st;
     if (::fstat(fd, &st) == -1) {
-        throw file_error("Read file size error (%s)", std::strerror(errno));
+        throw file_error("Read file size error ({})", std::strerror(errno));
     }
     return st.st_size;
 }
@@ -46,7 +46,7 @@ __force_inline mapped_region::mapped_region(int fd, std::size_t file_size, const
     } else if (opts.mode == read_write) {
         prot = PROT_WRITE | PROT_READ;
     } else {
-        throw mmap_error("Unknown open mode (%s)", std::strerror(EINVAL));
+        throw mmap_error("Unknown open mode ({})", std::strerror(EINVAL));
     }
 
     int flags = opts.shared ? MAP_SHARED : MAP_PRIVATE;
@@ -60,7 +60,7 @@ __force_inline mapped_region::mapped_region(int fd, std::size_t file_size, const
     /* Mmap region */
     auto region = ::mmap(opts.address, file_size, prot, flags, fd, 0);
     if (region == MAP_FAILED) {
-        throw mmap_error("Mmap error (%s)", std::strerror(errno));
+        throw mmap_error("Mmap error ({})", std::strerror(errno));
     }
 
     data_ = reinterpret_cast< char* >(region);

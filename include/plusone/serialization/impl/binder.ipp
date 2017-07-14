@@ -26,7 +26,7 @@ inline void binder< FieldT, PolicyT, CheckerT >::read_from(const json& object) c
         if (!value.is_null()) {
             read_value(value, field_);
         } else {
-            throw io_error{"value is null"};
+            throw io_error("Value is null");
         }
     } else {
         policy_.field_not_defined(field_);

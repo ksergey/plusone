@@ -29,7 +29,7 @@ public:
     {
         static const C< T > cmp{};
         if (!cmp(value, value_)) {
-            throw check_error{"value not passed validation"};
+            throw check_error("Value not passed validation");
         }
     }
 };
@@ -54,7 +54,7 @@ public:
         static const Right< T > cmp_right{};
 
         if (!cmp_left(value, left_) || !cmp_right(value, right_)) {
-            throw check_error{"value not passed validation, not inside range"};
+            throw check_error("Value not passed validation, not inside range");
         }
     }
 };
@@ -93,7 +93,7 @@ inline auto not_empty_string()
 {
     return [](const std::string& str) {
         if (str.empty()) {
-            throw check_error{"value not passed validation, empty string"};
+            throw check_error("Value not passed validation, empty string");
         }
     };
 }
@@ -102,7 +102,7 @@ inline auto max_length_string(size_t max_length)
 {
     return [max_length](const std::string& str) {
         if (str.size() > max_length) {
-            throw check_error{"value not passed validation, string too long"};
+            throw check_error("Value not passed validation, string too long");
         }
     };
 }
@@ -113,7 +113,7 @@ inline auto one_of(std::initializer_list< T > values)
     const std::set< T > values_set(values);
     return [values_set](const T& value) {
         if (values_set.count(value) == 0) {
-            throw check_error{"value not passed validation, out of possible values"};
+            throw check_error("Value not passed validation, out of possible values");
         }
     };
 }

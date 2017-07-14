@@ -35,7 +35,7 @@ __force_inline long long perf_stat::value(__u64 config) const
 {
     auto found = mapping_.find(std::make_tuple(config, Type));
     if (__unlikely(found == mapping_.end())) {
-        throw error{"Entry not exists"};
+        throw error("Entry not exists");
     }
     return found->second.value;
 }
@@ -75,12 +75,12 @@ __force_inline int perf_stat::create_event(const key_type& in)
 
     file_descriptor fd = perf_event_open(&attr, 0, -1, group_fd_, 0);
     if (__unlikely(!fd)) {
-        throw error{"Perf event error (%s)", ::strerror(errno)};
+        throw error("Perf event error ({})", ::strerror(errno));
     }
 
     auto result = mapping_.emplace(in, entry{});
     if (__unlikely(!result.second)) {
-        throw error{"Entry already exists"};
+        throw error("Entry already exists");
     }
 
     auto& entry = result.first->second;

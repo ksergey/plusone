@@ -106,7 +106,7 @@ inline void read_value(const json& object, std::vector< T, AllocT >& vec)
             read_value(node, vec.back());
         }
     } else {
-        throw io_error{"value is not an array"};
+        throw io_error("Value is not an array");
     }
 }
 

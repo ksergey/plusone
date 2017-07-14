@@ -70,7 +70,7 @@ __force_inline std::size_t file::size() const
 {
     struct stat st;
     if (::fstat(fd_, &st) == -1) {
-        throw file_error{"Read file size error (%s)", std::strerror(errno)};
+        throw file_error("Read file size error ({})", std::strerror(errno));
     }
     return st.st_size;
 }
@@ -78,7 +78,7 @@ __force_inline std::size_t file::size() const
 __force_inline void file::truncate(std::size_t size)
 {
     if (::ftruncate(fd_, size) == -1) {
-        throw file_error{"Truncate file error(%s)", std::strerror(errno)};
+        throw file_error("Truncate file error({})", std::strerror(errno));
     }
 }
 
@@ -92,7 +92,7 @@ __force_inline void file::init(what_do what, const std::string& path, open_mode 
     } else if (mode == read_write) {
         oflags |= O_RDWR;
     } else {
-        throw file_error{"Unknown open mode (%s)", std::strerror(EINVAL)};
+        throw file_error("Unknown open mode ({})", std::strerror(EINVAL));
     }
 
     /* Open file */
@@ -132,8 +132,8 @@ __force_inline void file::init(what_do what, const std::string& path, open_mode 
     }
 
     if (fd_ < 0) {
-        throw file_error{"Open file \"%s\" error (%s)}",
-            path.c_str(), std::strerror(errno)};
+        throw file_error("Open file \"{}\" error ({})}",
+            path.c_str(), std::strerror(errno));
     }
 }
 
