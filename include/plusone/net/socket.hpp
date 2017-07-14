@@ -25,12 +25,6 @@ private:
     int sock_{invalid_socket};
 
 public:
-    /** Disable copy constructor */
-    socket(const socket&) = delete;
-
-    /** Disable copy operator */
-    socket& operator=(const socket&) = delete;
-
     /** Construct socket from lvalue reference */
     socket(socket&& s);
 

@@ -13,6 +13,9 @@
 
 namespace plusone {
 
+/**
+ * @see http://fmtlib.net/latest/index.html
+ */
 namespace fmt = ::fmt;
 
 } /* namespace plusone */

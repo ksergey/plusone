@@ -23,9 +23,6 @@ public:
     /** Resolver iterator type */
     using const_iterator = detail::resolver_iterator;
 
-    resolver(const resolver&) = delete;
-    resolver& operator=(const resolver&) = delete;
-
     /** Construct resolver from rvalue reference */
     resolver(resolver&& r) noexcept;
 

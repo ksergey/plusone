@@ -15,21 +15,24 @@ class exception
     : public std::exception
 {
 private:
-    std::string what_;
+    const std::string what_;
 
 public:
     /** Empty string constructor */
     exception() = default;
 
-    /** Printf-like message formatter */
+    /** Exception with message */
+    explicit exception(std::string text);
+
+    /** Exception with inplace message formatting */
     template< class... Args >
-    explicit exception(const char* fmt, const Args&... args);
+    exception(const char* format, const Args&... args);
 
     /** Destructor */
     virtual ~exception() noexcept = default;
 
     /** Return exception description */
-    virtual const char* what() const noexcept override;
+    const char* what() const noexcept override;
 };
 
 /** Make unique exception class */
