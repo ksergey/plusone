@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2017 Sergey Kovalevich <inndie@gmail.com>
+ */
+
+#ifndef KSERGEY_fmt_140717125217
+#define KSERGEY_fmt_140717125217
+
+#include <fmt/format.h>
+#include <fmt/ostream.h>
+#include <fmt/time.h>
+#include <fmt/printf.h>
+#include <fmt/string.h>
+
+namespace plusone {
+
+namespace fmt = ::fmt;
+
+} /* namespace plusone */
+
+#endif /* KSERGEY_fmt_140717125217 */

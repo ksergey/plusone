@@ -28,10 +28,6 @@ public:
     /** Destructor */
     virtual ~exception() noexcept = default;
 
-    /** Stream like message formatter */
-    template< class T >
-    exception& operator<<(const T& value);
-
     /** Return exception description */
     virtual const char* what() const noexcept override;
 };

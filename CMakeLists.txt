@@ -12,7 +12,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(PLUSONE_BUILD_EXAMPLES "Build library examples" ON)
 
-set(libs)
+add_subdirectory(deps/fmt EXCLUDE_FROM_ALL)
+
+set(libs fmt::fmt-header-only)
 
 add_library(plusone INTERFACE)
 target_include_directories(plusone INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
