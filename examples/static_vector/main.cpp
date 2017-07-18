@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <plusone/static_vector.hpp>
+#include <plusone/cacheline_padded.hpp>
 
 __force_inline void do_check(bool expr, const char* msg, const char* file, int line)
 {
@@ -45,6 +46,12 @@ int main(int argc, char* argv[])
     CHECK( v[0] == 99 );
     CHECK( v[1] == 33 );
     CHECK( *v.begin() == 99 );
+
+    plusone::cacheline_padded<
+        plusone::static_vector< int >
+    > padded_v;
+
+    CHECK( padded_v->size() == 0 );
 
     return EXIT_SUCCESS;
 }

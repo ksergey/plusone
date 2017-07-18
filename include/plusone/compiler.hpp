@@ -5,6 +5,8 @@
 #ifndef MADLIFE_compiler_051116230444_MADLIFE
 #define MADLIFE_compiler_051116230444_MADLIFE
 
+#include <cstddef>
+
 #ifndef __force_inline
 #   define __force_inline inline __attribute__((always_inline))
 #endif
@@ -28,5 +30,11 @@
 #ifndef __unlikely
 #   define __unlikely(x) __builtin_expect(static_cast< bool >(x), false)
 #endif
+
+namespace plusone {
+
+static constexpr std::size_t false_sharing_range = 128;
+
+} /* namespace plusone */
 
 #endif /* MADLIFE_compiler_051116230444_MADLIFE */
