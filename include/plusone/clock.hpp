@@ -40,6 +40,9 @@ std::uint64_t clock_time() noexcept;
 template< class PeriodT >
 std::uint64_t fastclock_time() noexcept;
 
+/** Return clock cycles count from CPU */
+std::uint64_t rdtsc() noexcept;
+
 } /* namespace plusone */
 
 #include "impl/clock.ipp"

@@ -6,7 +6,7 @@
 #define KSERGEY_clock_120717232211
 
 #include <ctime>
-#include "../compiler.hpp"
+#include <plusone/compiler.hpp>
 
 namespace plusone {
 
@@ -64,6 +64,15 @@ template< class PeriodT >
 __force_inline std::uint64_t fastclock_time() noexcept
 {
     return clock_now< PeriodT >(CLOCK_REALTIME_COARSE);
+}
+
+__force_inline std::uint64_t rdtsc() noexcept
+{
+    unsigned reslo, reshi;
+    __asm__ __volatile__  ("xorl %%eax,%%eax \n cpuid \n" ::: "%eax", "%ebx", "%ecx", "%edx");
+    __asm__ __volatile__  ("rdtsc\n" : "=a" (reslo), "=d" (reshi));
+    __asm__ __volatile__  ("xorl %%eax,%%eax \n cpuid \n" ::: "%eax", "%ebx", "%ecx", "%edx");
+    return (std::uint64_t(reshi) << 32) | reslo;
 }
 
 } /* namespace plusone */
