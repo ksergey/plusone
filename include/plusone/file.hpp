@@ -7,12 +7,17 @@
 
 #include <fcntl.h>
 #include <string>
+#include <plusone/file_descriptor.hpp>
 #include <plusone/exception.hpp>
 
 namespace plusone {
 
 /** Resource open mode */
-enum open_mode { read_only, read_write };
+enum open_mode
+{
+    read_only,
+    read_write
+};
 
 /** Tag to indicate that the resource must be only created */
 struct create_only_tag {};
@@ -42,8 +47,7 @@ using file_error = tagged_exception< struct file_tag >;
 class file
 {
 private:
-    /* File descriptor */
-    int fd_{-1};
+    file_descriptor fd_;
 
 public:
     /** Move constuctor */
@@ -51,6 +55,9 @@ public:
 
     /** Move operator */
     file& operator=(file&& other) noexcept;
+
+    /** Default constructor */
+    file() = default;
 
     /** Construct file */
     file(const create_only_tag&, const std::string& path, open_mode mode = read_write,
@@ -64,7 +71,7 @@ public:
             int perms = default_permissions);
 
     /** Destructor */
-    virtual ~file() noexcept;
+    virtual ~file() noexcept = default;
 
     /** Safe bool cast */
     explicit operator bool() const noexcept;
@@ -73,7 +80,7 @@ public:
     bool operator!() const noexcept;
 
     /** Return file handle */
-    int handle() const noexcept;
+    const file_descriptor& handle() const noexcept;
 
     /** Return size of file */
     std::size_t size() const;
@@ -81,8 +88,21 @@ public:
     /** Truncate file to required size */
     void truncate(std::size_t size);
 
+    /** Create temporary file */
+    static file temporary();
+
+    /** Swap two files */
+    void swap(file& v) noexcept;
+
 private:
-    enum what_do { do_open, do_create, do_open_or_create };
+    file(int fd);
+
+    enum what_do
+    {
+        do_open,
+        do_create,
+        do_open_or_create
+    };
 
     void init(what_do what, const std::string& path, open_mode mode,
             int perms = default_permissions);

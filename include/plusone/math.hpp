@@ -6,7 +6,7 @@
 #define KSERGEY_math_250417152506
 
 #include <cstdint>
-#include "compiler.hpp"
+#include <plusone/compiler.hpp>
 
 namespace plusone {
 

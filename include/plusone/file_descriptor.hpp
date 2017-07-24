@@ -5,7 +5,11 @@
 #ifndef KSERGEY_file_descriptor_230617002324
 #define KSERGEY_file_descriptor_230617002324
 
+#include <plusone/exception.hpp>
+
 namespace plusone {
+
+using file_descriptor_error = tagged_exception< struct file_descriptor_tag >;
 
 /**
  * RAII wrapper around Linux file descriptor.
@@ -34,12 +38,12 @@ public:
     /**
      * Cast to OS native descriptor
      */
-    int get() noexcept;
+    int get() const noexcept;
 
     /**
      * Cast to OS native descriptor
      */
-    operator int() noexcept;
+    operator int() const noexcept;
 
     /**
      * Cast to bool.
@@ -58,6 +62,9 @@ public:
 
     /** Replace file descriptor with another */
     void reset(int fd = invalid_descriptor) noexcept;
+
+    /** Duplicate file descriptor */
+    file_descriptor dup() const;
 };
 
 } /* namespace plusone */

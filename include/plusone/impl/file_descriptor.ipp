@@ -6,6 +6,8 @@
 #define KSERGEY_file_descriptor_130717072034
 
 #include <unistd.h>
+#include <cstring>
+#include <cerrno>
 #include <algorithm>
 #include <plusone/compiler.hpp>
 
@@ -35,12 +37,12 @@ __force_inline file_descriptor::~file_descriptor() noexcept
     }
 }
 
-__force_inline int file_descriptor::get() noexcept
+__force_inline int file_descriptor::get() const noexcept
 {
     return fd_;
 }
 
-__force_inline file_descriptor::operator int() noexcept
+__force_inline file_descriptor::operator int() const noexcept
 {
     return get();
 }
@@ -64,6 +66,18 @@ __force_inline void file_descriptor::reset(int fd) noexcept
 {
     file_descriptor other{fd};
     swap(other);
+}
+
+__force_inline file_descriptor file_descriptor::dup() const
+{
+    if (operator bool()) {
+        int fd = ::dup(fd_);
+        if (__unlikely(fd == -1)) {
+            throw file_descriptor_error("Failed duplicate descriptor ({})", std::strerror(errno));
+        }
+        return file_descriptor{fd};
+    }
+    return file_descriptor{};
 }
 
 } /* namespace plusone */
