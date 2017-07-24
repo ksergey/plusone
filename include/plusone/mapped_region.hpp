@@ -5,8 +5,8 @@
 #ifndef KSERGEY_mapped_region_050117020149
 #define KSERGEY_mapped_region_050117020149
 
-#include "exception.hpp"
-#include "file.hpp"
+#include <plusone/exception.hpp>
+#include <plusone/file.hpp>
 
 namespace plusone {
 
@@ -68,19 +68,34 @@ public:
     void swap(mapped_region& other) noexcept;
 
     /** Return true if mapped region initialized */
-    explicit operator bool() const noexcept;
+    explicit operator bool() const noexcept
+    {
+        return data_ != nullptr;
+    }
 
     /** Return true if mapped region non-initialized */
-    bool operator!() const noexcept;
+    bool operator!() const noexcept
+    {
+        return data_ == nullptr;
+    }
 
     /** Return pointer to mapped region data */
-    const char* data() const noexcept;
+    const char* data() const noexcept
+    {
+        return data_;
+    }
 
     /** Return pointer to mapped region data */
-    char* data() noexcept;
+    char* data() noexcept
+    {
+        return data_;
+    }
 
     /** Return region size */
-    std::size_t size() const noexcept;
+    std::size_t size() const noexcept
+    {
+        return size_;
+    }
 
     /** Fill region memory with a constant byte */
     void fill(int c = 0);
@@ -88,6 +103,6 @@ public:
 
 } /* namespace plusone */
 
-#include "impl/mapped_region.ipp"
+#include <plusone/impl/mapped_region.ipp>
 
 #endif /* KSERGEY_mapped_region_050117020149 */

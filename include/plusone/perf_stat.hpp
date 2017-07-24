@@ -9,8 +9,8 @@
 #include <unistd.h>
 #include <map>
 #include <tuple>
-#include "file_descriptor.hpp"
-#include "exception.hpp"
+#include <plusone/file_descriptor.hpp>
+#include <plusone/exception.hpp>
 
 namespace plusone {
 
@@ -75,6 +75,6 @@ private:
 
 } /* namespace plusone */
 
-#include "impl/perf_stat.ipp"
+#include <plusone/impl/perf_stat.ipp>
 
 #endif /* KSERGEY_perf_stat_230617002140 */

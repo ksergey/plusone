@@ -7,7 +7,7 @@
 
 #include <csignal>
 #include <cstring>
-#include "../compiler.hpp"
+#include <plusone/compiler.hpp>
 
 namespace plusone {
 

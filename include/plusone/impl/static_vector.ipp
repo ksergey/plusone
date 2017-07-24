@@ -7,7 +7,7 @@
 
 #include <stdexcept>
 #include <iterator>
-#include "../compiler.hpp"
+#include <plusone/compiler.hpp>
 
 namespace plusone {
 namespace detail {
@@ -33,35 +33,53 @@ public:
 
     /** Increment operation */
     __force_inline iterator& operator++() noexcept
-    { ++pos_; return *this; }
+    {
+        ++pos_;
+        return *this;
+    }
 
     /** Decrement operation */
     __force_inline iterator& operator--() noexcept
-    { --pos_; return *this; }
+    {
+        --pos_;
+        return *this;
+    }
 
     /** Equal operator */
     __force_inline bool operator==(const iterator& it) const noexcept
-    { return pos_ == it.pos_; }
+    {
+        return pos_ == it.pos_;
+    }
 
     /** Not equal operator */
     __force_inline bool operator!=(const iterator& it) const noexcept
-    { return pos_ != it.pos_; }
+    {
+        return pos_ != it.pos_;
+    }
 
     /** Operator derefernce */
     __force_inline const T& operator*() const noexcept
-    { return *reinterpret_cast< const T* >(pos_); }
+    {
+        return *reinterpret_cast< const T* >(pos_);
+    }
 
     /** Operator derefernce */
     __force_inline T& operator*() noexcept
-    { return *reinterpret_cast< T* >(pos_); }
+    {
+        return *reinterpret_cast< T* >(pos_);
+    }
 
     /** Operator access member */
     __force_inline const T* operator->() const noexcept
-    { return reinterpret_cast< const T* >(pos_); }
+    {
+        return reinterpret_cast< const T* >(pos_);
+    }
 
     /** Operator access member */
     __force_inline T* operator->() noexcept
-    { return reinterpret_cast< T* >(pos_); }
+    {
+        return reinterpret_cast< T* >(pos_);
+    }
 };
 
 } /* namespace detail */

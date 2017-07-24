@@ -5,7 +5,7 @@
 #ifndef MADLIFE_address_v4_051116231424_MADLIFE
 #define MADLIFE_address_v4_051116231424_MADLIFE
 
-#include "common.hpp"
+#include <plusone/net/common.hpp>
 
 namespace plusone {
 namespace net {
@@ -70,6 +70,6 @@ public:
 } /* namespace net */
 } /* namespace plusone */
 
-#include "impl/address_v4.ipp"
+#include <plusone/net/impl/address_v4.ipp>
 
 #endif /* MADLIFE_address_v4_051116231424_MADLIFE */

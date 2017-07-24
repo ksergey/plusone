@@ -7,7 +7,7 @@
 
 #include <linux/if_packet.h> /* SOL_PACKET:PACKET_TIMESTAMP */
 #include <linux/net_tstamp.h>
-#include "detail/socket_option_types.hpp"
+#include <plusone/net/detail/socket_option_types.hpp>
 
 namespace plusone {
 namespace net {

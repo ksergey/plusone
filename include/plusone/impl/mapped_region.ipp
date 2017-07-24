@@ -7,7 +7,7 @@
 
 #include <sys/mman.h>
 #include <cstring>
-#include "../compiler.hpp"
+#include <plusone/compiler.hpp>
 
 namespace plusone {
 namespace detail {
@@ -90,31 +90,6 @@ __force_inline void mapped_region::swap(mapped_region& other) noexcept
 {
     std::swap(data_, other.data_);
     std::swap(size_, other.size_);
-}
-
-__force_inline mapped_region::operator bool() const noexcept
-{
-    return data_ != nullptr;
-}
-
-__force_inline bool mapped_region::operator!() const noexcept
-{
-    return data_ == nullptr;
-}
-
-__force_inline const char* mapped_region::data() const noexcept
-{
-    return data_;
-}
-
-__force_inline char* mapped_region::data() noexcept
-{
-    return data_;
-}
-
-__force_inline std::size_t mapped_region::size() const noexcept
-{
-    return size_;
 }
 
 __force_inline void mapped_region::fill(int c)

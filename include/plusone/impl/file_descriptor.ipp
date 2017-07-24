@@ -7,7 +7,7 @@
 
 #include <unistd.h>
 #include <algorithm>
-#include "../compiler.hpp"
+#include <plusone/compiler.hpp>
 
 namespace plusone {
 

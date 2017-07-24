@@ -5,7 +5,7 @@
 #ifndef MADLIFE_result_051116235729_MADLIFE
 #define MADLIFE_result_051116235729_MADLIFE
 
-#include "socket.hpp"
+#include <plusone/net/socket.hpp>
 
 namespace plusone {
 namespace net {
@@ -25,19 +25,27 @@ public:
 
     /** Return error code */
     __force_inline int code() const noexcept
-    { return code_; }
+    {
+        return code_;
+    }
 
     /** Return error code description */
     __force_inline const char* str() const noexcept
-    { return ::strerror(code_); }
+    {
+        return ::strerror(code_);
+    }
 
     /** Return true if error is EINTR */
     __force_inline bool interrupted() const noexcept
-    { return code_ == EINTR; }
+    {
+        return code_ == EINTR;
+    }
 
     /** Return true if error is EAGAIN or EWOULDBLOCK */
     __force_inline bool again() const noexcept
-    { return code_ == EAGAIN || code_ == EWOULDBLOCK; }
+    {
+        return code_ == EAGAIN || code_ == EWOULDBLOCK;
+    }
 };
 
 /** Socket operation result */
@@ -57,15 +65,21 @@ public:
 
     /** Return true if operation finished successful */
     __force_inline bool success() const noexcept
-    { return value_ == 0; }
+    {
+        return value_ == 0;
+    }
 
     /** Return success() */
     __force_inline explicit operator bool() const noexcept
-    { return success(); }
+    {
+        return success();
+    }
 
     /** Return !success() */
     __force_inline bool operator!() const noexcept
-    { return !success(); }
+    {
+        return !success();
+    }
 };
 
 /** Socket input/output operation result */
@@ -85,23 +99,33 @@ public:
 
     /** Return true if operation finished successful */
     __force_inline bool success() const noexcept
-    { return value_ > 0; }
+    {
+        return value_ > 0;
+    }
 
     /** Return success() */
     __force_inline explicit operator bool() const noexcept
-    { return success(); }
+    {
+        return success();
+    }
 
     /** Return !success() */
     __force_inline bool operator!() const noexcept
-    { return !success(); }
+    {
+        return !success();
+    }
 
     /** Return read/write bytes count */
     __force_inline size_t bytes() const noexcept
-    { return value_; }
+    {
+        return value_;
+    }
 
     /** Return true if disconnect happend */
     __force_inline bool is_disconnected() const noexcept
-    { return value_ == 0; }
+    {
+        return value_ == 0;
+    }
 };
 
 /** Socket accept operation result */
@@ -121,19 +145,27 @@ public:
 
     /** Return true if operation finished successful */
     __force_inline bool success() const noexcept
-    { return sock_.valid(); }
+    {
+        return sock_.valid();
+    }
 
     /** Return success() */
     __force_inline explicit operator bool() const noexcept
-    { return success(); }
+    {
+        return success();
+    }
 
     /** Return !success() */
     __force_inline bool operator!() const noexcept
-    { return !success(); }
+    {
+        return !success();
+    }
 
     /** Return accepted socket */
     __force_inline socket&& get() noexcept
-    { return std::move(sock_); }
+    {
+        return std::move(sock_);
+    }
 };
 
 } /* namespace net */

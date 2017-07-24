@@ -66,6 +66,7 @@ __force_inline std::uint64_t get_time() noexcept
 
 int main(int argc, char* argv[])
 {
+    /* TODO: integrate this code into library */
     try {
         initializer init;
 

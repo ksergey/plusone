@@ -5,7 +5,7 @@
 #ifndef KSERGEY_clock_io_210317223431
 #define KSERGEY_clock_io_210317223431
 
-#include "clock.hpp"
+#include <plusone/clock.hpp>
 
 namespace plusone {
 
@@ -27,6 +27,6 @@ detail::io_clock_wrapper< PeriodT, OutPrecisionT, UTC > clock_fmt(std::uint64_t 
 
 } /* namespace plusone */
 
-#include "impl/clock_io.ipp"
+#include <plusone/impl/clock_io.ipp>
 
 #endif /* KSERGEY_clock_io_210317223431 */

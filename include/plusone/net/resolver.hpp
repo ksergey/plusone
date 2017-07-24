@@ -6,8 +6,8 @@
 #define MADLIFE_resolver_061116025430_MADLIFE
 
 #include <string>
-#include "protocol.hpp"
-#include "detail/resolver_iterator.hpp"
+#include <plusone/net/protocol.hpp>
+#include <plusone/net/detail/resolver_iterator.hpp>
 
 namespace plusone {
 namespace net {
@@ -63,6 +63,6 @@ private:
 } /* namespace net */
 } /* namespace plusone */
 
-#include "impl/resolver.ipp"
+#include <plusone/net/impl/resolver.ipp>
 
 #endif /* MADLIFE_resolver_061116025430_MADLIFE */

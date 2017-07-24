@@ -2,14 +2,11 @@
  * Copyright (c) 2017 Sergey Kovalevich <inndie@gmail.com>
  */
 
-#ifndef KSERGEY_exception_130717071552
-#define KSERGEY_exception_130717071552
+#ifndef KSERGEY_exception_240717100244
+#define KSERGEY_exception_240717100244
 
-#include <cstdio>
-#include <memory>
-#include <sstream>
-#include "../fmt.hpp"
-#include "../compiler.hpp"
+#include <plusone/fmt.hpp>
+#include <plusone/compiler.hpp>
 
 namespace plusone {
 
@@ -18,7 +15,7 @@ __force_inline exception::exception(std::string text)
 {}
 
 template< class... Args >
-exception::exception(const char* format, const Args&... args)
+__force_inline exception::exception(const char* format, const Args&... args)
     : what_{fmt::format(format, args...)}
 {}
 
@@ -29,4 +26,4 @@ __force_inline const char* exception::what() const noexcept
 
 } /* namespace plusone */
 
-#endif /* KSERGEY_exception_130717071552 */
+#endif /* KSERGEY_exception_240717100244 */

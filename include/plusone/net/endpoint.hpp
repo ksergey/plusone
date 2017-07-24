@@ -5,7 +5,7 @@
 #ifndef MADLIFE_endpoint_061116024156_MADLIFE
 #define MADLIFE_endpoint_061116024156_MADLIFE
 
-#include "common.hpp"
+#include <plusone/net/common.hpp>
 
 namespace plusone {
 namespace net {
@@ -59,6 +59,6 @@ public:
 } /* namespace net */
 } /* namespace plusone */
 
-#include "impl/endpoint.ipp"
+#include <plusone/net/impl/endpoint.ipp>
 
 #endif /* MADLIFE_endpoint_061116024156_MADLIFE */

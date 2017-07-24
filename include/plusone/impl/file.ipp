@@ -11,7 +11,7 @@
 #include <cerrno>
 #include <cstring>
 #include <utility>
-#include "../compiler.hpp"
+#include <plusone/compiler.hpp>
 
 namespace plusone {
 

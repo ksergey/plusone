@@ -34,7 +34,9 @@ struct index_of_impl< T, std::tuple< U, Ts... > >
 template< class T >
 struct index_of_impl< T, std::tuple<> >
     : std::integral_constant< int, -1 >
-{ static_assert((sizeof(T) + 1) == 0, "Type T not found in tuple"); };
+{
+    static_assert( (sizeof(T) + 1) == 0, "Type T not found in tuple" );
+};
 template< class T, class Tuple >
 constexpr std::size_t index_of = index_of_impl< T, Tuple >::value;
 
@@ -112,16 +114,25 @@ struct tagged_tuple
 };
 
 template< class Key, class... Ts >
-inline detail::type_of< Key, tagged_tuple< Ts... > >& get(tagged_tuple< Ts... >& t)
-{ return std::get< detail::key_index< Key, tagged_tuple< Ts... > > >(t); }
+inline detail::type_of< Key, tagged_tuple< Ts... > >&
+get(tagged_tuple< Ts... >& t)
+{
+    return std::get< detail::key_index< Key, tagged_tuple< Ts... > > >(t);
+}
 
 template< class Key, class... Ts >
-inline const detail::type_of< Key, tagged_tuple< Ts... > >& get(const tagged_tuple< Ts... >& t)
-{ return std::get< detail::key_index< Key, tagged_tuple< Ts... > > >(t); }
+inline const detail::type_of< Key, tagged_tuple< Ts... > >&
+get(const tagged_tuple< Ts... >& t)
+{
+    return std::get< detail::key_index< Key, tagged_tuple< Ts... > > >(t);
+}
 
 template< class Key, class... Ts >
-inline const detail::type_of< Key, tagged_tuple< Ts... > >&& get(const tagged_tuple< Ts... >&& t)
-{ return std::get< detail::key_index< Key, tagged_tuple< Ts... > > >(t); }
+inline const detail::type_of< Key, tagged_tuple< Ts... > >&&
+get(const tagged_tuple< Ts... >&& t)
+{
+    return std::get< detail::key_index< Key, tagged_tuple< Ts... > > >(t);
+}
 
 } /* namespace plusone */
 

@@ -16,8 +16,8 @@
 #include <cerrno>
 #include <cstring>
 #include <stdexcept>
-#include "../compiler.hpp"
-#include "../exception.hpp"
+#include <plusone/compiler.hpp>
+#include <plusone/exception.hpp>
 
 namespace plusone {
 namespace net {

@@ -7,7 +7,7 @@
 
 #include <fcntl.h>
 #include <string>
-#include "exception.hpp"
+#include <plusone/exception.hpp>
 
 namespace plusone {
 
@@ -90,6 +90,6 @@ private:
 
 } /* namespace plusone */
 
-#include "impl/file.ipp"
+#include <plusone/impl/file.ipp>
 
 #endif /* KSERGEY_file_050117013737 */

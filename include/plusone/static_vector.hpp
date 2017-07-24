@@ -117,6 +117,6 @@ public:
 
 } /* namespace plusone */
 
-#include "impl/static_vector.ipp"
+#include <plusone/impl/static_vector.ipp>
 
 #endif /* KSERGEY_static_vector_030217004526 */

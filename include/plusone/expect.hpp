@@ -5,24 +5,7 @@
 #ifndef MADLIFE_expect_111116215130_MADLIFE
 #define MADLIFE_expect_111116215130_MADLIFE
 
-#include <iostream>
-#include <cstdlib>
-#include "compiler.hpp"
-
-namespace plusone {
-
-/** Abort function for any assert-like macroses */
-__force_inline void abort(const char* file, int line, const char* expr, const char* text = nullptr)
-{
-    std::cerr << "\n *** expression \"" << expr << "\" at \"" << file << ':' << line << "\" failed ***\n";
-    if (text) {
-        std::cerr << "   \"" << text << "\"\n";
-    }
-    std::cerr << '\n';
-    std::abort();
-}
-
-} /* namespace plusone */
+#include <plusone/compiler.hpp>
 
 #if ! defined(expect)
 #   if defined(NDEBUG)
@@ -33,5 +16,7 @@ __force_inline void abort(const char* file, int line, const char* expr, const ch
 #       define __expectm(expr, text) do { if (__unlikely(!(expr))) { plusone::abort(__FILE__, __LINE__, #expr, text); } } while (false)
 #   endif /* defined(NDEBUG) */
 #endif /* ! defined(expect) */
+
+#include <plusone/impl/expect.ipp>
 
 #endif /* MADLIFE_expect_111116215130_MADLIFE */
