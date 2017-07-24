@@ -11,8 +11,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(PLUSONE_BUILD_EXAMPLES "Build library examples" ON)
+option(PLUSONE_BUILD_TESTS "Build library tests" ON)
+
+set(DOCTEST_WITH_TESTS OFF CACHE BOOL "")
 
 add_subdirectory(deps/fmt EXCLUDE_FROM_ALL)
+add_subdirectory(deps/doctest EXCLUDE_FROM_ALL)
 
 set(libs fmt::fmt-header-only)
 
@@ -22,4 +26,9 @@ target_link_libraries(plusone INTERFACE ${libs})
 
 if (PLUSONE_BUILD_EXAMPLES)
     add_subdirectory(examples)
+endif()
+
+if (PLUSONE_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
 endif()
