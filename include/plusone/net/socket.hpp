@@ -6,9 +6,9 @@
 #define MADLIFE_socket_051116231354_MADLIFE
 
 #include <utility>
-#include "common.hpp"
-#include "protocol.hpp"
-#include "address_v4.hpp"
+#include <plusone/net/common.hpp>
+#include <plusone/net/protocol.hpp>
+#include <plusone/net/address_v4.hpp>
 
 namespace plusone {
 namespace net {
@@ -115,6 +115,6 @@ public:
 } /* namespace net */
 } /* namespace plusone */
 
-#include "impl/socket.ipp"
+#include <plusone/net/impl/socket.ipp>
 
 #endif /* MADLIFE_socket_051116231354_MADLIFE */

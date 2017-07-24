@@ -19,33 +19,19 @@ private:
 
 public:
     /** Construct object with error code */
-    __force_inline socket_result(int code = 0)
-        : code_(code)
-    {}
+    socket_result(int code = 0);
 
     /** Return error code */
-    __force_inline int code() const noexcept
-    {
-        return code_;
-    }
+    int code() const noexcept;
 
     /** Return error code description */
-    __force_inline const char* str() const noexcept
-    {
-        return ::strerror(code_);
-    }
+    const char* str() const noexcept;
 
     /** Return true if error is EINTR */
-    __force_inline bool interrupted() const noexcept
-    {
-        return code_ == EINTR;
-    }
+    bool interrupted() const noexcept;
 
     /** Return true if error is EAGAIN or EWOULDBLOCK */
-    __force_inline bool again() const noexcept
-    {
-        return code_ == EAGAIN || code_ == EWOULDBLOCK;
-    }
+    bool again() const noexcept;
 };
 
 /** Socket operation result */
@@ -58,28 +44,16 @@ private:
 
 public:
     /** Construct op_result */
-    op_result(int value = 0)
-        : socket_result(value != 0 ? errno : 0)
-        , value_(value)
-    {}
+    op_result(int value = 0);
 
     /** Return true if operation finished successful */
-    __force_inline bool success() const noexcept
-    {
-        return value_ == 0;
-    }
+    bool success() const noexcept;
 
     /** Return success() */
-    __force_inline explicit operator bool() const noexcept
-    {
-        return success();
-    }
+    explicit operator bool() const noexcept;
 
     /** Return !success() */
-    __force_inline bool operator!() const noexcept
-    {
-        return !success();
-    }
+    bool operator!() const noexcept;
 };
 
 /** Socket input/output operation result */
@@ -92,40 +66,22 @@ private:
 
 public:
     /** Construct io_result */
-    io_result(ssize_t value = 0)
-        : socket_result(value != 0 ? errno : 0)
-        , value_(value)
-    {}
+    io_result(ssize_t value = 0);
 
     /** Return true if operation finished successful */
-    __force_inline bool success() const noexcept
-    {
-        return value_ > 0;
-    }
+    bool success() const noexcept;
 
     /** Return success() */
-    __force_inline explicit operator bool() const noexcept
-    {
-        return success();
-    }
+    explicit operator bool() const noexcept;
 
     /** Return !success() */
-    __force_inline bool operator!() const noexcept
-    {
-        return !success();
-    }
+    bool operator!() const noexcept;
 
     /** Return read/write bytes count */
-    __force_inline size_t bytes() const noexcept
-    {
-        return value_;
-    }
+    std::size_t bytes() const noexcept;
 
     /** Return true if disconnect happend */
-    __force_inline bool is_disconnected() const noexcept
-    {
-        return value_ == 0;
-    }
+    bool is_disconnected() const noexcept;
 };
 
 /** Socket accept operation result */
@@ -138,37 +94,24 @@ private:
 
 public:
     /** Construct accept_result */
-    accept_result(int s = invalid_socket)
-        : socket_result(s == invalid_socket ? errno : 0)
-        , sock_(s)
-    {}
+    accept_result(int s = invalid_socket);
 
     /** Return true if operation finished successful */
-    __force_inline bool success() const noexcept
-    {
-        return sock_.valid();
-    }
+    bool success() const noexcept;
 
     /** Return success() */
-    __force_inline explicit operator bool() const noexcept
-    {
-        return success();
-    }
+    explicit operator bool() const noexcept;
 
     /** Return !success() */
-    __force_inline bool operator!() const noexcept
-    {
-        return !success();
-    }
+    bool operator!() const noexcept;
 
     /** Return accepted socket */
-    __force_inline socket&& get() noexcept
-    {
-        return std::move(sock_);
-    }
+    socket&& get() noexcept;
 };
 
 } /* namespace net */
 } /* namespace plusone */
+
+#include <plusone/net/impl/result.ipp>
 
 #endif /* MADLIFE_result_051116235729_MADLIFE */

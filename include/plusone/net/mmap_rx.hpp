@@ -5,11 +5,11 @@
 #ifndef KSERGEY_mmap_rx_240417160759
 #define KSERGEY_mmap_rx_240417160759
 
-#include "socket.hpp"
-#include "socket_options.hpp"
-#include "../mapped_region.hpp"
-#include "../static_vector.hpp"
-#include "../math.hpp"
+#include <plusone/net/socket.hpp>
+#include <plusone/net/socket_options.hpp>
+#include <plusone/mapped_region.hpp>
+#include <plusone/static_vector.hpp>
+#include <plusone/math.hpp>
 
 namespace plusone {
 namespace net {
@@ -61,6 +61,6 @@ public:
 } /* namespace net */
 } /* namespace plusone */
 
-#include "impl/mmap_rx.ipp"
+#include <plusone/net/impl/mmap_rx.ipp>
 
 #endif /* KSERGEY_mmap_rx_240417160759 */
