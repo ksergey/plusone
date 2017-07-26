@@ -38,9 +38,6 @@ public:
     /** Const iterator type */
     using const_iterator = detail::static_vector_iterator< const T >;
 
-    static_vector(const static_vector&) = delete;
-    static_vector& operator=(const static_vector&) = delete;
-
     /** Default constructor */
     static_vector() = default;
 

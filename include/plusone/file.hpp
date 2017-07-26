@@ -42,7 +42,13 @@ using file_error = tagged_exception< struct file_tag >;
 
 /**
  * File class
- * implements simple operations
+ * The class wrap calls:
+ *   open
+ *   close
+ *   ftruncate
+ *   fstat (for size)
+ *   flock
+ *   dup
  */
 class file
 {
