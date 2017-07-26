@@ -80,7 +80,7 @@ public:
     bool operator!() const noexcept;
 
     /** Return file handle */
-    const file_descriptor& handle() const noexcept;
+    const file_descriptor& descriptor() const noexcept;
 
     /** Return size of file */
     std::size_t size() const;
@@ -88,14 +88,35 @@ public:
     /** Truncate file to required size */
     void truncate(std::size_t size);
 
-    /** Create temporary file */
-    static file temporary();
-
     /** Swap two files */
     void swap(file& v) noexcept;
 
+    /** Lock file, place an exclusive lock */
+    void lock();
+
+    /** Try to lock file */
+    bool try_lock();
+
+    /** Unlock file */
+    void unlock();
+
+    /** Lock file, place a shared lock */
+    void lock_shared();
+
+    /** Lock file, place a shared lock */
+    bool try_lock_shared();
+
+    /** Unlock file */
+    void unlock_shared();
+
+    /** Duplicate file descriptor */
+    file dup() const;
+
+    /** Create temporary file */
+    static file temporary();
+
 private:
-    file(int fd);
+    file(file_descriptor fd);
 
     enum what_do
     {
@@ -106,6 +127,8 @@ private:
 
     void init(what_do what, const std::string& path, open_mode mode,
             int perms = default_permissions);
+    void do_lock(int op);
+    bool do_try_lock(int op);
 };
 
 } /* namespace plusone */

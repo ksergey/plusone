@@ -7,6 +7,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/file.h>
 #include <unistd.h>
 #include <cerrno>
 #include <cstring>
@@ -56,7 +57,7 @@ __force_inline bool file::operator!() const noexcept
     return fd_.operator!();
 }
 
-__force_inline const file_descriptor& file::handle() const noexcept
+__force_inline const file_descriptor& file::descriptor() const noexcept
 {
     return fd_;
 }
@@ -77,6 +78,49 @@ __force_inline void file::truncate(std::size_t size)
     }
 }
 
+__force_inline void file::swap(file& v) noexcept
+{
+    fd_.swap(v.fd_);
+}
+
+__force_inline void file::lock()
+{
+    do_lock(LOCK_EX);
+}
+
+__force_inline bool file::try_lock()
+{
+    return do_try_lock(LOCK_EX);
+}
+
+__force_inline void file::unlock()
+{
+    auto rc = ::flock(fd_, LOCK_UN);
+    if (__unlikely(rc == -1)) {
+        throw file_error("Unlock file error ({})", std::strerror(errno));
+    }
+}
+
+__force_inline void file::lock_shared()
+{
+    do_lock(LOCK_SH);
+}
+
+__force_inline bool file::try_lock_shared()
+{
+    return do_try_lock(LOCK_SH);
+}
+
+__force_inline void file::unlock_shared()
+{
+    unlock();
+}
+
+__force_inline file file::dup() const
+{
+    return file{descriptor().dup()};
+}
+
 __force_inline file file::temporary()
 {
     FILE* temp_file = tmpfile();
@@ -94,13 +138,8 @@ __force_inline file file::temporary()
     return file(fd);
 }
 
-__force_inline void file::swap(file& v) noexcept
-{
-    fd_.swap(v.fd_);
-}
-
-__force_inline file::file(int fd)
-    : fd_{fd}
+__force_inline file::file(file_descriptor fd)
+    : fd_{std::move(fd)}
 {}
 
 __force_inline void file::init(what_do what, const std::string& path, open_mode mode,
@@ -153,9 +192,30 @@ __force_inline void file::init(what_do what, const std::string& path, open_mode 
     }
 
     if (__unlikely(!fd_)) {
-        throw file_error("Open file \"{}\" error ({})}",
+        throw file_error("Open file \"{}\" error ({})",
             path.c_str(), std::strerror(errno));
     }
+}
+
+__force_inline void file::do_lock(int op)
+{
+    auto rc = ::flock(fd_, op);
+    if (__unlikely(rc == -1)) {
+        throw file_error("Lock file error ({})", std::strerror(errno));
+    }
+}
+
+__force_inline bool file::do_try_lock(int op)
+{
+    auto rc = ::flock(fd_, op | LOCK_NB);
+    if (rc == -1) {
+        if (__unlikely(errno != EWOULDBLOCK)) {
+            throw file_error("Lock file error ({})", std::strerror(errno));
+        } else {
+            return false;
+        }
+    }
+    return true;
 }
 
 } /* namespace plusone */

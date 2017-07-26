@@ -72,7 +72,7 @@ __force_inline mapped_region::mapped_region(int fd, const options& opts)
 {}
 
 __force_inline mapped_region::mapped_region(file& f, std::size_t file_size, const options& opts)
-    : mapped_region(f.handle(), file_size, opts)
+    : mapped_region(f.descriptor(), file_size, opts)
 {}
 
 __force_inline mapped_region::mapped_region(file& f, const options& opts)

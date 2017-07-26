@@ -17,9 +17,10 @@ using file_descriptor_error = tagged_exception< struct file_descriptor_tag >;
  */
 class file_descriptor
 {
-private:
+public:
     static constexpr int invalid_descriptor = -1;
 
+private:
     /* OS native file descritor */
     int fd_{invalid_descriptor};
 
@@ -35,14 +36,10 @@ public:
     file_descriptor(int fd) noexcept;
     ~file_descriptor() noexcept;
 
-    /**
-     * Cast to OS native descriptor
-     */
+    /** Cast to OS native descriptor */
     int get() const noexcept;
 
-    /**
-     * Cast to OS native descriptor
-     */
+    /** Cast to OS native descriptor */
     operator int() const noexcept;
 
     /**
