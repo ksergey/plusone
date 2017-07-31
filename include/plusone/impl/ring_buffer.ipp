@@ -5,6 +5,7 @@
 #ifndef KSERGEY_ring_buffer_270717003431
 #define KSERGEY_ring_buffer_270717003431
 
+#include <plusone/math.hpp>
 #include <plusone/compiler.hpp>
 
 namespace plusone {
@@ -28,8 +29,8 @@ template< class T >
 __force_inline ring_buffer< T >::ring_buffer(std::size_t capacity)
     : capacity_{capacity}
 {
-    if (__unlikely(capacity_ == 0 || (capacity_ & (capacity_ - 1)) != 0)) {
-        throw ring_buffer_error("Capacity must be power of two and greater zero");
+    if (__unlikely(!is_power_of_two(capacity_))) {
+        throw ring_buffer_error("Capacity must be power of two");
     }
 
     data_ = new storage_type[capacity_];

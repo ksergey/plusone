@@ -9,3 +9,7 @@ add_test(file file_test)
 add_executable(ring_buffer_test ring_buffer.cpp)
 target_link_libraries(ring_buffer_test plusone doctest)
 add_test(ring_buffer ring_buffer_test)
+
+add_executable(math_test math.cpp)
+target_link_libraries(math_test plusone doctest)
+add_test(math math_test)
