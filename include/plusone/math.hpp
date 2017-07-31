@@ -16,11 +16,20 @@ constexpr std::uint64_t upper_power_of_two(std::uint64_t num) noexcept;
 template< class T >
 constexpr bool is_power_of_two(T v) noexcept;
 
-/**
- * Get power of 10 (pre-calculated)
- * @return power of 10 for exponent or -1 in case of exponent is too big
- */
-constexpr std::int64_t pow10(unsigned exponent) noexcept;
+/** Static power of 10 calculations for uint64 */
+struct pow10
+{
+    /** Exponent table size */
+    static constexpr std::size_t table_size = 19;
+
+    /**
+     * Get power of 10 (pre-calculated)
+     * @return power of 10 for exponent
+     *
+     * The function is unsafe in case of exponent equeal or greater table_size (UB)
+     */
+    static constexpr std::uint64_t get(unsigned exponent) noexcept;
+};
 
 } /* namespace plusone */
 

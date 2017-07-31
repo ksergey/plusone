@@ -34,7 +34,7 @@ TEST_CASE("Is power of two")
     REQUIRE(plusone::is_power_of_two(65536) == true);
 }
 
-TEST_CASE("Pow10 detail")
+TEST_CASE("Pow detail 0")
 {
     constexpr auto v1 = plusone::detail::pow(10, 0);
     constexpr auto v2 = plusone::detail::pow(10, 1);
@@ -47,13 +47,22 @@ TEST_CASE("Pow10 detail")
     REQUIRE(v4 == 100000);
 }
 
+TEST_CASE("Pow detail 1")
+{
+    constexpr auto arr = plusone::detail::make_pow_array< std::int64_t, 19 >(10);
+    using arr_type = decltype(arr);
+
+    REQUIRE(std::is_same< arr_type::value_type, std::int64_t >());
+    REQUIRE(arr.size() == 19);
+
+    for (std::size_t i = 0; i < arr.size(); ++i) {
+        REQUIRE(arr[i] == std::pow(10ll, i));
+    }
+}
+
 TEST_CASE("Pow10")
 {
     for (unsigned i = 0; i < 19; ++i) {
-        REQUIRE(plusone::pow10(i) == std::pow(10ll, i));
+        REQUIRE(plusone::pow10::get(i) == std::pow(10ll, i));
     }
-
-    REQUIRE(plusone::pow10(19) == -1);
-    REQUIRE(plusone::pow10(20) == -1);
-    REQUIRE(plusone::pow10(21) == -1);
 }

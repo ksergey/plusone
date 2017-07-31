@@ -7,40 +7,32 @@
 
 #include <type_traits>
 #include <array>
+#include <plusone/expect.hpp>
 #include <plusone/compiler.hpp>
 
 namespace plusone {
 namespace detail {
 
 template< class T >
-__force_inline constexpr T pow(T base, unsigned exponent) noexcept
+constexpr T pow(T base, unsigned exponent) noexcept
 {
     static_assert( std::is_integral< T >(), "T must be integral" );
-
     return exponent == 0 ? 1 : base * pow(base, exponent - 1);
 }
 
-constexpr std::array< std::int64_t, 19 > pow10table = {
-    pow< std::int64_t >(10, 0),
-    pow< std::int64_t >(10, 1),
-    pow< std::int64_t >(10, 2),
-    pow< std::int64_t >(10, 3),
-    pow< std::int64_t >(10, 4),
-    pow< std::int64_t >(10, 5),
-    pow< std::int64_t >(10, 6),
-    pow< std::int64_t >(10, 7),
-    pow< std::int64_t >(10, 8),
-    pow< std::int64_t >(10, 9),
-    pow< std::int64_t >(10, 10),
-    pow< std::int64_t >(10, 11),
-    pow< std::int64_t >(10, 12),
-    pow< std::int64_t >(10, 13),
-    pow< std::int64_t >(10, 14),
-    pow< std::int64_t >(10, 15),
-    pow< std::int64_t >(10, 16),
-    pow< std::int64_t >(10, 17),
-    pow< std::int64_t >(10, 18)
-};
+template< class T, std::size_t... Is >
+constexpr auto make_pow_array(T base, std::index_sequence< Is... >) noexcept
+{
+    return std::array< T, sizeof...(Is) >{{pow< T >(base, Is)...}};
+}
+
+template< class T, std::size_t N >
+constexpr std::array< T, N > make_pow_array(T base) noexcept
+{
+    return make_pow_array(base, std::make_index_sequence< N >{});
+}
+
+constexpr auto pow10table = make_pow_array< std::uint64_t, pow10::table_size >(10);
 
 } /* namespace detail */
 
@@ -64,9 +56,9 @@ __force_inline constexpr bool is_power_of_two(T v) noexcept
     return (v != 0) && ((v & (v - 1)) == 0);
 }
 
-__force_inline constexpr std::int64_t pow10(unsigned exponent) noexcept
+__force_inline constexpr std::uint64_t pow10::get(unsigned exponent) noexcept
 {
-    return exponent < detail::pow10table.size() ? detail::pow10table[exponent] : -1;
+    return detail::pow10table[exponent];
 }
 
 } /* namespace plusone */
