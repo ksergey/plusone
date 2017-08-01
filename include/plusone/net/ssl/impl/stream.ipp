@@ -6,6 +6,7 @@
 #define KSERGEY_stream_020817011241
 
 #include <plusone/compiler.hpp>
+#include <plusone/expect.hpp>
 #include <plusone/net/common.hpp>
 
 namespace plusone {
@@ -76,6 +77,24 @@ __force_inline void stream::close() noexcept
         ::SSL_free(handle_);
         handle_ = nullptr;
     }
+}
+
+__force_inline handshake_result stream::handshake() noexcept
+{
+    __expect( native_handle() );
+    return SSL_connect(native_handle());
+}
+
+__force_inline op_result stream::send(const void* buf, std::size_t len) noexcept
+{
+    __expect( native_handle() );
+    return SSL_write(native_handle(), buf, len);
+}
+
+__force_inline op_result stream::recv(void* buf, std::size_t len) noexcept
+{
+    __expect( native_handle() );
+    return SSL_read(native_handle(), buf, len);
 }
 
 } /* namespace ssl */

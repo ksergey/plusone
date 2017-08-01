@@ -102,7 +102,7 @@ __force_inline op_result socket::bind(const sockaddr* addr, socklen_t addrlen) n
     return ::bind(native_handle(), addr, addrlen);
 }
 
-__force_inline op_result socket::bind(uint16_t port, const address_v4& addr) noexcept
+__force_inline op_result socket::bind(std::uint16_t port, const address_v4& addr) noexcept
 {
     sockaddr_in bind_addr{};
     bind_addr.sin_family = AF_INET;
@@ -122,12 +122,12 @@ __force_inline accept_result socket::accept(sockaddr* addr, socklen_t* addrlen) 
     return ::accept(native_handle(), addr, addrlen);
 }
 
-__force_inline io_result socket::send(const void* buf, size_t len) noexcept
+__force_inline io_result socket::send(const void* buf, std::size_t len) noexcept
 {
     return ::send(native_handle(), buf, len, 0);
 }
 
-__force_inline io_result socket::sendto(const void* buf, size_t len,
+__force_inline io_result socket::sendto(const void* buf, std::size_t len,
         const sockaddr* dest_addr, socklen_t addrlen) noexcept
 {
     return ::sendto(native_handle(), buf, len, 0, dest_addr, addrlen);
@@ -138,12 +138,12 @@ __force_inline io_result socket::sendmsg(const msghdr* message) noexcept
     return ::sendmsg(native_handle(), message, 0);
 }
 
-__force_inline io_result socket::recv(void* buf, size_t len) noexcept
+__force_inline io_result socket::recv(void* buf, std::size_t len) noexcept
 {
     return ::recv(native_handle(), buf, len, 0);
 }
 
-__force_inline io_result socket::recvfrom(void* buf, size_t len, sockaddr* src_addr, socklen_t* addrlen) noexcept
+__force_inline io_result socket::recvfrom(void* buf, std::size_t len, sockaddr* src_addr, socklen_t* addrlen) noexcept
 {
     return ::recvfrom(native_handle(), buf, len, 0, src_addr, addrlen);
 }

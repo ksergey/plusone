@@ -8,32 +8,32 @@
 namespace plusone {
 namespace net {
 
-__force_inline socket_result::socket_result(int code)
+__force_inline error_code::error_code(int code)
     : code_(code)
 {}
 
-__force_inline int socket_result::code() const noexcept
+__force_inline int error_code::code() const noexcept
 {
     return code_;
 }
 
-__force_inline const char* socket_result::str() const noexcept
+__force_inline const char* error_code::str() const noexcept
 {
     return ::strerror(code_);
 }
 
-__force_inline bool socket_result::interrupted() const noexcept
+__force_inline bool error_code::interrupted() const noexcept
 {
     return code_ == EINTR;
 }
 
-__force_inline bool socket_result::again() const noexcept
+__force_inline bool error_code::again() const noexcept
 {
     return code_ == EAGAIN || code_ == EWOULDBLOCK;
 }
 
 __force_inline op_result::op_result(int value)
-    : socket_result(value != 0 ? errno : 0)
+    : error_code(value != 0 ? errno : 0)
     , value_(value)
 {}
 
@@ -43,7 +43,7 @@ __force_inline op_result::operator bool() const noexcept
 }
 
 __force_inline io_result::io_result(ssize_t value)
-    : socket_result(value != 0 ? errno : 0)
+    : error_code(value != 0 ? errno : 0)
     , value_(value)
 {}
 
@@ -63,7 +63,7 @@ __force_inline bool io_result::is_disconnected() const noexcept
 }
 
 __force_inline accept_result::accept_result(int s)
-    : socket_result(s == invalid_socket ? errno : 0)
+    : error_code(s == invalid_socket ? errno : 0)
     , sock_(s)
 {}
 

@@ -7,6 +7,7 @@
 
 #include <plusone/net/socket.hpp>
 #include <plusone/net/ssl/context.hpp>
+#include <plusone/net/ssl/result.hpp>
 
 namespace plusone {
 namespace net {
@@ -55,6 +56,15 @@ public:
 
     /** Shutdown socket */
     void close() noexcept;
+
+    /** Do SSL handshake */
+    handshake_result handshake() noexcept;
+
+    /** Do write to stream */
+    op_result send(const void* buf, std::size_t len) noexcept;
+
+    /** Do read from stream */
+    op_result recv(void* buf, std::size_t len) noexcept;
 };
 
 } /* namespace ssl */

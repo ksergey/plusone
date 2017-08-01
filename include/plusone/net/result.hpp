@@ -10,8 +10,8 @@
 namespace plusone {
 namespace net {
 
-/** Socket result object */
-class socket_result
+/** Socket error code */
+class error_code
 {
 private:
     /* Error code */
@@ -19,7 +19,7 @@ private:
 
 public:
     /** Construct object with error code */
-    socket_result(int code = 0);
+    error_code(int code = 0);
 
     /** Return error code */
     int code() const noexcept;
@@ -36,7 +36,7 @@ public:
 
 /** Socket operation result */
 class op_result final
-    : public socket_result
+    : public error_code
 {
 private:
     /* Result holder */
@@ -52,7 +52,7 @@ public:
 
 /** Socket input/output operation result */
 class io_result final
-    : public socket_result
+    : public error_code
 {
 private:
     /* Result holder */
@@ -74,7 +74,7 @@ public:
 
 /** Socket accept operation result */
 class accept_result final
-    : public socket_result
+    : public error_code
 {
 private:
     /* Accepted socket */
