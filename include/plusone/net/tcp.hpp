@@ -5,7 +5,7 @@
 #ifndef MADLIFE_tcp_061116025202_MADLIFE
 #define MADLIFE_tcp_061116025202_MADLIFE
 
-#include "detail/tcp.hpp"
+#include <plusone/net/socket.hpp>
 
 namespace plusone {
 namespace net {
@@ -14,23 +14,21 @@ namespace net {
 struct tcp
 {
     /** Connect socket to host */
-    __force_inline static socket connect(const std::string& node)
-    { return detail::connect(resolver(tcp_any, node)); }
+    static socket connect(const std::string& node);
 
     /** Connect socket to host */
-    __force_inline static socket connect(const std::string& node, const std::string& service)
-    { return detail::connect(resolver(tcp_any, node, service)); }
+    static socket connect(const std::string& node, const std::string& service);
 
     /** Bind socket */
-    __force_inline static socket bind(const std::string& node)
-    { return detail::bind(resolver(tcp_any, node, AI_PASSIVE)); }
+    static socket bind(const std::string& node);
 
     /** Bind socket */
-    __force_inline static socket bind(const std::string& node, const std::string& service)
-    { return detail::bind(resolver(tcp_any, node, service, AI_PASSIVE)); }
+    static socket bind(const std::string& node, const std::string& service);
 };
 
 } /* namespace net */
 } /* namespace plusone */
+
+#include <plusone/net/impl/tcp.ipp>
 
 #endif /* MADLIFE_tcp_061116025202_MADLIFE */
