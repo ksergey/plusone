@@ -27,9 +27,7 @@ __force_inline socket connect(const resolver& r)
         }
 
         if (s.connect(ep.data(), ep.size())) {
-            s.set_nonblock();
             s.set_cloexec();
-            s.set_option(socket_options::ip::tcp::nodelay(true));
             return s;
         }
     }
@@ -53,7 +51,6 @@ __force_inline socket bind(const resolver& r)
 
         s.set_option(socket_options::socket::reuse_address(true));
         if (s.bind(ep.data(), ep.size())) {
-            s.set_nonblock();
             s.set_cloexec();
             if (__unlikely(!s.listen())) {
                 throw socket_error("Failed to listen");
