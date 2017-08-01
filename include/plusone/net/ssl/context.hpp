@@ -5,8 +5,10 @@
 #ifndef KSERGEY_context_010817181652
 #define KSERGEY_context_010817181652
 
-#include <plusone/net/ssl/context_base.hpp>
 #include <openssl/ssl.h>
+#include <plusone/net/ssl/context_base.hpp>
+#include <plusone/net/ssl/error.hpp>
+#include <plusone/net/ssl/init.hpp>
 
 namespace plusone {
 namespace net {
@@ -15,6 +17,7 @@ namespace ssl {
 /** SSL context */
 class context
     : public context_base
+    , private init
 {
 private:
     SSL_CTX* ctx_{nullptr};

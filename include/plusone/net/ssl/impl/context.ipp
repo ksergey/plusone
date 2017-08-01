@@ -5,7 +5,7 @@
 #ifndef KSERGEY_context_010817183049
 #define KSERGEY_context_010817183049
 
-#include <plusone/compiler.hpp>
+#include <plusone/net/ssl/error.hpp>
 
 namespace plusone {
 namespace net {
@@ -26,13 +26,21 @@ __force_inline context::context(method m)
 {
     switch (m) {
         case context::sslv23:
+            ctx_ = ::SSL_CTX_new(::SSLv23_method());
             break;
         case context::sslv23_client:
+            ctx_ = ::SSL_CTX_new(::SSLv23_client_method());
             break;
         case context::sslv23_server:
+            ctx_ = ::SSL_CTX_new(::SSLv23_server_method());
             break;
         default:
+            ctx_ = ::SSL_CTX_new(nullptr);
             break;
+    }
+
+    if (__unlikely(!ctx_)) {
+        throw_error(::ERR_get_error());
     }
 }
 
