@@ -25,6 +25,9 @@ private:
     int sock_{invalid_socket};
 
 public:
+    /** Native socket handle type */
+    using native_handle_type = int;
+
     /** Move constructor */
     socket(socket&& s) noexcept;
 
@@ -41,7 +44,7 @@ public:
     explicit operator bool() const noexcept;
 
     /** Return native socket descriptor */
-    int get() noexcept;
+    native_handle_type native_handle() noexcept;
 
     /** Close the socket */
     void close() noexcept;
