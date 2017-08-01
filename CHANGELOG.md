@@ -1,5 +1,9 @@
 Version 10:
 
+* Added initial ssl stream support
+* Code cleanup (net/result.hpp)
+* Changed CMakeLists.txt option names
+
 --------------------------------------------------------------------------------
 Version 9:
 

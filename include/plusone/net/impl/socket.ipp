@@ -32,19 +32,9 @@ __force_inline socket::~socket()
     close();
 }
 
-__force_inline bool socket::valid() const noexcept
-{
-    return sock_ != invalid_socket;
-}
-
 __force_inline socket::operator bool() const noexcept
 {
-    return valid();
-}
-
-__force_inline bool socket::operator!() const noexcept
-{
-    return !valid();
+    return sock_ != invalid_socket;
 }
 
 __force_inline int socket::get() noexcept
@@ -54,7 +44,7 @@ __force_inline int socket::get() noexcept
 
 __force_inline void socket::close() noexcept
 {
-    if (valid()) {
+    if (operator bool()) {
         ::close(sock_);
         sock_ = invalid_socket;
     }

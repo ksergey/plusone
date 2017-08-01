@@ -37,14 +37,8 @@ public:
     /** Socket destructor */
     ~socket();
 
-    /** Return true if socket initialized */
-    bool valid() const noexcept;
-
-    /** Same as valid() */
+    /** Return true if socket is valid for i/o */
     explicit operator bool() const noexcept;
-
-    /** Same as !valid() */
-    bool operator!() const noexcept;
 
     /** Return native socket descriptor */
     int get() noexcept;

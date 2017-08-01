@@ -7,6 +7,7 @@ My personal utility library used in my proprietary projects
 * **C++14**: Robust support for most language features
 * **fmtlib**: Great formatting library (already included as submodule)
 * **doctest**: Unit testing library (already included as submodule)
+* **openssl**: SSL library (optional)
 * CMake 3.0 or later
 
 # Building

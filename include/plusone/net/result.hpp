@@ -46,14 +46,8 @@ public:
     /** Construct op_result */
     op_result(int value = 0);
 
-    /** Return true if operation finished successful */
-    bool success() const noexcept;
-
-    /** Return success() */
+    /** Return true if operation successfully executed */
     explicit operator bool() const noexcept;
-
-    /** Return !success() */
-    bool operator!() const noexcept;
 };
 
 /** Socket input/output operation result */
@@ -68,14 +62,8 @@ public:
     /** Construct io_result */
     io_result(ssize_t value = 0);
 
-    /** Return true if operation finished successful */
-    bool success() const noexcept;
-
-    /** Return success() */
+    /** Return true if operation successfully executed */
     explicit operator bool() const noexcept;
-
-    /** Return !success() */
-    bool operator!() const noexcept;
 
     /** Return read/write bytes count */
     std::size_t bytes() const noexcept;
@@ -96,14 +84,8 @@ public:
     /** Construct accept_result */
     accept_result(int s = invalid_socket);
 
-    /** Return true if operation finished successful */
-    bool success() const noexcept;
-
-    /** Return success() */
+    /** Return true if operation successfully executed */
     explicit operator bool() const noexcept;
-
-    /** Return !success() */
-    bool operator!() const noexcept;
 
     /** Return accepted socket */
     socket&& get() noexcept;

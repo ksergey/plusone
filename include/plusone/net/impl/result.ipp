@@ -37,19 +37,9 @@ __force_inline op_result::op_result(int value)
     , value_(value)
 {}
 
-__force_inline bool op_result::success() const noexcept
-{
-    return value_ == 0;
-}
-
 __force_inline op_result::operator bool() const noexcept
 {
-    return success();
-}
-
-__force_inline bool op_result::operator!() const noexcept
-{
-    return !success();
+    return value_ == 0;
 }
 
 __force_inline io_result::io_result(ssize_t value)
@@ -57,19 +47,9 @@ __force_inline io_result::io_result(ssize_t value)
     , value_(value)
 {}
 
-__force_inline bool io_result::success() const noexcept
-{
-    return value_ > 0;
-}
-
 __force_inline io_result::operator bool() const noexcept
 {
-    return success();
-}
-
-__force_inline bool io_result::operator!() const noexcept
-{
-    return !success();
+    return value_ > 0;
 }
 
 __force_inline std::size_t io_result::bytes() const noexcept
@@ -87,19 +67,9 @@ __force_inline accept_result::accept_result(int s)
     , sock_(s)
 {}
 
-__force_inline bool accept_result::success() const noexcept
-{
-    return sock_.valid();
-}
-
 __force_inline accept_result::operator bool() const noexcept
 {
-    return success();
-}
-
-__force_inline bool accept_result::operator!() const noexcept
-{
-    return !success();
+    return sock_.operator bool();
 }
 
 __force_inline socket&& accept_result::get() noexcept
