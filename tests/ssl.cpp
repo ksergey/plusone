@@ -4,6 +4,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest.h>
 #include <plusone/net/ssl/context.hpp>
+#include <plusone/net/ssl/stream.hpp>
 
 TEST_CASE("SSL context")
 {

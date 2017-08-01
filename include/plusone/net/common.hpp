@@ -23,8 +23,8 @@ namespace plusone {
 namespace net {
 
 /** Socket error types */
-using address_error = tagged_exception< struct address_tag >;
 using socket_error = tagged_exception< struct socket_tag >;
+using address_error = tagged_exception< struct address_tag >;
 using option_error = tagged_exception< struct option_tag >;
 
 /** Invalid socket descriptor value */

@@ -7,7 +7,6 @@
 
 #include <openssl/ssl.h>
 #include <plusone/net/ssl/context_base.hpp>
-#include <plusone/net/ssl/error.hpp>
 #include <plusone/net/ssl/init.hpp>
 
 namespace plusone {

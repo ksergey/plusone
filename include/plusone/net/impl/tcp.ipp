@@ -5,6 +5,7 @@
 #ifndef KSERGEY_tcp_010817124434
 #define KSERGEY_tcp_010817124434
 
+#include <plusone/expect.hpp>
 #include <plusone/net/resolver.hpp>
 #include <plusone/net/socket_options.hpp>
 
@@ -22,9 +23,7 @@ __force_inline socket connect(const resolver& r)
 {
     for (auto& ep: r) {
         socket s = socket::create(ep.domain(), ep.type(), ep.proto());
-        if (__unlikely(!s)) {
-            throw socket_error("Failed to create socket");
-        }
+        __expect( s );
 
         if (s.connect(ep.data(), ep.size())) {
             s.set_cloexec();
@@ -45,15 +44,14 @@ __force_inline socket bind(const resolver& r)
 {
     for (auto& ep: r) {
         socket s = socket::create(ep.domain(), ep.type(), ep.proto());
-        if (__unlikely(!s)) {
-            throw socket_error("Failed to create socket");
-        }
+        __expect( s );
 
         s.set_option(socket_options::socket::reuse_address(true));
         if (s.bind(ep.data(), ep.size())) {
             s.set_cloexec();
-            if (__unlikely(!s.listen())) {
-                throw socket_error("Failed to listen");
+            auto listen_rc = s.listen();
+            if (__unlikely(!listen_rc)) {
+                throw socket_error("Listen error ({})", listen_rc.str());
             }
             return s;
         }

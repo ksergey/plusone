@@ -5,7 +5,7 @@
 #ifndef KSERGEY_context_010817183049
 #define KSERGEY_context_010817183049
 
-#include <plusone/net/ssl/error.hpp>
+#include <plusone/net/ssl/common.hpp>
 
 namespace plusone {
 namespace net {
@@ -40,7 +40,7 @@ __force_inline context::context(method m)
     }
 
     if (__unlikely(!ctx_)) {
-        throw_error(::ERR_get_error());
+        throw error("SSL context create error ({})", ::ERR_reason_error_string(::ERR_get_error()));
     }
 }
 
