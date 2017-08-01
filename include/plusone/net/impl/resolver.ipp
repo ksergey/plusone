@@ -41,19 +41,9 @@ inline resolver::~resolver() noexcept
     }
 }
 
-inline bool resolver::valid() const noexcept
-{
-    return data_ != nullptr;
-}
-
 inline resolver::operator bool() const noexcept
 {
-    return valid();
-}
-
-inline bool resolver::operator!() const noexcept
-{
-    return !valid();
+    return data_ != nullptr;
 }
 
 inline resolver::const_iterator resolver::begin() const noexcept

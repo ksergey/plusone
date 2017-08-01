@@ -57,13 +57,13 @@ public:
 
     /**
      * Create socket
-     * @throw std::system_error in case of error
+     * @throw socket_error in case of error
      */
     static socket create(int family, int socktype, int protocol);
 
     /**
      * Create socket
-     * @throw std::system_error in case of error
+     * @throw socket_error in case of error
      */
     static socket create(const protocol& p);
 
