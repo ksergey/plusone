@@ -25,11 +25,11 @@ private:
     int sock_{invalid_socket};
 
 public:
-    /** Construct socket from lvalue reference */
-    socket(socket&& s);
+    /** Move constructor */
+    socket(socket&& s) noexcept;
 
     /** Move operator */
-    socket& operator=(socket&& s);
+    socket& operator=(socket&& s) noexcept;
 
     /** Construct socket from native descriptor */
     socket(int d = invalid_socket);
@@ -58,10 +58,16 @@ public:
     /** Switch the socket cloexec mode */
     bool set_cloexec(bool flag = true) noexcept;
 
-    /** Create socket */
+    /**
+     * Create socket
+     * @throw socket_error in case of error
+     */
     static socket create(int family, int socktype, int protocol);
 
-    /** Create socket */
+    /**
+     * Create socket
+     * @throw socket_error in case of error
+     */
     static socket create(const protocol& p);
 
     /** Establish connection */
@@ -83,8 +89,7 @@ public:
     io_result send(const void* buf, size_t len) noexcept;
 
     /** Send data into socket */
-    io_result sendto(const void* buf, size_t len,
-            const sockaddr* dest_addr, socklen_t addrlen) noexcept;
+    io_result sendto(const void* buf, size_t len, const sockaddr* dest_addr, socklen_t addrlen) noexcept;
 
     /** Send data into socket */
     io_result sendmsg(const msghdr* message) noexcept;
@@ -100,8 +105,7 @@ public:
     io_result recvmsg(msghdr* message) noexcept;
 
     /** Recv multiple data from socket */
-    io_result recvmmsg(mmsghdr* msgvec, unsigned int vlen,
-            timespec* timeout = nullptr) noexcept;
+    io_result recvmmsg(mmsghdr* msgvec, unsigned int vlen, timespec* timeout = nullptr) noexcept;
 
     /** Set socket option */
     template< typename OptionT >
@@ -110,6 +114,9 @@ public:
     /** Get socket option */
     template< typename OptionT >
     op_result get_option(OptionT& option) noexcept;
+
+    /** Swap two sockets */
+    void swap(socket& v) noexcept;
 };
 
 } /* namespace net */
