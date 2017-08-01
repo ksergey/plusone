@@ -1,3 +1,6 @@
+Version 10:
+
+--------------------------------------------------------------------------------
 Version 9:
 
 * Added swap method to net::socket class
