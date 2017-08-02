@@ -40,6 +40,7 @@ int main(int argc, char* argv[])
         }
 
         stream.socket().set_nonblock();
+        stream.socket().set_option(plusone::net::socket_options::ip::tcp::nodelay{true});
 
         char response_buffer[1024 * 1024];
         std::size_t block = 32;

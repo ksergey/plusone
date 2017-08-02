@@ -1,8 +1,7 @@
 Version 10:
 
 * Added initial ssl stream support
-* Added throw_exception
-* Code cleanup (net/result.hpp)
+* Code cleanup
 * Changed CMakeLists.txt option names
 
 --------------------------------------------------------------------------------
