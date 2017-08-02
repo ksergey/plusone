@@ -22,7 +22,18 @@ __force_inline unsigned long error_code::code() const noexcept
 
 __force_inline const char* error_code::str() const noexcept
 {
-    return ::ERR_reason_error_string(code_);
+    const char* s = ::ERR_reason_error_string(code_);
+    return s ? s : "plusone.net.ssl";
+}
+
+__force_inline bool error_code::again() const noexcept
+{
+    return code() == SSL_ERROR_WANT_READ || code() == SSL_ERROR_WANT_WRITE || code() == SSL_ERROR_NONE;
+}
+
+__force_inline bool error_code::disconnected() const noexcept
+{
+    return code() == SSL_ERROR_ZERO_RETURN;
 }
 
 __force_inline handshake_result::handshake_result(int value)

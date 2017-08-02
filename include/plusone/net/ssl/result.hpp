@@ -26,6 +26,12 @@ public:
 
     /** Return error code description */
     const char* str() const noexcept;
+
+    /** Return true if need to repeat last op again */
+    bool again() const noexcept;
+
+    /** Return true if peer disconnected */
+    bool disconnected() const noexcept;
 };
 
 /** SSL stream handshake operation result */

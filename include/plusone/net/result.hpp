@@ -69,7 +69,7 @@ public:
     std::size_t bytes() const noexcept;
 
     /** Return true if disconnect happend */
-    bool is_disconnected() const noexcept;
+    bool disconnected() const noexcept;
 };
 
 /** Socket accept operation result */

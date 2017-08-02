@@ -9,6 +9,7 @@
 
 using namespace std::string_literals;
 
+//#define HOST "api.ipify.org"
 #define HOST "api.ipify.org"
 
 const std::string request =
@@ -38,14 +39,31 @@ int main(int argc, char* argv[])
             throw std::runtime_error("Send request error ("s + send_rc.str() + ")"s);
         }
 
+        stream.socket().set_nonblock();
+
         char response_buffer[1024 * 1024];
-        auto recv_rc = stream.recv(response_buffer, sizeof(response_buffer));
-        if (!recv_rc) {
-            throw std::runtime_error("Receive response error ("s + recv_rc.str() + ")"s);
+        std::size_t block = 32;
+        std::size_t offset = 0;
+
+        while (true) {
+            auto recv_rc = stream.recv(response_buffer + offset, std::min(block, sizeof(response_buffer) - offset));
+            if (recv_rc) {
+                offset += recv_rc.bytes();
+                if (recv_rc.bytes() != block) {
+                    break;
+                }
+            } else {
+                if (recv_rc.disconnected()) {
+                    break;
+                } else if (!recv_rc.again()) {
+                    throw std::runtime_error("Receive response error ("s + recv_rc.str() + ", "
+                            + std::to_string(recv_rc.code()) + ")"s);
+                }
+            }
         }
 
         std::cout << "Result:\n";
-        std::cout.write(response_buffer, recv_rc.bytes());
+        std::cout.write(response_buffer, offset);
         std::cout << '\n';
 
     } catch (const std::exception& e) {

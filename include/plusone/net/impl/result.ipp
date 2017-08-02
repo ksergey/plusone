@@ -57,7 +57,7 @@ __force_inline std::size_t io_result::bytes() const noexcept
     return value_;
 }
 
-__force_inline bool io_result::is_disconnected() const noexcept
+__force_inline bool io_result::disconnected() const noexcept
 {
     return value_ == 0;
 }
