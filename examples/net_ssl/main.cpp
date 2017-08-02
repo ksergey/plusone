@@ -5,18 +5,48 @@
 #include <iostream>
 #include <plusone/net/ssl/context.hpp>
 #include <plusone/net/ssl/stream.hpp>
-#include <plusone/net/resolver.hpp>
+#include <plusone/net/tcp.hpp>
+
+using namespace std::string_literals;
+
+#define HOST "api.ipify.org"
+
+const std::string request =
+    "GET / HTTP/1.0\r\n"
+    "Host: " HOST "\r\n"
+    "Accept: */*\r\n"
+    "Connection: close\r\n\r\n";
 
 int main(int argc, char* argv[])
 {
     try {
-        //plusone::net::resolver resolver{plusone::net::tcp_any, argv[1]};
-        //if (resolver) {
-        //    std::cout << "Resolved:\n";
-        //    for (auto& entry: resolver) {
-        //        std::cout << entry.str() << "\n";
-        //    }
-        //}
+        plusone::net::ssl::context context{plusone::net::ssl::context::sslv23_client};
+
+        auto socket = plusone::net::tcp::connect(HOST, "https");
+        if (!socket) {
+            throw std::runtime_error("Failed to connect to " HOST);
+        }
+
+        plusone::net::ssl::stream stream{context, std::move(socket)};
+        auto handshake_rc = stream.handshake();
+        if (!handshake_rc) {
+            throw std::runtime_error("Handshake error ("s + handshake_rc.str() + ")"s);
+        }
+
+        auto send_rc = stream.send(request.data(), request.size());
+        if (!send_rc) {
+            throw std::runtime_error("Send request error ("s + send_rc.str() + ")"s);
+        }
+
+        char response_buffer[1024 * 1024];
+        auto recv_rc = stream.recv(response_buffer, sizeof(response_buffer));
+        if (!recv_rc) {
+            throw std::runtime_error("Receive response error ("s + recv_rc.str() + ")"s);
+        }
+
+        std::cout << "Result:\n";
+        std::cout.write(response_buffer, recv_rc.bytes());
+        std::cout << '\n';
 
     } catch (const std::exception& e) {
         std::cout << "ERROR: " << e.what() << '\n';

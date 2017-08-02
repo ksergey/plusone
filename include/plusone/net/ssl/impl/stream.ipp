@@ -16,7 +16,7 @@ namespace ssl {
 __force_inline stream::stream(context& ctx, socket_type socket)
     : socket_{std::move(socket)}
 {
-    if (__unlikely(!socket)) {
+    if (__unlikely(!socket_)) {
         throw error("SSL stream create error (Invalid socket)");
     }
 
