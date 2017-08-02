@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(Plusone_BUILD_EXAMPLES "Build library examples" ON)
 option(Plusone_BUILD_TESTS "Build library tests" ON)
-option(Plusone_USE_SSL "Build library with SSL support" ON)
+option(Plusone_USE_SSL "Build library with SSL support" OFF)
 
 # Don't build doctest tests
 set(DOCTEST_WITH_TESTS OFF CACHE BOOL "")
