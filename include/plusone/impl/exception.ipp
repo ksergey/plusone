@@ -24,6 +24,12 @@ __force_inline const char* exception::what() const noexcept
     return what_.c_str();
 }
 
+template< class Exception >
+__force_inline void throw_exception(const Exception& e)
+{
+    throw e;
+}
+
 } /* namespace plusone */
 
 #endif /* KSERGEY_exception_240717100244 */

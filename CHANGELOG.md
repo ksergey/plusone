@@ -1,3 +1,10 @@
+Version 10:
+
+* Added initial ssl stream support
+* Code cleanup
+* Changed CMakeLists.txt option names
+
+--------------------------------------------------------------------------------
 Version 9:
 
 * Added swap method to net::socket class

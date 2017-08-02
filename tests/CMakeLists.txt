@@ -17,3 +17,7 @@ add_test(math math_test)
 add_executable(socket_test socket.cpp)
 target_link_libraries(socket_test plusone doctest)
 add_test(socket socket_test)
+
+add_executable(ssl_test ssl.cpp)
+target_link_libraries(ssl_test plusone doctest)
+add_test(ssl ssl_test)

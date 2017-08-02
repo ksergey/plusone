@@ -42,13 +42,7 @@ public:
     virtual ~resolver() noexcept;
 
     /** Return true if data resolver */
-    bool valid() const noexcept;
-
-    /** Return true if data resolver */
     explicit operator bool() const noexcept;
-
-    /** Return true if data not resolver */
-    bool operator!() const noexcept;
 
     /** Return iterator to begin */
     const_iterator begin() const noexcept;

@@ -31,31 +31,45 @@ public:
 
     /** Return option value */
     __force_inline bool value() const noexcept
-    { return !!value_; }
+    {
+        return !!value_;
+    }
 
     /** Cast to bool */
     __force_inline explicit operator bool() const noexcept
-    { return !!value_; }
+    {
+        return !!value_;
+    }
 
     /** Option level */
     __force_inline int level() const noexcept
-    { return Level; }
+    {
+        return Level;
+    }
 
     /** Option name */
     __force_inline int name() const noexcept
-    { return Name; }
+    {
+        return Name;
+    }
 
     /** Option data */
     __force_inline void* data() noexcept
-    { return &value_; }
+    {
+        return &value_;
+    }
 
     /** Option data */
     __force_inline const void* data() const noexcept
-    { return &value_; }
+    {
+        return &value_;
+    }
 
     /** Option size */
     __force_inline std::size_t size() const noexcept
-    { return sizeof(value_); }
+    {
+        return sizeof(value_);
+    }
 
     /** Resize option data */
     __force_inline void resize(std::size_t size)
@@ -85,31 +99,45 @@ public:
 
     /** Return option value */
     __force_inline int value() const noexcept
-    { return value_; }
+    {
+        return value_;
+    }
 
     /** Cast to bool */
     __force_inline explicit operator bool() const noexcept
-    { return !!value_; }
+    {
+        return !!value_;
+    }
 
     /** Option level */
     __force_inline int level() const noexcept
-    { return Level; }
+    {
+        return Level;
+    }
 
     /** Option name */
     __force_inline int name() const noexcept
-    { return Name; }
+    {
+        return Name;
+    }
 
     /** Option data */
     __force_inline void* data() noexcept
-    { return &value_; }
+    {
+        return &value_;
+    }
 
     /** Option data */
     __force_inline const void* data() const noexcept
-    { return &value_; }
+    {
+        return &value_;
+    }
 
     /** Option size */
     __force_inline std::size_t size() const noexcept
-    { return sizeof(value_); }
+    {
+        return sizeof(value_);
+    }
 
     /** Resize option data */
     __force_inline void resize(std::size_t size)
@@ -137,31 +165,45 @@ public:
 
     /** Return option value */
     __force_inline const StructT& value() const noexcept
-    { return value_; }
+    {
+        return value_;
+    }
 
     /** Return option value for modification */
     __force_inline StructT& value() noexcept
-    { return value_; }
+    {
+        return value_;
+    }
 
     /** Option level */
     __force_inline int level() const noexcept
-    { return Level; }
+    {
+        return Level;
+    }
 
     /** Option name */
     __force_inline int name() const noexcept
-    { return Name; }
+    {
+        return Name;
+    }
 
     /** Option data */
     __force_inline void* data() noexcept
-    { return &value_; }
+    {
+        return &value_;
+    }
 
     /** Option data */
     __force_inline const void* data() const noexcept
-    { return &value_; }
+    {
+        return &value_;
+    }
 
     /** Option size */
     __force_inline std::size_t size() const noexcept
-    { return sizeof(value_); }
+    {
+        return sizeof(value_);
+    }
 };
 
 /** Multicast request type */
@@ -186,19 +228,27 @@ public:
 
     /** Option level */
     __force_inline int level() const noexcept
-    { return IPPROTO_IP; }
+    {
+        return IPPROTO_IP;
+    }
 
     /** Option name */
     __force_inline int name() const noexcept
-    { return Name; }
+    {
+        return Name;
+    }
 
     /** Option data */
     __force_inline const void* data() const noexcept
-    { return &value_; }
+    {
+        return &value_;
+    }
 
     /** Option size */
     __force_inline std::size_t size() const noexcept
-    { return sizeof(value_); }
+    {
+        return sizeof(value_);
+    }
 };
 
 /** Multicast source request type */
@@ -225,19 +275,27 @@ public:
 
     /** Option level */
     __force_inline int level() const noexcept
-    { return IPPROTO_IP; }
+    {
+        return IPPROTO_IP;
+    }
 
     /** Option name */
     __force_inline int name() const noexcept
-    { return Name; }
+    {
+        return Name;
+    }
 
     /** Option data */
     __force_inline const void* data() const noexcept
-    { return &value_; }
+    {
+        return &value_;
+    }
 
     /** Option size */
     __force_inline std::size_t size() const noexcept
-    { return sizeof(value_); }
+    {
+        return sizeof(value_);
+    }
 };
 
 /** Generic option type */
@@ -271,19 +329,27 @@ public:
 
     /** Option level */
     __force_inline int level() const noexcept
-    { return level_; }
+    {
+        return level_;
+    }
 
     /** Option name */
     __force_inline int name() const noexcept
-    { return name_; }
+    {
+        return name_;
+    }
 
     /** Option data */
     __force_inline const void* data() const noexcept
-    { return data_; }
+    {
+        return data_;
+    }
 
     /** Option size */
     __force_inline std::size_t size() const noexcept
-    { return size_; }
+    {
+        return size_;
+    }
 };
 
 } /* namespace detail */

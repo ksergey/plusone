@@ -25,6 +25,9 @@ private:
     int sock_{invalid_socket};
 
 public:
+    /** Native socket handle type */
+    using native_handle_type = int;
+
     /** Move constructor */
     socket(socket&& s) noexcept;
 
@@ -37,17 +40,11 @@ public:
     /** Socket destructor */
     ~socket();
 
-    /** Return true if socket initialized */
-    bool valid() const noexcept;
-
-    /** Same as valid() */
+    /** Return true if socket is valid for i/o */
     explicit operator bool() const noexcept;
 
-    /** Same as !valid() */
-    bool operator!() const noexcept;
-
     /** Return native socket descriptor */
-    int get() noexcept;
+    native_handle_type native_handle() noexcept;
 
     /** Close the socket */
     void close() noexcept;
@@ -77,7 +74,7 @@ public:
     op_result bind(const sockaddr* addr, socklen_t addrlen) noexcept;
 
     /** Bind socket */
-    op_result bind(uint16_t port, const address_v4& addr = address_v4::any()) noexcept;
+    op_result bind(std::uint16_t port, const address_v4& addr = address_v4::any()) noexcept;
 
     /** Place socket in a listen state */
     op_result listen(int backlog = 10) noexcept;
@@ -86,19 +83,19 @@ public:
     accept_result accept(sockaddr* addr = nullptr, socklen_t* addrlen = nullptr) noexcept;
 
     /** Send data into socket */
-    io_result send(const void* buf, size_t len) noexcept;
+    io_result send(const void* buf, std::size_t len) noexcept;
 
     /** Send data into socket */
-    io_result sendto(const void* buf, size_t len, const sockaddr* dest_addr, socklen_t addrlen) noexcept;
+    io_result sendto(const void* buf, std::size_t len, const sockaddr* dest_addr, socklen_t addrlen) noexcept;
 
     /** Send data into socket */
     io_result sendmsg(const msghdr* message) noexcept;
 
     /** Recv data from socket */
-    io_result recv(void* buf, size_t len) noexcept;
+    io_result recv(void* buf, std::size_t len) noexcept;
 
     /** Recv data from socket */
-    io_result recvfrom(void* buf, size_t len,
+    io_result recvfrom(void* buf, std::size_t len,
             sockaddr* src_addr, socklen_t* addrlen) noexcept;
 
     /** Recv data from socket */

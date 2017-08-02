@@ -10,8 +10,8 @@
 namespace plusone {
 namespace net {
 
-/** Socket result object */
-class socket_result
+/** Socket error code */
+class error_code
 {
 private:
     /* Error code */
@@ -19,7 +19,7 @@ private:
 
 public:
     /** Construct object with error code */
-    socket_result(int code = 0);
+    error_code(int code = 0);
 
     /** Return error code */
     int code() const noexcept;
@@ -36,7 +36,7 @@ public:
 
 /** Socket operation result */
 class op_result final
-    : public socket_result
+    : public error_code
 {
 private:
     /* Result holder */
@@ -46,19 +46,13 @@ public:
     /** Construct op_result */
     op_result(int value = 0);
 
-    /** Return true if operation finished successful */
-    bool success() const noexcept;
-
-    /** Return success() */
+    /** Return true if operation successfully executed */
     explicit operator bool() const noexcept;
-
-    /** Return !success() */
-    bool operator!() const noexcept;
 };
 
 /** Socket input/output operation result */
 class io_result final
-    : public socket_result
+    : public error_code
 {
 private:
     /* Result holder */
@@ -68,25 +62,19 @@ public:
     /** Construct io_result */
     io_result(ssize_t value = 0);
 
-    /** Return true if operation finished successful */
-    bool success() const noexcept;
-
-    /** Return success() */
+    /** Return true if operation successfully executed */
     explicit operator bool() const noexcept;
-
-    /** Return !success() */
-    bool operator!() const noexcept;
 
     /** Return read/write bytes count */
     std::size_t bytes() const noexcept;
 
     /** Return true if disconnect happend */
-    bool is_disconnected() const noexcept;
+    bool disconnected() const noexcept;
 };
 
 /** Socket accept operation result */
 class accept_result final
-    : public socket_result
+    : public error_code
 {
 private:
     /* Accepted socket */
@@ -96,14 +84,8 @@ public:
     /** Construct accept_result */
     accept_result(int s = invalid_socket);
 
-    /** Return true if operation finished successful */
-    bool success() const noexcept;
-
-    /** Return success() */
+    /** Return true if operation successfully executed */
     explicit operator bool() const noexcept;
-
-    /** Return !success() */
-    bool operator!() const noexcept;
 
     /** Return accepted socket */
     socket&& get() noexcept;

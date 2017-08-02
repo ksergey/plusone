@@ -67,7 +67,7 @@ public:
     {
         socket_ = plusone::net::socket::create(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
         auto res = socket_.bind(port);
-        if (__unlikely(!res.success())) {
+        if (__unlikely(!res)) {
             throw error{"Failed to bind socket to port %d (%s)", port, res.str()};
         }
 

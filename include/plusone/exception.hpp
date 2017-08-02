@@ -43,6 +43,10 @@ struct tagged_exception
     using exception::exception;
 };
 
+/** Throw exception */
+template< class Exception >
+void throw_exception(const Exception& e);
+
 } /* namespace plusone */
 
 #include <plusone/impl/exception.ipp>

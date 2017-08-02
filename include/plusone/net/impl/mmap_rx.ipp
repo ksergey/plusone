@@ -146,7 +146,7 @@ __force_inline mmap_rx::mmap_rx(const char* netdev, std::size_t buffer_size, std
     }
 
     /* Mmap socket RX queue */
-    region_ = plusone::mapped_region{socket_.get(), req.tp_block_size * req.tp_block_nr};
+    region_ = plusone::mapped_region{socket_.native_handle(), req.tp_block_size * req.tp_block_nr};
 
     /* Prepare iovec buffers */
     rd_ = static_vector< struct iovec >{req.tp_frame_nr};
