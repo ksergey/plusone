@@ -7,29 +7,33 @@
 
 #include <functional>
 #include <initializer_list>
+#include <plusone/signal_base.hpp>
 
 namespace plusone {
 
-class signal
+struct signal
+    : signal_base
 {
-private:
-    using callback_type = std::function< void (int sig) >;
+    /**
+     * Set signal handler
+     * @param[in] signal_no is handler signal number
+     * @param[in] handler is handler function
+     * @param[in] flags is handler flags
+     */
+    static void set_handler(int signal_no, handler_type handler, int flags = 0) noexcept;
 
-    /* Callback function */
-    static callback_type global_callback_;
+    /**
+     * Get signal handler
+     * @param[in] signal_no is handler signal number
+     * @return signal handler function
+     */
+    static handler_type get_handler(int signal_no) noexcept;
 
-public:
-    /** Setup signal handler */
-    template< class Callback >
-    static void setup(std::initializer_list< int > sigs, Callback&& callback);
+    /** Send signal to process */
+    static void kill(pid_t process_id, int signal_no = SIGTERM) noexcept;
 
-    /** Setup handler for SIGINT and SIGTERM signals */
-    template< class Callback >
-    static void setup(Callback&& callback);
-
-private:
-    /* Native signal handler func */
-    static void native_signal_handler(int sig);
+    /** Send signal to current process */
+    static void raise(int signal_no = SIGTERM) noexcept;
 };
 
 } /* namespace plusone */

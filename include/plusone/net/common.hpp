@@ -12,12 +12,12 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <netdb.h>
-#include <csignal>
 #include <cerrno>
 #include <cstring>
 #include <stdexcept>
 #include <plusone/compiler.hpp>
 #include <plusone/exception.hpp>
+#include <plusone/signal.hpp>
 
 namespace plusone {
 namespace net {
@@ -36,7 +36,9 @@ namespace detail {
 struct sigpipe_initializer final
 {
     sigpipe_initializer()
-    { std::signal(SIGPIPE, SIG_IGN); }
+    {
+        signal::set_handler(SIGPIPE, signal::ignore_handler);
+    }
 };
 
 /* Trick */
