@@ -22,10 +22,8 @@ TEST_CASE("Signal base")
     plusone::signal::set_handler(SIGINT, SIG_DFL);
     auto handler4 = plusone::signal::get_handler(SIGINT);
     REQUIRE( handler4 == SIG_DFL );
-    REQUIRE( handler4 == plusone::signal::default_handler );
 
     plusone::signal::set_handler(SIGINT, SIG_IGN);
     auto handler5 = plusone::signal::get_handler(SIGINT);
     REQUIRE( handler5 == SIG_IGN );
-    REQUIRE( handler5 == plusone::signal::ignore_handler );
 }

@@ -37,7 +37,7 @@ struct sigpipe_initializer final
 {
     sigpipe_initializer()
     {
-        signal::set_handler(SIGPIPE, signal::ignore_handler);
+        signal::set_handler(SIGPIPE, SIG_IGN);
     }
 };
 
