@@ -6,6 +6,7 @@
 #define KSERGEY_process_040817123016
 
 #include <sys/time.h>
+#include <atomic>
 #include <plusone/signal.hpp>
 #include <plusone/compiler.hpp>
 #include <plusone/expect.hpp>
@@ -14,21 +15,18 @@
 namespace plusone {
 namespace detail {
 
-/* Options used inside process_signal_handler */
-static process::options global_options;
-
-/* Flag indicates process still running */
-static plusone::cacheline_padded< sig_atomic_t > process_running_flag{0};
-
-__force_inline static void setup_signal_alarm(std::time_t interval) noexcept
+__force_inline process::options& process_options() noexcept
 {
-    struct ::itimerval itimerval;
-    std::memset(&itimerval, 0, sizeof(itimerval));
-    itimerval.it_value.tv_sec = interval;
-    ::setitimer(ITIMER_REAL, &itimerval, nullptr);
+    static process::options value;
+    return value;
 }
 
-/** Signal handler */
+__force_inline std::atomic_bool& process_running() noexcept
+{
+    static cacheline_padded< std::atomic_bool > value;
+    return *value;
+}
+
 __force_inline static void process_signal_handler(int signum)
 {
     switch (signum) {
@@ -36,22 +34,22 @@ __force_inline static void process_signal_handler(int signum)
         case SIGTERM:
         case SIGQUIT:
             {
-                *process_running_flag = 0;
-
-                if (global_options.force_kill) {
-                    setup_signal_alarm(global_options.force_kill_delay);
+                process_running().store(false);
+                if (process_options().force_kill) {
+                    signal::set_alarm_timer(process_options().force_kill_delay);
                 }
             }
             break;
 
         case SIGALRM:
             {
-                __expect( global_options.force_kill );
-                __expect( *process_running_flag == 0 );
+                __expect( process_options().force_kill );
+                __expect( process_running().load() == false );
 
-                signal::raise(global_options.force_kill_use_sigabrt ? SIGABRT : SIGKILL);
+                signal::raise(process_options().force_kill_use_sigabrt ? SIGABRT : SIGKILL);
             }
             break;
+
         default:
             break;
     }
@@ -62,11 +60,15 @@ __force_inline static void process_signal_handler(int signum)
 __force_inline void process::install_signal_handlers(const process::options& options) noexcept
 {
     /* Cancel timer */
-    detail::setup_signal_alarm(0);
+    signal::set_alarm_timer(0);
 
-    detail::global_options = options;
-    *detail::process_running_flag = 1;
+    /* Update process options */
+    detail::process_options() = options;
 
+    /* Now running active */
+    detail::process_running().store(true);
+
+    /* Setup handlers */
     signal::set_handler(SIGINT, detail::process_signal_handler);
     signal::set_handler(SIGTERM, detail::process_signal_handler);
     signal::set_handler(SIGQUIT, detail::process_signal_handler);
@@ -75,7 +77,7 @@ __force_inline void process::install_signal_handlers(const process::options& opt
 
 __force_inline bool process::running() noexcept
 {
-    return *detail::process_running_flag == 1;
+    return detail::process_running().load();
 }
 
 } /* namespace plusone */

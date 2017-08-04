@@ -5,8 +5,7 @@
 #ifndef MADLIFE_signal_101116205803_MADLIFE
 #define MADLIFE_signal_101116205803_MADLIFE
 
-#include <functional>
-#include <initializer_list>
+#include <ctime>
 #include <plusone/signal_base.hpp>
 
 namespace plusone {
@@ -34,6 +33,12 @@ struct signal
 
     /** Send signal to current process */
     static void raise(int signal_no = SIGTERM) noexcept;
+
+    /**
+     * Set SIGALRM timer.
+     * Call set_timer(0) for cancel timer
+     */
+    static void set_alarm_timer(std::time_t interval) noexcept;
 };
 
 } /* namespace plusone */

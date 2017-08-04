@@ -46,6 +46,14 @@ __force_inline void signal::raise(int signal_no) noexcept
     ::raise(signal_no);
 }
 
+__force_inline void signal::set_alarm_timer(std::time_t interval) noexcept
+{
+    struct ::itimerval val;
+    std::memset(&val, 0, sizeof(val));
+    val.it_value.tv_sec = interval;
+    ::setitimer(ITIMER_REAL, &val, nullptr);
+}
+
 } /* namespace plusone */
 
 #endif /* KSERGEY_signal_120717221550 */
