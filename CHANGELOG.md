@@ -1,3 +1,8 @@
+Version 11:
+
+* Changed signal interface
+* Added process management interface
+
 Version 10:
 
 * Added initial ssl stream support

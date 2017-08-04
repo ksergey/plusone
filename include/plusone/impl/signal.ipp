@@ -5,38 +5,45 @@
 #ifndef KSERGEY_signal_120717221550
 #define KSERGEY_signal_120717221550
 
-#include <csignal>
 #include <cstring>
 #include <plusone/compiler.hpp>
 
 namespace plusone {
+namespace detail {
 
-signal::callback_type signal::global_callback_{};
-
-template< class Callback >
-__force_inline void signal::setup(std::initializer_list< int > sigs, Callback&& callback)
+/* Fill sigaction struct */
+__force_inline void init_sigaction(struct ::sigaction& sa, signal::handler_type handler, int flags = 0)
 {
-    global_callback_ = callback;
-
-    for (auto sig: sigs) {
-        struct sigaction sa{};
-        std::memset(&sa, 0, sizeof(sa));
-        sa.sa_handler = native_signal_handler;
-        ::sigaction(sig, &sa, nullptr);
-    }
+    std::memset(&sa, 0, sizeof(sa));
+    ::sigemptyset(&sa.sa_mask);
+    sa.sa_flags = flags;
+    sa.sa_handler = handler;
 }
 
-template< class Callback >
-__force_inline void signal::setup(Callback&& callback)
+} /* namespace detail */
+
+__force_inline void signal::set_handler(int signal_no, handler_type handler, int flags) noexcept
 {
-    setup({SIGINT, SIGTERM}, std::forward< Callback >(callback));
+    struct ::sigaction sa;
+    detail::init_sigaction(sa, handler, flags);
+    ::sigaction(signal_no, &sa, nullptr);
 }
 
-__force_inline void signal::native_signal_handler(int sig)
+__force_inline signal::handler_type signal::get_handler(int signal_no) noexcept
 {
-    if (global_callback_) {
-        global_callback_(sig);
-    }
+    struct ::sigaction sa;
+    ::sigaction(signal_no, nullptr, &sa);
+    return sa.sa_handler;
+}
+
+__force_inline void signal::kill(pid_t process_id, int signal_no) noexcept
+{
+    ::kill(process_id, signal_no);
+}
+
+__force_inline void signal::raise(int signal_no) noexcept
+{
+    ::raise(signal_no);
 }
 
 } /* namespace plusone */
