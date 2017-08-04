@@ -25,3 +25,7 @@ add_test(ssl ssl_test)
 add_executable(signal_test signal.cpp)
 target_link_libraries(signal_test plusone doctest)
 add_test(signal signal_test)
+
+add_executable(process_test process.cpp)
+target_link_libraries(process_test plusone doctest)
+add_test(process process_test)
