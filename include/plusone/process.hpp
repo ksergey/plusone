@@ -19,8 +19,14 @@ struct process
      */
     static void install_signal_handlers(const process::options& options = process::options{}) noexcept;
 
+    /** Set default handlers */
+    static void uninstall_signal_handlers() noexcept;
+
     /** Return true if process still running state */
     static bool running() noexcept;
+
+    /** Stop execution process */
+    static void shutdown() noexcept;
 };
 
 } /* namespace plusone */

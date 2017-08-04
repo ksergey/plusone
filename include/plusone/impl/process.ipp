@@ -5,7 +5,6 @@
 #ifndef KSERGEY_process_040817123016
 #define KSERGEY_process_040817123016
 
-#include <sys/time.h>
 #include <atomic>
 #include <plusone/signal.hpp>
 #include <plusone/compiler.hpp>
@@ -75,9 +74,26 @@ __force_inline void process::install_signal_handlers(const process::options& opt
     signal::set_handler(SIGALRM, detail::process_signal_handler);
 }
 
+__force_inline void process::uninstall_signal_handlers() noexcept
+{
+    signal::set_alarm_timer(0);
+
+    detail::process_running().store(false);
+
+    signal::set_handler(SIGINT, SIG_DFL);
+    signal::set_handler(SIGTERM, SIG_DFL);
+    signal::set_handler(SIGQUIT, SIG_DFL);
+    signal::set_handler(SIGALRM, SIG_DFL);
+}
+
 __force_inline bool process::running() noexcept
 {
     return detail::process_running().load();
+}
+
+__force_inline void process::shutdown() noexcept
+{
+    signal::raise(SIGTERM);
 }
 
 } /* namespace plusone */

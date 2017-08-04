@@ -5,6 +5,7 @@
 #ifndef KSERGEY_signal_120717221550
 #define KSERGEY_signal_120717221550
 
+#include <sys/time.h>
 #include <cstring>
 #include <plusone/compiler.hpp>
 
