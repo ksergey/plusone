@@ -1,11 +1,18 @@
+Version 12:
+
+* Fixed CMake build
+* Fixed SSL stream
+
+--------------------------------------------------------------------------------
 Version 11:
 
 * Changed signal interface
 * Added process management interface
 
+--------------------------------------------------------------------------------
 Version 10:
 
-* Added initial ssl stream support
+* Added initial SSL stream support
 * Code cleanup
 * Changed CMakeLists.txt option names
 
