@@ -1,3 +1,9 @@
+Version 13:
+
+* Added buffer interface
+
+--------------------------------------------------------------------------------
+
 Version 12:
 
 * Fixed CMake build

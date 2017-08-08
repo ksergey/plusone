@@ -29,3 +29,7 @@ add_test(signal signal_test)
 add_executable(process_test process.cpp)
 target_link_libraries(process_test plusone doctest)
 add_test(process process_test)
+
+add_executable(static_buffer_base_test static_buffer_base.cpp)
+target_link_libraries(static_buffer_base_test plusone doctest)
+add_test(static_buffer_base static_buffer_base_test)
