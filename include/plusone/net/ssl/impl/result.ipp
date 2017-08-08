@@ -37,7 +37,7 @@ __force_inline bool error_code::disconnected() const noexcept
 }
 
 __force_inline handshake_result::handshake_result(int value)
-    : error_code{value == 1 ? ::ERR_get_error() : 0ul}
+    : error_code{value == 1 ? 0ul : ::ERR_get_error()}
     , value_{value}
 {}
 
@@ -47,7 +47,7 @@ __force_inline handshake_result::operator bool() const noexcept
 }
 
 __force_inline op_result::op_result(int value)
-    : error_code{value < 0 ? ::ERR_get_error() : 0ul}
+    : error_code{value > 0 ? 0ul : ::ERR_get_error()}
     , value_{value}
 {}
 
