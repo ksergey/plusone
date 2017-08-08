@@ -1,3 +1,9 @@
+Version 13:
+
+* Added static_buffer_base
+* Fixed SSL tests build
+
+--------------------------------------------------------------------------------
 Version 12:
 
 * Fixed CMake build
