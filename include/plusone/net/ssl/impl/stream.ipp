@@ -34,7 +34,7 @@ __force_inline stream::stream(context& ctx, socket_type socket)
 
     /* Imitating the behaviour of write() */
     ::SSL_set_mode(handle_, SSL_MODE_ENABLE_PARTIAL_WRITE);
-    ::SSL_set_mode(ssl_, SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER);
+    ::SSL_set_mode(handle_, SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER);
 }
 
 __force_inline stream::~stream() noexcept
