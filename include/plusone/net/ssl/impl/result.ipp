@@ -47,7 +47,7 @@ __force_inline handshake_result::operator bool() const noexcept
 }
 
 __force_inline op_result::op_result(int value)
-    : error_code{value == 1 ? ::ERR_get_error() : 0ul}
+    : error_code{value < 0 ? ::ERR_get_error() : 0ul}
     , value_{value}
 {}
 
