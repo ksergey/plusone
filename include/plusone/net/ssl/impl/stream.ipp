@@ -31,6 +31,10 @@ __force_inline stream::stream(context& ctx, socket_type socket)
         ::SSL_free(handle_);
         throw error("SSL stream create error [set fd] ({})", ::ERR_reason_error_string(code));
     }
+
+    /* Imitating the behaviour of write() */
+    ::SSL_set_mode(handle_, SSL_MODE_ENABLE_PARTIAL_WRITE);
+    ::SSL_set_mode(ssl_, SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER);
 }
 
 __force_inline stream::~stream() noexcept
