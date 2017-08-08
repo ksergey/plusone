@@ -5,13 +5,13 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest.h>
 #include <vector>
-#include <plusone/static_buffer_base.hpp>
+#include <plusone/static_buffer.hpp>
 
-TEST_CASE("static_buffer_base")
+TEST_CASE("static_buffer")
 {
     char storage[64];
 
-    plusone::static_buffer_base buffer{storage, sizeof(storage)};
+    plusone::static_buffer buffer{storage, sizeof(storage)};
 
     REQUIRE(buffer.capacity() == 64);
     REQUIRE(buffer.size() == 0);

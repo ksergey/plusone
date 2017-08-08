@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Sergey Kovalevich <inndie@gmail.com>
  */
 
-#ifndef KSERGEY_static_buffer_base_080817221059
-#define KSERGEY_static_buffer_base_080817221059
+#ifndef KSERGEY_static_buffer_080817230852
+#define KSERGEY_static_buffer_080817230852
 
 #include "buffer_base.hpp"
 
 namespace plusone {
 
-class static_buffer_base
+class static_buffer
 {
 private:
     char* data_{nullptr};
@@ -17,11 +17,11 @@ private:
     std::size_t size_{0};
 
 public:
-    static_buffer_base(const static_buffer_base&) = delete;
-    static_buffer_base& operator=(const static_buffer_base&) = delete;
+    static_buffer(const static_buffer&) = delete;
+    static_buffer& operator=(const static_buffer&) = delete;
 
     /** Create a buffer using the provided storage area */
-    static_buffer_base(void* data, std::size_t size);
+    static_buffer(void* data, std::size_t size);
 
     /** Return maximum size of input/output sequence */
     std::size_t capacity() const noexcept;
@@ -50,6 +50,6 @@ public:
 
 } /* namespace plusone */
 
-#include <plusone/impl/static_buffer_base.ipp>
+#include <plusone/impl/static_buffer.ipp>
 
-#endif /* KSERGEY_static_buffer_base_080817221059 */
+#endif /* KSERGEY_static_buffer_080817230852 */
