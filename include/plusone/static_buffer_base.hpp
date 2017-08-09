@@ -9,6 +9,7 @@
 
 namespace plusone {
 
+/** Staic buffer */
 class static_buffer_base
 {
 private:
@@ -23,28 +24,31 @@ public:
     /** Create a buffer using the provided storage area */
     static_buffer_base(void* data, std::size_t size);
 
-    /** Return maximum size of input/output sequence */
+    /** Return buffer capacity */
     std::size_t capacity() const noexcept;
 
-    /** Return size of input sequnce */
+    /** Return size of ready to consume data */
     std::size_t size() const noexcept;
 
-    /** Return input sequnce buffer */
+    /** Return consume buffer */
     const_buffer data() const noexcept;
 
-    /** Return output sequence buffer */
+    /** Return buffer for filling data */
     mutable_buffer prepare() noexcept;
 
     /**
-     * Return output sequence buffer
+     * Return buffer for filling data size
      * @throw std::length_error in case of not enought space
      */
     mutable_buffer prepare(std::size_t size) noexcept;
 
-    /** Move bytes from the output sequence to the input */
+    /** Make bytes available for consumtion */
     void commit(std::size_t size) noexcept;
 
-    /** Remove bytes from the input sequence */
+    /**
+     * Consume bytes from buffer
+     * @warning The method perform std::memmove in case of size != size()
+     */
     void consume(std::size_t size) noexcept;
 
 protected:

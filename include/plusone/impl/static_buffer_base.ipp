@@ -5,6 +5,7 @@
 #ifndef KSERGEY_static_buffer_base_080817231535
 #define KSERGEY_static_buffer_base_080817231535
 
+#include <cstring>
 #include <plusone/compiler.hpp>
 #include <plusone/expect.hpp>
 
