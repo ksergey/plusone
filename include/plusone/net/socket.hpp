@@ -6,6 +6,7 @@
 #define MADLIFE_socket_051116231354_MADLIFE
 
 #include <utility>
+#include <plusone/buffer_base.hpp>
 #include <plusone/net/common.hpp>
 #include <plusone/net/protocol.hpp>
 #include <plusone/net/address_v4.hpp>
@@ -86,7 +87,13 @@ public:
     io_result send(const void* buf, std::size_t len) noexcept;
 
     /** Send data into socket */
+    io_result send(const const_buffer& buf);
+
+    /** Send data into socket */
     io_result sendto(const void* buf, std::size_t len, const sockaddr* dest_addr, socklen_t addrlen) noexcept;
+
+    /** Send data into socket */
+    io_result sendto(const const_buffer& buf, const sockaddr* dest_addr, socklen_t addrlen);
 
     /** Send data into socket */
     io_result sendmsg(const msghdr* message) noexcept;
@@ -95,8 +102,13 @@ public:
     io_result recv(void* buf, std::size_t len) noexcept;
 
     /** Recv data from socket */
-    io_result recvfrom(void* buf, std::size_t len,
-            sockaddr* src_addr, socklen_t* addrlen) noexcept;
+    io_result recv(mutable_buffer& buf);
+
+    /** Recv data from socket */
+    io_result recvfrom(void* buf, std::size_t len, sockaddr* src_addr, socklen_t* addrlen) noexcept;
+
+    /** Recv data from socket */
+    io_result recvfrom(mutable_buffer& buf, sockaddr* src_addr, socklen_t* addrlen);
 
     /** Recv data from socket */
     io_result recvmsg(msghdr* message) noexcept;

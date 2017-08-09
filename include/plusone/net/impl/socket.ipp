@@ -127,10 +127,19 @@ __force_inline io_result socket::send(const void* buf, std::size_t len) noexcept
     return ::send(native_handle(), buf, len, 0);
 }
 
-__force_inline io_result socket::sendto(const void* buf, std::size_t len,
-        const sockaddr* dest_addr, socklen_t addrlen) noexcept
+__force_inline io_result socket::send(const const_buffer& buf)
+{
+    return send(buffer_cast< const void* >(buf), buffer_size(buf));
+}
+
+__force_inline io_result socket::sendto(const void* buf, std::size_t len, const sockaddr* dest_addr, socklen_t addrlen) noexcept
 {
     return ::sendto(native_handle(), buf, len, 0, dest_addr, addrlen);
+}
+
+__force_inline io_result socket::sendto(const const_buffer& buf, const sockaddr* dest_addr, socklen_t addrlen)
+{
+    return sendto(buffer_cast< const void* >(buf), buffer_size(buf), dest_addr, addrlen);
 }
 
 __force_inline io_result socket::sendmsg(const msghdr* message) noexcept
@@ -143,9 +152,19 @@ __force_inline io_result socket::recv(void* buf, std::size_t len) noexcept
     return ::recv(native_handle(), buf, len, 0);
 }
 
+__force_inline io_result socket::recv(mutable_buffer& buf)
+{
+    return recv(buffer_cast< void* >(buf), buffer_size(buf));
+}
+
 __force_inline io_result socket::recvfrom(void* buf, std::size_t len, sockaddr* src_addr, socklen_t* addrlen) noexcept
 {
     return ::recvfrom(native_handle(), buf, len, 0, src_addr, addrlen);
+}
+
+__force_inline io_result socket::recvfrom(mutable_buffer& buf, sockaddr* src_addr, socklen_t* addrlen)
+{
+    return recvfrom(buffer_cast< void* >(buf), buffer_size(buf), src_addr, addrlen);
 }
 
 __force_inline io_result socket::recvmsg(msghdr* message) noexcept
