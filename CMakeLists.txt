@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(plusone VERSION 12 LANGUAGES CXX)
+project(plusone VERSION 13 LANGUAGES CXX)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build" FORCE)
