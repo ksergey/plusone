@@ -71,7 +71,7 @@ public:
     op_result recv(void* buf, std::size_t len) noexcept;
 
     /** Do read from stream */
-    op_result recv(mutable_buffer& buf);
+    op_result recv(const mutable_buffer& buf);
 };
 
 } /* namespace ssl */

@@ -102,13 +102,13 @@ public:
     io_result recv(void* buf, std::size_t len) noexcept;
 
     /** Recv data from socket */
-    io_result recv(mutable_buffer& buf);
+    io_result recv(const mutable_buffer& buf);
 
     /** Recv data from socket */
     io_result recvfrom(void* buf, std::size_t len, sockaddr* src_addr, socklen_t* addrlen) noexcept;
 
     /** Recv data from socket */
-    io_result recvfrom(mutable_buffer& buf, sockaddr* src_addr, socklen_t* addrlen);
+    io_result recvfrom(const mutable_buffer& buf, sockaddr* src_addr, socklen_t* addrlen);
 
     /** Recv data from socket */
     io_result recvmsg(msghdr* message) noexcept;

@@ -106,7 +106,7 @@ __force_inline op_result stream::recv(void* buf, std::size_t len) noexcept
     return ::SSL_read(native_handle(), buf, len);
 }
 
-__force_inline op_result stream::recv(mutable_buffer& buf)
+__force_inline op_result stream::recv(const mutable_buffer& buf)
 {
     return recv(buffer_cast< void* >(buf), buffer_size(buf));
 }

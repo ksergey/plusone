@@ -152,7 +152,7 @@ __force_inline io_result socket::recv(void* buf, std::size_t len) noexcept
     return ::recv(native_handle(), buf, len, 0);
 }
 
-__force_inline io_result socket::recv(mutable_buffer& buf)
+__force_inline io_result socket::recv(const mutable_buffer& buf)
 {
     return recv(buffer_cast< void* >(buf), buffer_size(buf));
 }
@@ -162,7 +162,7 @@ __force_inline io_result socket::recvfrom(void* buf, std::size_t len, sockaddr* 
     return ::recvfrom(native_handle(), buf, len, 0, src_addr, addrlen);
 }
 
-__force_inline io_result socket::recvfrom(mutable_buffer& buf, sockaddr* src_addr, socklen_t* addrlen)
+__force_inline io_result socket::recvfrom(const mutable_buffer& buf, sockaddr* src_addr, socklen_t* addrlen)
 {
     return recvfrom(buffer_cast< void* >(buf), buffer_size(buf), src_addr, addrlen);
 }
