@@ -86,19 +86,29 @@ __force_inline void stream::close() noexcept
 __force_inline handshake_result stream::handshake() noexcept
 {
     __expect( native_handle() );
-    return SSL_connect(native_handle());
+    return ::SSL_connect(native_handle());
 }
 
 __force_inline op_result stream::send(const void* buf, std::size_t len) noexcept
 {
     __expect( native_handle() );
-    return SSL_write(native_handle(), buf, len);
+    return ::SSL_write(native_handle(), buf, len);
+}
+
+__force_inline op_result stream::send(const const_buffer& buf)
+{
+    return send(buffer_cast< const void* >(buf), buffer_size(buf));
 }
 
 __force_inline op_result stream::recv(void* buf, std::size_t len) noexcept
 {
     __expect( native_handle() );
-    return SSL_read(native_handle(), buf, len);
+    return ::SSL_read(native_handle(), buf, len);
+}
+
+__force_inline op_result stream::recv(mutable_buffer& buf)
+{
+    return recv(buffer_cast< void* >(buf), buffer_size(buf));
 }
 
 } /* namespace ssl */

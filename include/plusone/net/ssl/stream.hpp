@@ -5,6 +5,7 @@
 #ifndef KSERGEY_stream_010817181427
 #define KSERGEY_stream_010817181427
 
+#include <plusone/buffer_base.hpp>
 #include <plusone/net/socket.hpp>
 #include <plusone/net/ssl/context.hpp>
 #include <plusone/net/ssl/result.hpp>
@@ -63,8 +64,14 @@ public:
     /** Do write to stream */
     op_result send(const void* buf, std::size_t len) noexcept;
 
+    /** Do write to stream */
+    op_result send(const const_buffer& buf);
+
     /** Do read from stream */
     op_result recv(void* buf, std::size_t len) noexcept;
+
+    /** Do read from stream */
+    op_result recv(mutable_buffer& buf);
 };
 
 } /* namespace ssl */
