@@ -20,9 +20,6 @@ private:
     tpacket2_hdr* data_{nullptr};
 
 public:
-    frame(const frame&) = delete;
-    frame& operator=(const frame&) = delete;
-
     /** Move constructor */
     __force_inline frame(frame&& v) noexcept
     { std::swap(v.data_, data_); }
@@ -114,13 +111,13 @@ __force_inline mmap_rx::mmap_rx(const char* netdev, std::size_t buffer_size, std
     /* Apply timestamp option */
     auto option_result = socket_.set_option(socket_options::packet::timestamp{timestamp_option});
     if (__unlikely(!option_result)) {
-        throw socket_error("Failed to set socket option PACKET_TIMESTAMP ({})", option_result.str());
+        throw_ex< socket_error >("Failed to set socket option PACKET_TIMESTAMP ({})", option_result.str());
     }
 
     /* Apply TPACKET_V2 option */
     option_result = socket_.set_option(socket_options::packet::version{TPACKET_V2});
     if (__unlikely(!option_result)) {
-        throw socket_error("Failed to set socket option PACKET_VERSION ({})", option_result.str());
+        throw_ex< socket_error >("Failed to set socket option PACKET_VERSION ({})", option_result.str());
     }
 
     /* Prepare RX ring config */
@@ -142,7 +139,7 @@ __force_inline mmap_rx::mmap_rx(const char* netdev, std::size_t buffer_size, std
     /* Apply PACKET_RX_RING option */
     option_result = socket_.set_option(rx_ring_request{req});
     if (__unlikely(!option_result)) {
-        throw socket_error("Failed to set socket option PACKET_RX_RING ({})", option_result.str());
+        throw_ex< socket_error >("Failed to set socket option PACKET_RX_RING ({})", option_result.str());
     }
 
     /* Mmap socket RX queue */
@@ -164,7 +161,7 @@ __force_inline mmap_rx::mmap_rx(const char* netdev, std::size_t buffer_size, std
     if (netdev) {
         ll.sll_ifindex = if_nametoindex(netdev);
         if (ll.sll_ifindex == 0) {
-            throw socket_error("Interface \"{}\" not found", netdev);
+            throw_ex< socket_error >("Interface \"{}\" not found", netdev);
         }
     } else {
         ll.sll_ifindex = 0; /* All interfaces */
@@ -174,7 +171,7 @@ __force_inline mmap_rx::mmap_rx(const char* netdev, std::size_t buffer_size, std
     ll.sll_halen = 0;
     auto bind_result = socket_.bind((sockaddr*)& ll, sizeof(ll));
     if (!bind_result) {
-        throw socket_error("Failed to bind mmap_rx socket ({})", bind_result.str());
+        throw_ex< socket_error >("Failed to bind mmap_rx socket ({})", bind_result.str());
     }
 }
 

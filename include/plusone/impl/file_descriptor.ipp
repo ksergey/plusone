@@ -73,7 +73,7 @@ __force_inline file_descriptor file_descriptor::dup() const
     if (operator bool()) {
         int fd = ::dup(fd_);
         if (__unlikely(fd == -1)) {
-            throw file_descriptor_error("Failed duplicate descriptor ({})", std::strerror(errno));
+            throw_ex< file_descriptor_error >("Failed duplicate descriptor ({})", std::strerror(errno));
         }
         return file_descriptor{fd};
     }

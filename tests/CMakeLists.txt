@@ -35,3 +35,7 @@ add_test(process process_test)
 add_executable(buffer_test buffer.cpp)
 target_link_libraries(buffer_test plusone doctest)
 add_test(buffer buffer_test)
+
+add_executable(exception_test exception.cpp)
+target_link_libraries(exception_test plusone doctest)
+add_test(exception exception_test)

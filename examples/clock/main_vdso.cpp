@@ -6,10 +6,13 @@
 #include <exception>
 #include <iostream>
 #include <plusone/clock.hpp>
+#include <plusone/exception.hpp>
 #include <dlfcn.h>
 
 std::int64_t (*clock_gettime_ns)(clockid_t);
 int (*clock_gettime_1)(clockid_t, timespec*);
+
+using plusone::throw_ex;
 
 class initializer final
 {
@@ -24,13 +27,13 @@ public:
     {
         handle_ = dlopen("linux-vdso.so.1", RTLD_LAZY | RTLD_LOCAL | RTLD_NOLOAD);
         if (!handle_) {
-            throw std::runtime_error("Failed to load linux vdso");
+            throw_ex< std::runtime_error >("Failed to load linux vdso");
         }
 
         void* ptr = dlsym(handle_, "__vdso_clock_gettime");
         if (!ptr) {
             reset();
-            throw std::runtime_error("Failed to load __vdso_clock_gettime");
+            throw_ex< std::runtime_error >("Failed to load __vdso_clock_gettime");
         }
 
         clock_gettime_1 = reinterpret_cast< int (*)(clockid_t, timespec*) >(ptr);

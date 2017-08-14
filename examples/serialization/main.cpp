@@ -8,8 +8,11 @@
 #include <vector>
 #include <stdexcept>
 #include <plusone/serialization.hpp>
+#include <plusone/exception.hpp>
 
 namespace s = plusone::serialization;
+
+using plusone::throw_ex;
 
 struct point_config
 {
@@ -70,7 +73,7 @@ int main(int argc, char* argv[])
 
         std::ifstream file{"sample.json"};
         if (!file) {
-            throw std::runtime_error{"Failed to read file"};
+            throw_ex< std::runtime_error >("Failed to read file");
         }
         s::from_stream(file, config);
 

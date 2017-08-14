@@ -26,7 +26,7 @@ struct required
     template< class FieldT >
     void field_not_defined(FieldT&) const
     {
-        throw policy_error("Mandatory field not exists");
+        throw_ex< policy_error >("Mandatory field not exists");
     }
 
     template< class FieldT >

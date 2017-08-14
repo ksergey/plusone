@@ -7,6 +7,7 @@
 
 #include <stdexcept>
 #include <iterator>
+#include <plusone/exception.hpp>
 #include <plusone/compiler.hpp>
 
 namespace plusone {
@@ -198,7 +199,7 @@ static_vector< T >::emplace_back(Args&&... args)
         new (data_ + size_) T(std::forward< Args >(args)...);
         ++size_;
     } else {
-        throw std::bad_alloc();
+        throw_ex< std::bad_alloc >();
     }
     return back();
 }

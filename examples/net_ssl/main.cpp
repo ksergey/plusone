@@ -6,8 +6,10 @@
 #include <plusone/net/ssl/context.hpp>
 #include <plusone/net/ssl/stream.hpp>
 #include <plusone/net/tcp.hpp>
+#include <plusone/exception.hpp>
 
 using namespace std::string_literals;
+using plusone::throw_ex;
 
 //#define HOST "api.ipify.org"
 #define HOST "api.ipify.org"
@@ -25,18 +27,18 @@ int main(int argc, char* argv[])
 
         auto socket = plusone::net::tcp::connect(HOST, "https");
         if (!socket) {
-            throw std::runtime_error("Failed to connect to " HOST);
+            throw_ex< std::runtime_error >("Failed to connect to {}", HOST);
         }
 
         plusone::net::ssl::stream stream{context, std::move(socket)};
         auto handshake_rc = stream.handshake();
         if (!handshake_rc) {
-            throw std::runtime_error("Handshake error ("s + handshake_rc.str() + ")"s);
+            throw_ex< std::runtime_error >("Handshake error ({})", handshake_rc.str());
         }
 
         auto send_rc = stream.send(request.data(), request.size());
         if (!send_rc) {
-            throw std::runtime_error("Send request error ("s + send_rc.str() + ")"s);
+            throw_ex< std::runtime_error >("Send request error ({})", send_rc.str());
         }
 
         stream.socket().set_nonblock();
@@ -57,8 +59,7 @@ int main(int argc, char* argv[])
                 if (recv_rc.disconnected()) {
                     break;
                 } else if (!recv_rc.again()) {
-                    throw std::runtime_error("Receive response error ("s + recv_rc.str() + ", "
-                            + std::to_string(recv_rc.code()) + ")"s);
+                    throw_ex< std::runtime_error >("Receive response error ({}, {})", recv_rc.str(), recv_rc.code());
                 }
             }
         }

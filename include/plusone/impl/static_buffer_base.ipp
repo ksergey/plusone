@@ -8,6 +8,7 @@
 #include <cstring>
 #include <plusone/compiler.hpp>
 #include <plusone/expect.hpp>
+#include <plusone/exception.hpp>
 
 namespace plusone {
 
@@ -39,7 +40,7 @@ __force_inline mutable_buffer static_buffer_base::prepare() noexcept
 __force_inline mutable_buffer static_buffer_base::prepare(std::size_t size) noexcept
 {
     if (__unlikely(capacity_ - size_ < size)) {
-        throw std::length_error("Not enought size for output sequence");
+        throw_ex< std::length_error >("Not enought size for output sequence");
     }
     return {data_ + size_, size};
 }

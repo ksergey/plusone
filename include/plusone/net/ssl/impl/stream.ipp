@@ -17,19 +17,19 @@ __force_inline stream::stream(context& ctx, socket_type socket)
     : socket_{std::move(socket)}
 {
     if (__unlikely(!socket_)) {
-        throw error("SSL stream create error (Invalid socket)");
+        throw_ex< error >("SSL stream create error (Invalid socket)");
     }
 
     handle_ = ::SSL_new(ctx.native_handle());
     if (__unlikely(!handle_)) {
-        throw error("SSL stream create error ({})", ::ERR_reason_error_string(::ERR_get_error()));
+        throw_ex< error >("SSL stream create error ({})", ::ERR_reason_error_string(::ERR_get_error()));
     }
 
     auto rc = SSL_set_fd(handle_, socket_.native_handle());
     if (__unlikely(rc == 0)) {
         auto code = ::ERR_get_error();
         ::SSL_free(handle_);
-        throw error("SSL stream create error [set fd] ({})", ::ERR_reason_error_string(code));
+        throw_ex< error >("SSL stream create error [set fd] ({})", ::ERR_reason_error_string(code));
     }
 
     /* Imitating the behaviour of write() */

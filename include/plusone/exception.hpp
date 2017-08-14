@@ -7,6 +7,7 @@
 
 #include <string>
 #include <exception>
+#include <plusone/fmt.hpp>
 
 namespace plusone {
 
@@ -24,10 +25,6 @@ public:
     /** Exception with message */
     explicit exception(std::string text);
 
-    /** Exception with inplace message formatting */
-    template< class... Args >
-    exception(const char* format, const Args&... args);
-
     /** Destructor */
     virtual ~exception() noexcept = default;
 
@@ -44,8 +41,12 @@ struct tagged_exception
 };
 
 /** Throw exception */
-template< class Exception >
-void throw_exception(const Exception& e);
+template< class Ex >
+void throw_ex();
+
+/** Throw exception */
+template< class Ex, class... Args >
+void throw_ex(fmt::CStringRef format, Args&&... args);
 
 } /* namespace plusone */
 

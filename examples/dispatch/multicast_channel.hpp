@@ -12,6 +12,8 @@
 
 namespace dispatch {
 
+using plusone::throw_ex;
+
 class multicast_channel final
 {
 private:
@@ -68,7 +70,7 @@ public:
         socket_ = plusone::net::socket::create(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
         auto res = socket_.bind(port);
         if (__unlikely(!res)) {
-            throw error{"Failed to bind socket to port %d (%s)", port, res.str()};
+            throw_ex< error >("Failed to bind socket to port %d (%s)", port, res.str());
         }
 
         auto group_ip = plusone::net::address_v4::from_string(ip);
@@ -99,7 +101,7 @@ public:
     {
         auto res = socket_.set_option(join_request_);
         if (__unlikely(!res)) {
-            throw error{"Failed to join multicast group (%s)", res.str()};
+            throw_ex< error >("Failed to join multicast group (%s)", res.str());
         }
     }
 
@@ -108,7 +110,7 @@ public:
     {
         auto res = socket_.set_option(leave_request_);
         if (__unlikely(!res)) {
-            throw error{"Failed to leave multicast group (%s)", res.str()};
+            throw_ex< error >("Failed to leave multicast group (%s)", res.str());
         }
     }
 

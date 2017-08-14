@@ -15,7 +15,7 @@ __force_inline address_v4::address_v4(unsigned long addr)
 {
 #if ULONG_MAX > 0xFFFFFFFF
     if (__unlikely(addr > 0xFFFFFFFF)) {
-        throw address_error("Bad IPv4 address");
+        throw_ex< address_error >("Bad IPv4 address");
     }
 #endif /* ULONG_MAX > 0xFFFFFFFF */
 
@@ -42,7 +42,7 @@ __force_inline address_v4 address_v4::from_string(const char* str)
 {
     address_v4 result;
     if (inet_pton(AF_INET, str, &result.data_) != 1) {
-        throw address_error("Convert to address from string error");
+        throw_ex< address_error >("Convert to address from string error");
     }
     return result;
 }

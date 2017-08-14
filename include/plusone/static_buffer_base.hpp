@@ -5,7 +5,7 @@
 #ifndef KSERGEY_static_buffer_base_080817231547
 #define KSERGEY_static_buffer_base_080817231547
 
-#include "buffer_base.hpp"
+#include <plusone/buffer_base.hpp>
 
 namespace plusone {
 

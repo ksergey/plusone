@@ -66,7 +66,7 @@ __force_inline std::size_t file::size() const
 {
     struct stat st;
     if (::fstat(fd_, &st) == -1) {
-        throw file_error("Read file size error ({})", std::strerror(errno));
+        throw_ex< file_error >("Read file size error ({})", std::strerror(errno));
     }
     return st.st_size;
 }
@@ -74,7 +74,7 @@ __force_inline std::size_t file::size() const
 __force_inline void file::truncate(std::size_t size)
 {
     if (::ftruncate(fd_, size) == -1) {
-        throw file_error("Truncate file error({})", std::strerror(errno));
+        throw_ex< file_error >("Truncate file error({})", std::strerror(errno));
     }
 }
 
@@ -97,7 +97,7 @@ __force_inline void file::unlock()
 {
     auto rc = ::flock(fd_, LOCK_UN);
     if (__unlikely(rc == -1)) {
-        throw file_error("Unlock file error ({})", std::strerror(errno));
+        throw_ex< file_error >("Unlock file error ({})", std::strerror(errno));
     }
 }
 
@@ -125,14 +125,14 @@ __force_inline file file::temporary()
 {
     FILE* temp_file = tmpfile();
     if (__unlikely(!temp_file)) {
-        throw file_error("Failed to create temp file (tmpfile, {})", std::strerror(errno));
+        throw_ex< file_error >("Failed to create temp file (tmpfile, {})", std::strerror(errno));
     }
 
     int fd = ::dup(::fileno(temp_file));
     ::fclose(temp_file);
 
     if (__unlikely(fd == -1)) {
-        throw file_error("Failed to create temp file (dup, {})", std::strerror(errno));
+        throw_ex< file_error >("Failed to create temp file (dup, {})", std::strerror(errno));
     }
 
     return file(fd);
@@ -152,7 +152,7 @@ __force_inline void file::init(what_do what, const std::string& path, open_mode 
     } else if (mode == read_write) {
         oflags |= O_RDWR;
     } else {
-        throw file_error("Unknown open mode ({})", std::strerror(EINVAL));
+        throw_ex< file_error >("Unknown open mode ({})", std::strerror(EINVAL));
     }
 
     /* Open file */
@@ -192,8 +192,7 @@ __force_inline void file::init(what_do what, const std::string& path, open_mode 
     }
 
     if (__unlikely(!fd_)) {
-        throw file_error("Open file \"{}\" error ({})",
-            path.c_str(), std::strerror(errno));
+        throw_ex< file_error >("Open file \"{}\" error ({})", path.c_str(), std::strerror(errno));
     }
 }
 
@@ -201,7 +200,7 @@ __force_inline void file::do_lock(int op)
 {
     auto rc = ::flock(fd_, op);
     if (__unlikely(rc == -1)) {
-        throw file_error("Lock file error ({})", std::strerror(errno));
+        throw_ex< file_error >("Lock file error ({})", std::strerror(errno));
     }
 }
 
@@ -210,7 +209,7 @@ __force_inline bool file::do_try_lock(int op)
     auto rc = ::flock(fd_, op | LOCK_NB);
     if (rc == -1) {
         if (__unlikely(errno != EWOULDBLOCK)) {
-            throw file_error("Lock file error ({})", std::strerror(errno));
+            throw_ex< file_error >("Lock file error ({})", std::strerror(errno));
         } else {
             return false;
         }

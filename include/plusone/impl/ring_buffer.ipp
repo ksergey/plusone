@@ -30,7 +30,7 @@ __force_inline ring_buffer< T >::ring_buffer(std::size_t capacity)
     : capacity_{capacity}
 {
     if (__unlikely(!is_power_of_two(capacity_))) {
-        throw ring_buffer_error("Capacity must be power of two");
+        throw_ex< ring_buffer_error >("Capacity must be power of two");
     }
 
     data_ = new storage_type[capacity_];

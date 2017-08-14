@@ -40,7 +40,7 @@ __force_inline context::context(method m)
     }
 
     if (__unlikely(!ctx_)) {
-        throw error("SSL context create error ({})", ::ERR_reason_error_string(::ERR_get_error()));
+        throw_ex< error >("SSL context create error ({})", ::ERR_reason_error_string(::ERR_get_error()));
     }
 }
 

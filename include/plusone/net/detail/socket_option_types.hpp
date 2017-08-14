@@ -75,7 +75,7 @@ public:
     __force_inline void resize(std::size_t size)
     {
         if (size != sizeof(value_)) {
-            throw option_error("Boolean socket option resize");
+            throw_ex< option_error >("Boolean socket option resize");
         }
     }
 };
@@ -143,7 +143,7 @@ public:
     __force_inline void resize(std::size_t size)
     {
         if (size != sizeof(value_)) {
-            throw option_error("Integer socket option resize");
+            throw_ex< option_error >("Integer socket option resize");
         }
     }
 };

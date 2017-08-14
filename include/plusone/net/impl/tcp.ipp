@@ -51,7 +51,7 @@ __force_inline socket bind(const resolver& r)
             s.set_cloexec();
             auto listen_rc = s.listen();
             if (__unlikely(!listen_rc)) {
-                throw socket_error("Listen error ({})", listen_rc.str());
+                throw_ex< socket_error >("Listen error ({})", listen_rc.str());
             }
             return s;
         }
