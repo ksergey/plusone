@@ -6,7 +6,7 @@
 #define KSERGEY_expect_240717092911
 
 #include <iostream>
-#include <cstdlib>
+#include <exception>
 
 namespace plusone {
 
@@ -18,7 +18,7 @@ __force_inline void abort(const char* file, int line, const char* expr, const ch
         std::cerr << "   \"" << text << "\"\n";
     }
     std::cerr << '\n';
-    std::abort();
+    std::terminate();
 }
 
 } /* namespace plusone */
