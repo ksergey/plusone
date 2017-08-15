@@ -147,6 +147,12 @@ public:
 
     /** @note Equivalent to `assign(s.data(), s.size())` */
     static_string& assign(const std::string& s);
+
+    /** Convert to `std::string` */
+    std::string to_string() const;
+
+    /** Convert to `std::string` */
+    explicit operator std::string() const;
 };
 
 /** Compare two strings */

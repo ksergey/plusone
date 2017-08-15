@@ -251,6 +251,18 @@ __force_inline static_string< N >& static_string< N >::assign(const std::string&
     return assign(s.data(), s.size());
 }
 
+template< std::size_t N >
+__force_inline std::string static_string< N >::to_string() const
+{
+    return std::string{data(), size()};
+}
+
+template< std::size_t N >
+__force_inline static_string< N >::operator std::string() const
+{
+    return std::string{data(), size()};
+}
+
 template< std::size_t N, std::size_t M >
 __force_inline bool operator==(const static_string< N >& left, const static_string< M >& right) noexcept
 {
