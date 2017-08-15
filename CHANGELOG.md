@@ -1,3 +1,7 @@
+# Version 14
+
+* Added static string
+
 # Version 13
 
 * Added static_buffer_base

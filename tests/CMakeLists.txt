@@ -39,3 +39,7 @@ add_test(buffer buffer_test)
 add_executable(exception_test exception.cpp)
 target_link_libraries(exception_test plusone doctest)
 add_test(exception exception_test)
+
+add_executable(static_string_test static_string.cpp)
+target_link_libraries(static_string_test plusone doctest)
+add_test(static_string static_string_test)
