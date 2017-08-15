@@ -8,47 +8,82 @@
 #include <cstring>
 #include <plusone/compiler.hpp>
 #include <plusone/exception.hpp>
+#include <plusone/expect.hpp>
 
 namespace plusone {
+namespace detail {
+
+__force_inline bool equal(const char* left, std::size_t left_size,
+        const char* right, std::size_t right_size) noexcept
+{
+    return left_size == right_size ? std::strncmp(left, right, left_size) == 0 : false;
+}
+
+} /* namespace detail */
 
 template< std::size_t N >
-__force_inline constexpr static_string< N >::static_string()
+__force_inline static_string< N >::static_string()
     : storage_{}
     , size_{}
 {}
 
 template< std::size_t N >
-__force_inline constexpr const char* static_string< N >::data() const noexcept
+__force_inline static_string< N >::static_string(const char* s, std::size_t count)
+{
+    assign(s, count);
+}
+
+template< std::size_t N >
+__force_inline static_string< N >::static_string(const char* s)
+    : static_string{s, std::strlen(s)}
+{}
+
+template< std::size_t N >
+template< std::size_t M >
+__force_inline static_string< N >::static_string(const char (&s)[M]) noexcept
+{
+    __expect( M - 1 <= N );
+    __expect( s[M - 1] == '\0' );
+    assign(s, M - 1);
+}
+
+template< std::size_t N >
+__force_inline static_string< N >::static_string(std::initializer_list< char > il)
+    : static_string{il.begin(), il.size()}
+{}
+
+template< std::size_t N >
+__force_inline const char* static_string< N >::data() const noexcept
 {
     return storage_;
 }
 
 template< std::size_t N >
-__force_inline constexpr char* static_string< N >::data() noexcept
+__force_inline char* static_string< N >::data() noexcept
 {
     return storage_;
 }
 
 template< std::size_t N >
-__force_inline constexpr const char* static_string< N >::c_str() const noexcept
+__force_inline const char* static_string< N >::c_str() const noexcept
 {
     return storage_;
 }
 
 template< std::size_t N >
-__force_inline constexpr std::size_t static_string< N >::size() const noexcept
+__force_inline std::size_t static_string< N >::size() const noexcept
 {
     return size_;
 }
 
 template< std::size_t N >
-__force_inline constexpr std::size_t static_string< N >::length() const noexcept
+__force_inline std::size_t static_string< N >::length() const noexcept
 {
     return size_;
 }
 
 template< std::size_t N >
-__force_inline constexpr bool static_string< N >::empty() const noexcept
+__force_inline bool static_string< N >::empty() const noexcept
 {
     return 0u == size_;
 }
@@ -66,53 +101,55 @@ __force_inline constexpr std::size_t static_string< N >::max_size() noexcept
 }
 
 template< std::size_t N >
-__force_inline constexpr const char& static_string< N >::at(std::size_t i) const
+__force_inline const char& static_string< N >::at(std::size_t i) const
 {
-    return i <= size_
-        ? storage_[i]
-        : (throw_ex< std::out_of_range >("Out of range in static_string::at"), storage_[i]);
+    if (__unlikely(i > size_)) {
+        throw_ex< std::out_of_range >("Out of range in static_string::at");
+    }
+    return storage_[i];
 }
 
 template< std::size_t N >
-__force_inline constexpr char& static_string< N >::at(std::size_t i)
+__force_inline char& static_string< N >::at(std::size_t i)
 {
-    return i <= size_
-        ? storage_[i]
-        : (throw_ex< std::out_of_range >("Out of range in static_string::at"), storage_[i]);
+    if (__unlikely(i > size_)) {
+        throw_ex< std::out_of_range >("Out of range in static_string::at");
+    }
+    return storage_[i];
 }
 
 template< std::size_t N >
-__force_inline constexpr const char& static_string< N >::operator[](std::size_t i) const noexcept
+__force_inline const char& static_string< N >::operator[](std::size_t i) const noexcept
 {
     return storage_[i];
 }
 
 template< std::size_t N >
-__force_inline constexpr char& static_string< N >::operator[](std::size_t i) noexcept
+__force_inline char& static_string< N >::operator[](std::size_t i) noexcept
 {
     return storage_[i];
 }
 
 template< std::size_t N >
-__force_inline constexpr const char& static_string< N >::front() const noexcept
+__force_inline const char& static_string< N >::front() const noexcept
 {
     return (*this)[0u];
 }
 
 template< std::size_t N >
-__force_inline constexpr char& static_string< N >::front() noexcept
+__force_inline char& static_string< N >::front() noexcept
 {
     return (*this)[0u];
 }
 
 template< std::size_t N >
-__force_inline constexpr const char& static_string< N >::back() const noexcept
+__force_inline const char& static_string< N >::back() const noexcept
 {
     return storage_[size_ - 1u];
 }
 
 template< std::size_t N >
-__force_inline constexpr char& static_string< N >::back() noexcept
+__force_inline char& static_string< N >::back() noexcept
 {
     return storage_[size_ - 1u];
 }
@@ -173,6 +210,12 @@ __force_inline static_string< N >& static_string< N >::append(const static_strin
 }
 
 template< std::size_t N >
+__force_inline static_string< N >& static_string< N >::append(const std::string& s)
+{
+    return append(s.data(), s.size());
+}
+
+template< std::size_t N >
 __force_inline static_string< N >& static_string< N >::assign(const char* s, std::size_t count)
 {
     if (__unlikely(count > N)) {
@@ -187,6 +230,59 @@ __force_inline static_string< N >& static_string< N >::assign(const char* s, std
     storage_[size_] = '\0';
 
     return *this;
+}
+
+template< std::size_t N >
+__force_inline static_string< N >& static_string< N >::assign(const char* s)
+{
+    return assign(s, std::strlen(s));
+}
+
+template< std::size_t N >
+template< std::size_t M >
+__force_inline static_string< N >& static_string< N >::assign(const static_string< M >& s)
+{
+    return assign(s.data(), s.size());
+}
+
+template< std::size_t N >
+__force_inline static_string< N >& static_string< N >::assign(const std::string& s)
+{
+    return assign(s.data(), s.size());
+}
+
+template< std::size_t N, std::size_t M >
+__force_inline bool operator==(const static_string< N >& left, const static_string< M >& right) noexcept
+{
+    return detail::equal(left.data(), left.size(), right.data(), right.size());
+}
+
+template< std::size_t N, std::size_t M >
+__force_inline bool operator==(const static_string< N >& left, const char (&right)[M]) noexcept
+{
+    __expect( M - 1 <= N );
+    __expect( right[M - 1] == '\0' );;
+    return detail::equal(left.data(), left.size(), right, M - 1);
+}
+
+template< std::size_t N, std::size_t M >
+__force_inline bool operator==(const char (&left)[N], const static_string< M >& right) noexcept
+{
+    __expect( N - 1 <= M );
+    __expect( left[N - 1] == '\0' );
+    return detail::equal(right, M - 1, right.data(), right.size());
+}
+
+template< std::size_t N >
+__force_inline bool operator==(const static_string< N >& left, const std::string& right) noexcept
+{
+    return detail::equal(left.data(), left.size(), right.data(), right.size());
+}
+
+template< std::size_t N >
+__force_inline bool operator==(const std::string& left, const static_string< N >& right) noexcept
+{
+    return detail::equal(left.data(), left.size(), right.data(), right.size());
 }
 
 } /* namespace plusone */

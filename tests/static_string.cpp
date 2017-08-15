@@ -6,74 +6,76 @@
 #include <doctest.h>
 #include <plusone/static_string.hpp>
 
-TEST_CASE("Static string uninitialized 0")
+TEST_CASE("Static string")
 {
-    constexpr auto uninitialized = plusone::static_string< 8 >();
-    REQUIRE( uninitialized.size() == 0 );
-    REQUIRE( uninitialized.empty() );
-    REQUIRE( uninitialized.data()[0] == '\0' );
-    REQUIRE( uninitialized[0] == '\0' );
-    REQUIRE( uninitialized.at(0) == '\0' );
-    REQUIRE( uninitialized.capacity() == 8 );
+    auto str = plusone::static_string< 8 >();
+    REQUIRE( str.size() == 0 );
+    REQUIRE( str.empty() );
+    REQUIRE( str.data()[0] == '\0' );
+    REQUIRE( str[0] == '\0' );
+    REQUIRE( str.at(0) == '\0' );
+    REQUIRE( str.capacity() == 8 );
+    CHECK_THROWS_AS( str.at(1), const std::out_of_range& );
 
+    str.push_back('X');
+
+    REQUIRE( str.size() == 1 );
+    REQUIRE( !str.empty() );
+    REQUIRE( str.data()[0] == 'X' );
+    REQUIRE( str.data()[1] == '\0' );
+    REQUIRE( str[0] == 'X' );
+    REQUIRE( str.at(0) == 'X' );
+    REQUIRE( str.at(1) == '\0' );
+    REQUIRE( str.capacity() == 8 );
+    REQUIRE( str.front() == 'X' );
+    REQUIRE( str.back() == 'X' );
+
+    str.push_back('Y');
+
+    REQUIRE( str.size() == 2 );
+    REQUIRE( !str.empty() );
+    REQUIRE( str.data()[0] == 'X' );
+    REQUIRE( str.data()[1] == 'Y' );
+    REQUIRE( str.data()[2] == '\0' );
+    REQUIRE( str[0] == 'X' );
+    REQUIRE( str[1] == 'Y' );
+    REQUIRE( str.at(0) == 'X' );
+    REQUIRE( str.at(1) == 'Y' );
+    REQUIRE( str.capacity() == 8 );
+    REQUIRE( str.front() == 'X' );
+    REQUIRE( str.back() == 'Y' );
+
+    str.clear();
+    REQUIRE( str.size() == 0 );
+    REQUIRE( str.empty() );
+    REQUIRE( str.data()[0] == '\0' );
+    REQUIRE( str[0] == '\0' );
+    REQUIRE( str.at(0) == '\0' );
+    REQUIRE( str.capacity() == 8 );
+    CHECK_THROWS_AS( str.at(1), const std::out_of_range& );
+
+    str.append("Hello", 3);
+    REQUIRE( str.size() == 3 );
+    REQUIRE( !str.empty() );
+    REQUIRE( str[0] == 'H' );
+    REQUIRE( str[1] == 'e' );
+    REQUIRE( str[2] == 'l' );
+
+    str.append("lo");
+    REQUIRE( str.size() == 5 );
+    REQUIRE( str.back() == 'o' );
+
+    REQUIRE( str == std::string("Hello") );
+    REQUIRE( std::string("Hello") == str);
 }
 
-TEST_CASE("Static string uninitialized 1")
+TEST_CASE("Static string 2")
 {
-    auto uninitialized = plusone::static_string< 8 >();
-    REQUIRE( uninitialized.size() == 0 );
-    REQUIRE( uninitialized.empty() );
-    REQUIRE( uninitialized.data()[0] == '\0' );
-    REQUIRE( uninitialized[0] == '\0' );
-    REQUIRE( uninitialized.at(0) == '\0' );
-    REQUIRE( uninitialized.capacity() == 8 );
-    CHECK_THROWS_AS( uninitialized.at(1), const std::out_of_range& );
-
-    uninitialized.push_back('X');
-
-    REQUIRE( uninitialized.size() == 1 );
-    REQUIRE( !uninitialized.empty() );
-    REQUIRE( uninitialized.data()[0] == 'X' );
-    REQUIRE( uninitialized.data()[1] == '\0' );
-    REQUIRE( uninitialized[0] == 'X' );
-    REQUIRE( uninitialized.at(0) == 'X' );
-    REQUIRE( uninitialized.at(1) == '\0' );
-    REQUIRE( uninitialized.capacity() == 8 );
-    REQUIRE( uninitialized.front() == 'X' );
-    REQUIRE( uninitialized.back() == 'X' );
-
-    uninitialized.push_back('Y');
-
-    REQUIRE( uninitialized.size() == 2 );
-    REQUIRE( !uninitialized.empty() );
-    REQUIRE( uninitialized.data()[0] == 'X' );
-    REQUIRE( uninitialized.data()[1] == 'Y' );
-    REQUIRE( uninitialized.data()[2] == '\0' );
-    REQUIRE( uninitialized[0] == 'X' );
-    REQUIRE( uninitialized[1] == 'Y' );
-    REQUIRE( uninitialized.at(0) == 'X' );
-    REQUIRE( uninitialized.at(1) == 'Y' );
-    REQUIRE( uninitialized.capacity() == 8 );
-    REQUIRE( uninitialized.front() == 'X' );
-    REQUIRE( uninitialized.back() == 'Y' );
-
-    uninitialized.clear();
-    REQUIRE( uninitialized.size() == 0 );
-    REQUIRE( uninitialized.empty() );
-    REQUIRE( uninitialized.data()[0] == '\0' );
-    REQUIRE( uninitialized[0] == '\0' );
-    REQUIRE( uninitialized.at(0) == '\0' );
-    REQUIRE( uninitialized.capacity() == 8 );
-    CHECK_THROWS_AS( uninitialized.at(1), const std::out_of_range& );
-
-    uninitialized.append("Hello", 3);
-    REQUIRE( uninitialized.size() == 3 );
-    REQUIRE( !uninitialized.empty() );
-    REQUIRE( uninitialized[0] == 'H' );
-    REQUIRE( uninitialized[1] == 'e' );
-    REQUIRE( uninitialized[2] == 'l' );
-
-    uninitialized.append("lo");
-    REQUIRE( uninitialized.size() == 5 );
-    REQUIRE( uninitialized.back() == 'o' );
+    plusone::static_string< 4 > s("test");
+    REQUIRE( s.size() == 4 );
+    REQUIRE( s[0] == 't' );
+    REQUIRE( s[1] == 'e' );
+    REQUIRE( s[2] == 's' );
+    REQUIRE( s[3] == 't' );
+    REQUIRE( s == "test" );
 }
