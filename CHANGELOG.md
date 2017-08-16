@@ -1,6 +1,7 @@
 # Version 14
 
 * Added static string
+* Added string_view
 
 # Version 13
 

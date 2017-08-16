@@ -39,6 +39,11 @@ __force_inline static_string< N >::static_string(const char* s)
 {}
 
 template< std::size_t N >
+__force_inline static_string< N >::static_string(const string_view& s)
+    : static_string{s.data(), s.size()}
+{}
+
+template< std::size_t N >
 template< std::size_t M >
 __force_inline static_string< N >::static_string(const char (&s)[M]) noexcept
 {
@@ -216,6 +221,12 @@ __force_inline static_string< N >& static_string< N >::append(const std::string&
 }
 
 template< std::size_t N >
+__force_inline static_string< N >& static_string< N >::append(const string_view& s)
+{
+    return append(s.data(), s.size());
+}
+
+template< std::size_t N >
 __force_inline static_string< N >& static_string< N >::assign(const char* s, std::size_t count)
 {
     if (__unlikely(count > N)) {
@@ -252,15 +263,33 @@ __force_inline static_string< N >& static_string< N >::assign(const std::string&
 }
 
 template< std::size_t N >
+__force_inline static_string< N >& static_string< N >::assign(const string_view& s)
+{
+    return assign(s.data(), s.size());
+}
+
+template< std::size_t N >
 __force_inline std::string static_string< N >::to_string() const
 {
-    return std::string{data(), size()};
+    return {data(), size()};
 }
 
 template< std::size_t N >
 __force_inline static_string< N >::operator std::string() const
 {
-    return std::string{data(), size()};
+    return {data(), size()};
+}
+
+template< std::size_t N >
+__force_inline string_view static_string< N >::to_string_view() const
+{
+    return {data(), size()};
+}
+
+template< std::size_t N >
+__force_inline static_string< N >::operator string_view() const
+{
+    return {data(), size()};
 }
 
 template< std::size_t N, std::size_t M >
@@ -293,6 +322,18 @@ __force_inline bool operator==(const static_string< N >& left, const std::string
 
 template< std::size_t N >
 __force_inline bool operator==(const std::string& left, const static_string< N >& right) noexcept
+{
+    return detail::equal(left.data(), left.size(), right.data(), right.size());
+}
+
+template< std::size_t N >
+__force_inline bool operator==(const static_string< N >& left, const string_view& right) noexcept
+{
+    return detail::equal(left.data(), left.size(), right.data(), right.size());
+}
+
+template< std::size_t N >
+__force_inline bool operator==(const string_view& left, const static_string< N >& right) noexcept
 {
     return detail::equal(left.data(), left.size(), right.data(), right.size());
 }

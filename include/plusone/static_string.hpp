@@ -6,6 +6,7 @@
 #define KSERGEY_static_string_150817174547
 
 #include <string>
+#include <plusone/string_view.hpp>
 
 namespace plusone {
 
@@ -26,6 +27,9 @@ public:
 
     /** Construct from null terminated string */
     explicit static_string(const char* s);
+
+    /** Construct from `string_view` */
+    explicit static_string(const string_view& s);
 
     /** Construct from array */
     template< std::size_t M >
@@ -132,6 +136,9 @@ public:
     /** @note Equivalent to `append(s.data(), s.size())` */
     static_string& append(const std::string& s);
 
+    /** @note Equivalent to `append(s.data(), s.size())` */
+    static_string& append(const string_view& s);
+
     /**
      * Assign `count` characters from the specified char array.
      * @throw std::out_of_range if `count > N`
@@ -148,11 +155,20 @@ public:
     /** @note Equivalent to `assign(s.data(), s.size())` */
     static_string& assign(const std::string& s);
 
+    /** @note Equivalent to `assign(s.data(), s.size())` */
+    static_string& assign(const string_view& s);
+
     /** Convert to `std::string` */
     std::string to_string() const;
 
     /** Convert to `std::string` */
     explicit operator std::string() const;
+
+    /** Convert to `string_view` */
+    string_view to_string_view() const;
+
+    /** Convert to `string_view` */
+    explicit operator string_view() const;
 };
 
 /** Compare two strings */
@@ -174,6 +190,14 @@ bool operator==(const static_string< N >& left, const std::string& right) noexce
 /** Compare two strings */
 template< std::size_t N >
 bool operator==(const std::string& left, const static_string< N >& right) noexcept;
+
+/** Compare two strings */
+template< std::size_t N >
+bool operator==(const static_string< N >& left, const string_view& right) noexcept;
+
+/** Compare two strings */
+template< std::size_t N >
+bool operator==(const string_view& left, const static_string< N >& right) noexcept;
 
 } /* namespace plusone */
 
