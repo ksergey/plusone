@@ -39,11 +39,6 @@ __force_inline static_string< N >::static_string(const char* s)
 {}
 
 template< std::size_t N >
-__force_inline static_string< N >::static_string(const string_view& s)
-    : static_string{s.data(), s.size()}
-{}
-
-template< std::size_t N >
 template< std::size_t M >
 __force_inline static_string< N >::static_string(const char (&s)[M]) noexcept
 {
@@ -51,6 +46,16 @@ __force_inline static_string< N >::static_string(const char (&s)[M]) noexcept
     __expect( s[M - 1] == '\0' );
     assign(s, M - 1);
 }
+
+template< std::size_t N >
+__force_inline static_string< N >::static_string(const std::string& s)
+    : static_string{s.data(), s.size()}
+{}
+
+template< std::size_t N >
+__force_inline static_string< N >::static_string(const string_view& s)
+    : static_string{s.data(), s.size()}
+{}
 
 template< std::size_t N >
 __force_inline static_string< N >::static_string(std::initializer_list< char > il)

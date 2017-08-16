@@ -28,12 +28,15 @@ public:
     /** Construct from null terminated string */
     explicit static_string(const char* s);
 
-    /** Construct from `string_view` */
-    explicit static_string(const string_view& s);
-
     /** Construct from array */
     template< std::size_t M >
     explicit static_string(const char (&s)[M]) noexcept;
+
+    /** Construct from `std::string` */
+    explicit static_string(const std::string& s);
+
+    /** Construct from `string_view` */
+    explicit static_string(const string_view& s);
 
     /** Construct from `std::initializer_list` of chars */
     static_string(std::initializer_list< char > il);
