@@ -12,6 +12,9 @@ namespace plusone {
 /** Using C++11/14 experimental version of string_view */
 using string_view = std::experimental::string_view;
 
+/** String view literals namespace */
+namespace string_view_literals = std::experimental::string_view_literals;
+
 } /* namespace plusone */
 
 #endif /* KSERGEY_string_view_160817110650 */
