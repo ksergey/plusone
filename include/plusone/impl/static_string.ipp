@@ -28,6 +28,13 @@ __force_inline static_string< N >::static_string()
 {}
 
 template< std::size_t N >
+template< std::size_t M >
+__force_inline static_string< N >::static_string(const static_string< M >& s)
+{
+    assign(s.data(), s.size());
+}
+
+template< std::size_t N >
 __force_inline static_string< N >::static_string(const char* s, std::size_t count)
 {
     assign(s, count);
@@ -108,6 +115,16 @@ template< std::size_t N >
 __force_inline constexpr std::size_t static_string< N >::max_size() noexcept
 {
     return N;
+}
+
+template< std::size_t N >
+__force_inline void static_string< N >::set_size(std::size_t new_size)
+{
+    if (__unlikely(new_size > N)) {
+        throw_ex< std::out_of_range >("Out of range in static_string::set_size");
+    }
+    size_ = new_size;
+    storage_[size_] = '\0';
 }
 
 template< std::size_t N >

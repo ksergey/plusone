@@ -22,21 +22,25 @@ public:
     /** Construct empty string */
     static_string();
 
+    /** Construct from another `static_string` */
+    template< std::size_t M >
+    static_string(const static_string< M >& s);
+
     /** Construct from `const char*` and count */
     static_string(const char* s, std::size_t count);
 
     /** Construct from null terminated string */
-    explicit static_string(const char* s);
+    static_string(const char* s);
 
     /** Construct from array */
     template< std::size_t M >
-    explicit static_string(const char (&s)[M]) noexcept;
+    static_string(const char (&s)[M]) noexcept;
 
     /** Construct from `std::string` */
-    explicit static_string(const std::string& s);
+    static_string(const std::string& s);
 
     /** Construct from `string_view` */
-    explicit static_string(const string_view& s);
+    static_string(const string_view& s);
 
     /** Construct from `std::initializer_list` of chars */
     static_string(std::initializer_list< char > il);
@@ -64,6 +68,13 @@ public:
 
     /** @return `N` */
     static constexpr std::size_t max_size() noexcept;
+
+    /**
+     * Set new size of data and set '\0' at end
+     * @param[in] new_size New size of data
+     * @pre `new_size <= size`
+     */
+    void set_size(std::size_t new_size);
 
     /**
      * @return `*(data() + i)`
