@@ -190,14 +190,6 @@ template< std::size_t N, std::size_t M >
 bool operator==(const static_string< N >& left, const static_string< M >& right) noexcept;
 
 /** Compare two strings */
-template< std::size_t N, std::size_t M >
-bool operator==(const static_string< N >& left, const char (&right)[M]) noexcept;
-
-/** Compare two strings */
-template< std::size_t N, std::size_t M >
-bool operator==(const char (&left)[N], const static_string< M >& right) noexcept;
-
-/** Compare two strings */
 template< std::size_t N >
 bool operator==(const static_string< N >& left, const std::string& right) noexcept;
 
@@ -212,6 +204,14 @@ bool operator==(const static_string< N >& left, const string_view& right) noexce
 /** Compare two strings */
 template< std::size_t N >
 bool operator==(const string_view& left, const static_string< N >& right) noexcept;
+
+/** Compare two strings */
+template< std::size_t N >
+bool operator==(const static_string< N >& left, const char* right) noexcept;
+
+/** Compare two strings */
+template< std::size_t N >
+bool operator==(const char* left, const static_string< N >& right) noexcept;
 
 } /* namespace plusone */
 

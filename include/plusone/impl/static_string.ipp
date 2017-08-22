@@ -320,22 +320,6 @@ __force_inline bool operator==(const static_string< N >& left, const static_stri
     return detail::equal(left.data(), left.size(), right.data(), right.size());
 }
 
-template< std::size_t N, std::size_t M >
-__force_inline bool operator==(const static_string< N >& left, const char (&right)[M]) noexcept
-{
-    __expect( M - 1 <= N );
-    __expect( right[M - 1] == '\0' );;
-    return detail::equal(left.data(), left.size(), right, M - 1);
-}
-
-template< std::size_t N, std::size_t M >
-__force_inline bool operator==(const char (&left)[N], const static_string< M >& right) noexcept
-{
-    __expect( N - 1 <= M );
-    __expect( left[N - 1] == '\0' );
-    return detail::equal(right, M - 1, right.data(), right.size());
-}
-
 template< std::size_t N >
 __force_inline bool operator==(const static_string< N >& left, const std::string& right) noexcept
 {
@@ -358,6 +342,18 @@ template< std::size_t N >
 __force_inline bool operator==(const string_view& left, const static_string< N >& right) noexcept
 {
     return detail::equal(left.data(), left.size(), right.data(), right.size());
+}
+
+template< std::size_t N >
+__force_inline bool operator==(const static_string< N >& left, const char* right) noexcept
+{
+    return detail::equal(left.data(), left.size(), right, std::strlen(right));
+}
+
+template< std::size_t N >
+__force_inline bool operator==(const char* left, const static_string< N >& right) noexcept
+{
+    return detail::equal(left, std::strlen(left), right.data(), right.size());
 }
 
 } /* namespace plusone */
