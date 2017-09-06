@@ -1,3 +1,8 @@
+# Version 15
+
+* Updated signal interface
+* Increased pow10 table till 20
+
 # Version 14
 
 * Added static string

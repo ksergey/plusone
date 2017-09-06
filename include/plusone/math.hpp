@@ -20,7 +20,7 @@ constexpr bool is_power_of_two(T v) noexcept;
 struct pow10
 {
     /** Exponent table size */
-    static constexpr std::size_t table_size = 19;
+    static constexpr std::size_t table_size = 20;
 
     /**
      * Get power of 10 (pre-calculated)
