@@ -6,7 +6,7 @@
 #define MADLIFE_meta_081116114243_MADLIFE
 
 #include <type_traits>
-#include "common.hpp"
+#include <plusone/serialization/common.hpp>
 
 namespace plusone {
 namespace serialization {

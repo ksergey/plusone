@@ -62,34 +62,48 @@ public:
 } /* namespace detail */
 
 template< class T >
-inline auto greater(const T& value)
-{ return detail::stl_comparator< T, std::greater >(value); }
+__force_inline auto greater(const T& value)
+{
+    return detail::stl_comparator< T, std::greater >(value);
+}
 
 template< class T >
-inline auto greater_equal(const T& value)
-{ return detail::stl_comparator< T, std::greater_equal >(value); }
+__force_inline auto greater_equal(const T& value)
+{
+    return detail::stl_comparator< T, std::greater_equal >(value);
+}
 
 template< class T >
-inline auto less(const T& value)
-{ return detail::stl_comparator< T, std::less >(value); }
+__force_inline auto less(const T& value)
+{
+    return detail::stl_comparator< T, std::less >(value);
+}
 
 template< class T >
-inline auto less_equal(const T& value)
-{ return detail::stl_comparator< T, std::less_equal >(value); }
+__force_inline auto less_equal(const T& value)
+{
+    return detail::stl_comparator< T, std::less_equal >(value);
+}
 
 template< class T >
-inline auto not_equal_to(const T& value)
-{ return detail::stl_comparator< T, std::not_equal_to >(value); }
+__force_inline auto not_equal_to(const T& value)
+{
+    return detail::stl_comparator< T, std::not_equal_to >(value);
+}
 
 template< class T >
-inline auto inside(const T& left, const T& right)
-{ return detail::inside_checker< T, std::greater_equal, std::less_equal >(left, right); }
+__force_inline auto inside(const T& left, const T& right)
+{
+    return detail::inside_checker< T, std::greater_equal, std::less_equal >(left, right);
+}
 
 template< class T >
-inline auto strong_inside(const T& left, const T& right)
-{ return detail::inside_checker< T, std::greater, std::less >(left, right); }
+__force_inline auto strong_inside(const T& left, const T& right)
+{
+    return detail::inside_checker< T, std::greater, std::less >(left, right);
+}
 
-inline auto not_empty_string()
+__force_inline auto not_empty_string()
 {
     return [](const std::string& str) {
         if (str.empty()) {
@@ -98,7 +112,7 @@ inline auto not_empty_string()
     };
 }
 
-inline auto max_length_string(size_t max_length)
+__force_inline auto max_length_string(size_t max_length)
 {
     return [max_length](const std::string& str) {
         if (str.size() > max_length) {
@@ -108,7 +122,7 @@ inline auto max_length_string(size_t max_length)
 }
 
 template< class T >
-inline auto one_of(std::initializer_list< T > values)
+__force_inline auto one_of(std::initializer_list< T > values)
 {
     const std::set< T > values_set(values);
     return [values_set](const T& value) {

@@ -1,3 +1,8 @@
+# Version 16
+
+* plusone::serialization refactoring
+* plusone::serialization added ability to read/write std::array
+
 # Version 15
 
 * Updated signal interface

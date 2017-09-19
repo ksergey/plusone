@@ -6,7 +6,7 @@
 #define MADLIFE_binder_081116001039_MADLIFE
 
 #include <string>
-#include "common.hpp"
+#include <plusone/serialization/common.hpp>
 
 namespace plusone {
 namespace serialization {
@@ -39,6 +39,6 @@ public:
 } /* namespace serialization */
 } /* namespace plusone */
 
-#include "impl/binder.ipp"
+#include <plusone/serialization/impl/binder.ipp>
 
 #endif /* MADLIFE_binder_081116001039_MADLIFE */

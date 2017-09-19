@@ -6,8 +6,8 @@
 #define MADLIFE_common_071116143044_MADLIFE
 
 #include <stdexcept>
-#include "../compiler.hpp"
-#include "../exception.hpp"
+#include <plusone/compiler.hpp>
+#include <plusone/exception.hpp>
 #include "./deps/json.hpp"
 
 namespace plusone {

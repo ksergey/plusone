@@ -5,9 +5,9 @@
 #ifndef KSERGEY_all_130717113814
 #define KSERGEY_all_130717113814
 
-#include "../value_io.hpp"
-#include "../binder.hpp"
-#include "../checkers.hpp"
+#include <plusone/serialization/value_io.hpp>
+#include <plusone/serialization/binder.hpp>
+#include <plusone/serialization/checkers.hpp>
 
 namespace plusone {
 namespace serialization {
@@ -15,7 +15,7 @@ namespace serialization {
 namespace policy {
 
 template< class FieldT, class FieldDefaultT >
-inline void set_default_value(FieldT& field, FieldDefaultT&& def)
+__force_inline void set_default_value(FieldT& field, FieldDefaultT&& def)
 {
     field = std::move(def);
 }
@@ -69,14 +69,14 @@ struct null_checker
 };
 
 template< class FieldT, class CheckerT >
-inline auto required(const std::string& field_name, FieldT& field, CheckerT&& checker)
+__force_inline auto required(const std::string& field_name, FieldT& field, CheckerT&& checker)
 {
     using binder_type = binder< FieldT, policy::required, CheckerT >;
     return binder_type{field_name, field, policy::required{}, std::move(checker)};
 }
 
 template< class FieldT, class FieldDefaultT, class CheckerT >
-inline auto optional(const std::string& field_name, FieldT& field,
+__force_inline auto optional(const std::string& field_name, FieldT& field,
         FieldDefaultT default_value, CheckerT&& checker)
 {
     using policy_type = policy::optional< FieldDefaultT >;
@@ -85,7 +85,7 @@ inline auto optional(const std::string& field_name, FieldT& field,
 }
 
 template< class MsgT >
-inline std::string to_json(const MsgT& msg, int indent)
+__force_inline std::string to_json(const MsgT& msg, int indent)
 {
     json object;
     output out{object};
@@ -94,7 +94,7 @@ inline std::string to_json(const MsgT& msg, int indent)
 }
 
 template< class MsgT >
-inline void from_json(const std::string& str, MsgT& msg)
+__force_inline void from_json(const std::string& str, MsgT& msg)
 {
     auto object = json::parse(str);
     input in{object};
@@ -102,7 +102,7 @@ inline void from_json(const std::string& str, MsgT& msg)
 }
 
 template< class MsgT >
-inline MsgT from_json(const std::string& str)
+__force_inline MsgT from_json(const std::string& str)
 {
     MsgT result;
     from_json(str, result);
@@ -110,13 +110,13 @@ inline MsgT from_json(const std::string& str)
 }
 
 template< class MsgT >
-inline void to_stream(std::ostream& os, const MsgT& msg, int indent)
+__force_inline void to_stream(std::ostream& os, const MsgT& msg, int indent)
 {
     os << to_json(msg, indent);
 }
 
 template< class MsgT >
-inline void from_stream(std::istream& is, MsgT& msg)
+__force_inline void from_stream(std::istream& is, MsgT& msg)
 {
     json object;
     is >> object;
@@ -125,7 +125,7 @@ inline void from_stream(std::istream& is, MsgT& msg)
 }
 
 template< class MsgT >
-inline MsgT from_stream(std::istream& is)
+__force_inline MsgT from_stream(std::istream& is)
 {
     MsgT result;
     from_stream(is, result);

@@ -7,7 +7,8 @@
 
 #include <string>
 #include <vector>
-#include "meta.hpp"
+#include <array>
+#include <plusone/serialization/meta.hpp>
 
 namespace plusone {
 namespace serialization {
@@ -45,28 +46,33 @@ public:
     template< class BinderT >
     output& operator&(const BinderT& binder)
     {
-        binder.write_to(object_); return *this;
+        binder.write_to(object_);
+        return *this;
     }
 };
 
 /* Integral types */
 
 template< class T >
-inline void read_value(const json& object, T& value, if_integral_type< T >* = 0)
-{ value = object; }
-
-template< class T >
-inline void write_value(T value, json& object, if_integral_type< T >* = 0)
-{ object = value; }
-
-/* std::string */
-
-inline void read_value(const json& object, std::string& value)
+__force_inline void read_value(const json& object, T& value, if_integral_type< T >* = 0)
 {
     value = object;
 }
 
-inline void write_value(const std::string& value, json& object)
+template< class T >
+__force_inline void write_value(T value, json& object, if_integral_type< T >* = 0)
+{
+    object = value;
+}
+
+/* std::string */
+
+__force_inline void read_value(const json& object, std::string& value)
+{
+    value = object;
+}
+
+__force_inline void write_value(const std::string& value, json& object)
 {
     object = value;
 }
@@ -74,20 +80,20 @@ inline void write_value(const std::string& value, json& object)
 /* tree read/write */
 
 template< class IO, class DTO >
-inline void serialize(IO& io, DTO& dto)
+__force_inline void serialize(IO& io, DTO& dto)
 {
     dto.serialize(io);
 }
 
 template< class T >
-inline void read_value(const json& object, T& value, if_serializable_type< T, input >* = 0)
+__force_inline void read_value(const json& object, T& value, if_serializable_type< T, input >* = 0)
 {
     input in{object};
     serialize(in, value);
 }
 
 template< class T >
-inline void write_value(const T& value, json& object, if_serializable_type< T, output >* = 0)
+__force_inline void write_value(const T& value, json& object, if_serializable_type< T, output >* = 0)
 {
     output out{object};
     serialize(out, const_cast< T& >(value));
@@ -96,7 +102,7 @@ inline void write_value(const T& value, json& object, if_serializable_type< T, o
 /* std::vector */
 
 template< class T, class AllocT >
-inline void read_value(const json& object, std::vector< T, AllocT >& vec)
+__force_inline void read_value(const json& object, std::vector< T, AllocT >& vec)
 {
     if (object.is_array()) {
         vec.clear();
@@ -111,13 +117,42 @@ inline void read_value(const json& object, std::vector< T, AllocT >& vec)
 }
 
 template< class T, class AllocT >
-inline void write_value(std::vector< T, AllocT >& vec, json& object)
+__force_inline void write_value(const std::vector< T, AllocT >& vec, json& object)
 {
     object = json::array();
 
     for (auto& item: vec) {
         json node;
         write_value(item, node);
+        object.push_back(node);
+    }
+}
+
+/* std::array */
+
+template< class T, std::size_t N >
+__force_inline void read_value(const json& object, std::array< T, N >& v)
+{
+    if (object.is_array()) {
+        if (__unlikely(N != object.size())) {
+            throw_ex< io_error >("Expect array of size {}", N);
+        }
+        for (std::size_t i = 0; i < N; ++i) {
+            read_value(object[i], v[i]);
+        }
+    } else {
+        throw_ex< io_error >("Value is not an array");
+    }
+}
+
+template< class T, std::size_t N >
+__force_inline void write_value(const std::array< T, N >& v, json& object)
+{
+    object = json::array();
+
+    for (std::size_t i = 0; i < N; ++i) {
+        json node;
+        write_value(v[i], node);
         object.push_back(node);
     }
 }

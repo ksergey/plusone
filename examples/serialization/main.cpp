@@ -52,6 +52,7 @@ struct sample_config
     unsigned value4;
     object_config value5;
     std::vector< point_config > value6;
+    std::array< int, 4 > value7;
 
     template< class InputOutputT >
     void serialize(InputOutputT& io)
@@ -62,7 +63,8 @@ struct sample_config
             & s::required("value3", value3)
             & s::optional("value4", value4, 33, s::one_of({33, 44, 55}))
             & s::required("value5", value5)
-            & s::required("value6", value6);
+            & s::required("value6", value6)
+            & s::required("value7", value7);
     }
 };
 
