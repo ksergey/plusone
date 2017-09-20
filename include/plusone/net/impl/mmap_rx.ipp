@@ -8,8 +8,8 @@
 #include <net/if.h>
 #include <unistd.h>
 #include <cmath>
-#include <cassert>
 #include <type_traits>
+#include <plusone/expect.hpp>
 
 namespace plusone {
 namespace net {
@@ -22,7 +22,9 @@ private:
 public:
     /** Move constructor */
     __force_inline frame(frame&& v) noexcept
-    { std::swap(v.data_, data_); }
+    {
+        std::swap(v.data_, data_);
+    }
 
     /** Move operator */
     __force_inline frame& operator=(frame&& v) noexcept
@@ -42,7 +44,7 @@ public:
     /** Destructor */
     __force_inline ~frame()
     {
-        assert( (data_ ? data_->tp_status == TP_STATUS_KERNEL : true) && "frame not commited" );
+        __expect( (data_ ? data_->tp_status == TP_STATUS_KERNEL : true) && "frame not commited" );
     }
 
     /** Return true if frame valid */
@@ -51,37 +53,31 @@ public:
         return data_ != nullptr;
     }
 
-    /** Return true if frame not valid */
-    __force_inline bool operator!() const noexcept
-    {
-        return data_ == nullptr;
-    }
-
     /** Return frame receiving timestamp */
     __force_inline std::uint32_t sec() const noexcept
     {
-        assert( data_ );
+        __expect( data_ );
         return data_->tp_sec;
     }
 
     /** Return frame receiving timestamp (nanosecond part) */
     __force_inline std::uint32_t nsec() const noexcept
     {
-        assert( data_ );
+        __expect( data_ );
         return data_->tp_nsec;
     }
 
     /** Return frame data (started from ip header) */
     __force_inline const std::uint8_t* data() const noexcept
     {
-        assert( data_ );
+        __expect( data_ );
         return reinterpret_cast< const std::uint8_t* >(data_) + data_->tp_mac;
     }
 
     /** Return frame data size */
     __force_inline std::size_t size() const noexcept
     {
-        assert( data_ );
+        __expect( data_ );
         return data_->tp_len;
     }
 
@@ -90,14 +86,14 @@ public:
     __force_inline const T& as(std::size_t offset = 0) const noexcept
     {
         static_assert( std::is_trivially_copyable< T >::value, "class T must be trivially copyable" );
-        assert( data_ && offset + sizeof(T) <= size() );
+        __expect( data_ && offset + sizeof(T) <= size() );
         return *reinterpret_cast< const T* >(data() + offset);
     }
 
     /** Return frame to RX ring */
     __force_inline void commit() noexcept
     {
-        assert( data_ );
+        __expect( data_ );
         data_->tp_status = TP_STATUS_KERNEL;
         __sync_synchronize();
     }
