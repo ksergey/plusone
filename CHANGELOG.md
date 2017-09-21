@@ -1,6 +1,7 @@
 # Version 17
 
 * Removed `commit` from plusone::net::mmap_rx::frame
+
     Now it called in `frame` destructor
 
 # Version 16
