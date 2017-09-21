@@ -42,7 +42,7 @@ private:
     std::size_t frame_index_{0};
 
 public:
-    /** Mmap RX frame */
+    /** Mmap RX frame. */
     class frame;
 
     mmap_rx(const mmap_rx&) = delete;
@@ -54,7 +54,7 @@ public:
     /** Destructor */
     virtual ~mmap_rx() = default;
 
-    /** Get next frame */
+    /** Get the next frame. */
     frame get_next_frame() noexcept;
 };
 

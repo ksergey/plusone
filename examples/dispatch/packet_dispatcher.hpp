@@ -64,8 +64,6 @@ public:
         }
         /* Process packet (decode and fire handler) */
         process(frame);
-        /* Make packet available for Kernel */
-        frame.commit();
     }
 
 private:

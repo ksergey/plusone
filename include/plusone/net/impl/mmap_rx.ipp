@@ -44,7 +44,11 @@ public:
     /** Destructor */
     __force_inline ~frame()
     {
-        __expect( (data_ ? data_->tp_status == TP_STATUS_KERNEL : true) && "frame not commited" );
+        if (data_) {
+            /* Make frame available for kernel */
+            data_->tp_status = TP_STATUS_KERNEL;
+            __sync_synchronize();
+        }
     }
 
     /** Return true if frame valid */
@@ -88,14 +92,6 @@ public:
         static_assert( std::is_trivially_copyable< T >::value, "class T must be trivially copyable" );
         __expect( data_ && offset + sizeof(T) <= size() );
         return *reinterpret_cast< const T* >(data() + offset);
-    }
-
-    /** Return frame to RX ring */
-    __force_inline void commit() noexcept
-    {
-        __expect( data_ );
-        data_->tp_status = TP_STATUS_KERNEL;
-        __sync_synchronize();
     }
 };
 

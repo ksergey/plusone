@@ -11,7 +11,9 @@
 static sig_atomic_t sigint = 0;
 
 static void sighandler(int num)
-{ sigint = 1; }
+{
+    sigint = 1;
+}
 
 static void process(const plusone::net::mmap_rx::frame& frame)
 {
@@ -49,9 +51,6 @@ int main(int argc, char* argv[])
 
             /* Process frame */
             process(frame);
-
-            /* Make frame available for re-use */
-            frame.commit();
         }
     } catch (const std::exception& e) {
         std::cout << "Error: " << e.what() << '\n';
