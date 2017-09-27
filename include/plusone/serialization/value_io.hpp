@@ -9,6 +9,8 @@
 #include <vector>
 #include <array>
 #include <plusone/serialization/meta.hpp>
+#include <plusone/static_string.hpp>
+#include <plusone/static_vector.hpp>
 
 namespace plusone {
 namespace serialization {
@@ -77,6 +79,20 @@ __force_inline void write_value(const std::string& value, json& object)
     object = value;
 }
 
+/* static_string */
+
+template< std::size_t N >
+__force_inline void read_value(const json& object, plusone::static_string< N >& value)
+{
+    value = object;
+}
+
+template< std::size_t N >
+__force_inline void write_value(const plusone::static_string< N >& value, json& object)
+{
+    object = value;
+}
+
 /* tree read/write */
 
 template< class IO, class DTO >
@@ -118,6 +134,33 @@ __force_inline void read_value(const json& object, std::vector< T, AllocT >& vec
 
 template< class T, class AllocT >
 __force_inline void write_value(const std::vector< T, AllocT >& vec, json& object)
+{
+    object = json::array();
+
+    for (auto& item: vec) {
+        json node;
+        write_value(item, node);
+        object.push_back(node);
+    }
+}
+
+/* static_vector */
+
+template< class T >
+__force_inline void read_value(const json& object, plusone::static_vector< T >& vec)
+{
+    if (object.is_array()) {
+        vec = plusone::static_vector< T >{object.size()};
+        for (auto& node: object) {
+            read_value(node, vec.emplace_back());
+        }
+    } else {
+        throw_ex< io_error >("Value is not an array");
+    }
+}
+
+template< class T >
+__force_inline void write_value(const plusone::static_vector< T >& vec, json& object)
 {
     object = json::array();
 

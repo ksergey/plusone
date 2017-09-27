@@ -103,13 +103,32 @@ __force_inline auto strong_inside(const T& left, const T& right)
     return detail::inside_checker< T, std::greater, std::less >(left, right);
 }
 
-__force_inline auto not_empty_string()
+namespace detail {
+
+/* Not an empty string checker impl */
+struct not_empty_string_impl
 {
-    return [](const std::string& str) {
-        if (str.empty()) {
+    void operator()(const std::string& s) const
+    {
+        if (s.empty()) {
             throw_ex< check_error >("Value not passed validation, empty string");
         }
-    };
+    }
+
+    template< std::size_t N >
+    void operator()(const plusone::static_string< N >& s) const
+    {
+        if (s.empty()) {
+            throw_ex< check_error >("Value not passed validation, empty string");
+        }
+    }
+};
+
+} /* namespace detail */
+
+__force_inline auto not_empty_string()
+{
+    return detail::not_empty_string_impl{};
 }
 
 __force_inline auto max_length_string(size_t max_length)

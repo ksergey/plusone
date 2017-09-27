@@ -47,11 +47,11 @@ struct object_config
 struct sample_config
 {
     int value1;
-    std::string value2;
+    plusone::static_string< 10 > value2;
     std::vector< int > value3;
     unsigned value4;
     object_config value5;
-    std::vector< point_config > value6;
+    plusone::static_vector< point_config > value7;
     std::array< int, 4 > value7;
 
     template< class InputOutputT >
