@@ -297,12 +297,6 @@ __force_inline std::string static_string< N >::to_string() const
 }
 
 template< std::size_t N >
-__force_inline static_string< N >::operator std::string() const
-{
-    return {data(), size()};
-}
-
-template< std::size_t N >
 __force_inline string_view static_string< N >::to_string_view() const
 {
     return {data(), size()};
@@ -357,5 +351,16 @@ __force_inline bool operator==(const char* left, const static_string< N >& right
 }
 
 } /* namespace plusone */
+
+namespace std {
+
+/** `std::hash` support. */
+template< std::size_t N >
+__force_inline std::size_t hash< plusone::static_string< N > >::operator()(const plusone::static_string< N >& s) const
+{
+    return std::hash< plusone::string_view >()(s);
+}
+
+} /* namespace std */
 
 #endif /* KSERGEY_static_string_150817175315 */

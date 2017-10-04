@@ -51,7 +51,7 @@ struct sample_config
     std::vector< int > value3;
     unsigned value4;
     object_config value5;
-    plusone::static_vector< point_config > value7;
+    plusone::static_vector< point_config > value6;
     std::array< int, 4 > value7;
 
     template< class InputOutputT >

@@ -175,14 +175,11 @@ public:
     /** Convert to `std::string` */
     std::string to_string() const;
 
-    /** Convert to `std::string` */
-    explicit operator std::string() const;
-
     /** Convert to `string_view` */
     string_view to_string_view() const;
 
     /** Convert to `string_view` */
-    explicit operator string_view() const;
+    operator string_view() const;
 };
 
 /** Compare two strings */
@@ -214,6 +211,17 @@ template< std::size_t N >
 bool operator==(const char* left, const static_string< N >& right) noexcept;
 
 } /* namespace plusone */
+
+namespace std {
+
+/** `std::hash` support. */
+template< std::size_t N >
+struct hash< plusone::static_string< N > >
+{
+    std::size_t operator()(const plusone::static_string< N >& s) const;
+};
+
+} /* namespace std */
 
 #include <plusone/impl/static_string.ipp>
 

@@ -79,3 +79,20 @@ TEST_CASE("Static string 2")
     REQUIRE( s[3] == 't' );
     REQUIRE( s == "test" );
 }
+
+template< class S >
+__force_inline auto get_hash(const S& s)
+{
+    return std::hash< S >()(s);
+}
+
+TEST_CASE("Static string hash")
+{
+    std::string std_string = "TEST123";
+    plusone::string_view std_string_view = "TEST123";
+    plusone::static_string< 10 > s("TEST123");
+
+    REQUIRE( get_hash(std_string) == get_hash(s) );
+    REQUIRE( get_hash(std_string_view) == get_hash(s) );
+    REQUIRE( get_hash(std_string) == get_hash(std_string_view) );
+}
