@@ -8,5 +8,8 @@ endif()
 add_executable(bm_string string.cpp)
 target_link_libraries(bm_string benchmark plusone)
 
-add_executable(bm_string_to_uint string_to_uint.cpp)
-target_link_libraries(bm_string_to_uint benchmark plusone)
+add_executable(bm_parse_uint parse_uint.cpp)
+target_link_libraries(bm_parse_uint benchmark plusone)
+
+add_executable(bm_parse_float parse_float.cpp)
+target_link_libraries(bm_parse_float benchmark plusone)

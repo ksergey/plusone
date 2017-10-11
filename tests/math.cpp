@@ -66,3 +66,105 @@ TEST_CASE("Pow10")
         REQUIRE(plusone::pow10::get(i) == std::pow(10ll, i));
     }
 }
+
+struct parse_float
+{
+    constexpr bool is_digit(char ch) const noexcept
+    {
+        return ch >= '0' && ch <= '9';
+    }
+
+    __force_inline std::int64_t operator()(const char* data, std::size_t size) const noexcept
+    {
+        if (__unlikely(size == 0)) {
+            return 0;
+        }
+
+        const char* first = data;
+        const char* last = first + size;
+
+        bool negative{false};
+        if (*first == '-') {
+            negative = true;
+            ++first;
+        } else if (*first == '+') {
+            ++first;
+        }
+
+        std::int64_t mantissa{0};
+        std::int8_t exponent_offset{0};
+
+        for (; first < last; ++first) {
+            if (!is_digit(*first)) {
+                break;
+            }
+            mantissa = mantissa * 10 + (*first - '0');
+        }
+
+        if (*first == '.') {
+            ++first;
+            for (; first < last; ++first) {
+                if (!is_digit(*first)) {
+                    break;
+                }
+                mantissa = mantissa * 10 + (*first - '0');
+                --exponent_offset;
+            }
+        }
+
+        std::int8_t exponent = 0;
+        if (__unlikely(*first == 'e')) {
+            ++first;
+            bool negative_exponent{false};
+            if (*first == '-') {
+                negative_exponent = true;
+                ++first;
+            } else if (*first == '+') {
+                ++first;
+            }
+            for (; first < last; ++first) {
+                if (!is_digit(*first)) {
+                    break;
+                }
+                exponent = exponent * 10 + (*first - '0');
+            }
+            if (negative_exponent) {
+                exponent = -exponent;
+            }
+        }
+        exponent += exponent_offset;
+        exponent += 8;
+
+        if (__unlikely(exponent < 0 || exponent > plusone::pow10::table_size)) {
+            /* Error */
+            return 0;
+        }
+
+        std::int64_t ret = mantissa * plusone::pow10::get(exponent);
+
+        return negative ? -ret : ret;
+    }
+
+    auto operator()(const std::string& s) const noexcept
+    {
+        return (*this)(s.data(), s.size());
+    }
+};
+
+void dump(const std::string& v)
+{
+    auto r = parse_float{}(v.data(), v.size());
+    std::cout << "in=" << v << " out=" << r << "(" << r * 0.00000001 << ")\n";
+}
+
+TEST_CASE("Parse Float")
+{
+    dump("1.2");
+    dump("2.2");
+    dump("-2.2135");
+    dump("-3.2135");
+    dump("1.2e-5");
+    dump("1.2e5");
+    dump("1.2e-7");
+    dump("1.2e-8");
+}

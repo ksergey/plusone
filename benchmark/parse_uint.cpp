@@ -42,7 +42,7 @@ std::vector< std::string > create_integer_strings()
 
 static const auto data = create_integer_strings();
 
-struct string_to_uint_1
+struct parse_uint_1a
 {
     std::uint64_t operator()(const char* data, std::size_t size) const noexcept
     {
@@ -58,7 +58,26 @@ struct string_to_uint_1
     }
 };
 
-struct string_to_uint_2
+struct parse_uint_1b
+{
+    std::uint64_t operator()(const char* data, std::size_t size) const noexcept
+    {
+        std::uint64_t ret = 0;
+        const char* first = data;
+        const char* last = first + size;
+
+        while (first < last) {
+            if (__unlikely((*first < '0') || (*first > '9'))) {
+                break;
+            }
+            ret *= 10;
+            ret += *(first++) - '0';
+        }
+        return ret;
+    }
+};
+
+struct parse_uint_2a
 {
     std::uint64_t operator()(const char* first, const char* last) const noexcept
     {
@@ -75,7 +94,29 @@ struct string_to_uint_2
     }
 };
 
-struct string_to_uint_3
+struct parse_uint_2b
+{
+    std::uint64_t operator()(const char* first, const char* last) const noexcept
+    {
+        if (first == last) {
+            return 0;
+        }
+        --last;
+
+        if (__unlikely((*last < '0') || (*last > '9'))) {
+            return 0;
+        }
+
+        return 10 * (*this)(first, last) + (*last - '0');
+    }
+
+    __force_inline std::uint64_t operator()(const char* data, std::size_t size) const noexcept
+    {
+        return (*this)(data, data + size);
+    }
+};
+
+struct parse_uint_3
 {
     __force_inline std::uint64_t operator()(const char* data, std::size_t size) const noexcept
     {
@@ -131,8 +172,10 @@ static void run_bench(benchmark::State& state)
     }
 }
 
-BENCHMARK_TEMPLATE(run_bench, string_to_uint_1);
-BENCHMARK_TEMPLATE(run_bench, string_to_uint_2);
-BENCHMARK_TEMPLATE(run_bench, string_to_uint_3);
+BENCHMARK_TEMPLATE(run_bench, parse_uint_1a);
+BENCHMARK_TEMPLATE(run_bench, parse_uint_1b);
+BENCHMARK_TEMPLATE(run_bench, parse_uint_2a);
+BENCHMARK_TEMPLATE(run_bench, parse_uint_2b);
+BENCHMARK_TEMPLATE(run_bench, parse_uint_3);
 
 BENCHMARK_MAIN();
