@@ -7,6 +7,7 @@
 
 #include <type_traits>
 #include <array>
+#include <utility>
 #include <plusone/expect.hpp>
 #include <plusone/compiler.hpp>
 
