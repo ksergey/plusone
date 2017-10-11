@@ -90,7 +90,7 @@ __force_inline void read_value(const json& object, plusone::static_string< N >& 
 template< std::size_t N >
 __force_inline void write_value(const plusone::static_string< N >& value, json& object)
 {
-    object = value;
+    object = value.to_string();
 }
 
 /* tree read/write */

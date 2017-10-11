@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(Plusone_BUILD_EXAMPLES "Build library examples" ON)
 option(Plusone_BUILD_TESTS "Build library tests" ON)
+option(Plusone_BUILD_BENCHMARK "Build library benchmarks" ON)
 option(Plusone_USE_SSL "Build library with SSL support" OFF)
 
 # Don't build doctest tests
@@ -45,4 +46,12 @@ if (Plusone_BUILD_TESTS)
 
     enable_testing()
     add_subdirectory(tests)
+endif()
+
+if (Plusone_BUILD_BENCHMARK)
+    if (NOT TARGET benchmark)
+        add_subdirectory(deps/benchmark EXCLUDE_FROM_ALL)
+    endif()
+
+    add_subdirectory(benchmark)
 endif()
