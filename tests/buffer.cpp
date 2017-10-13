@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Sergey Kovalevich <inndie@gmail.com>
  */
 
-#include <plusone/static_buffer_base.hpp>
+#include <plusone/static_buffer.hpp>
 #include <plusone/consuming_buffer.hpp>
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
@@ -10,7 +10,7 @@
 #include <vector>
 
 class test
-    : public plusone::static_buffer_base
+    : public plusone::static_buffer
 {
 private:
     std::vector< char > storage_;
@@ -23,14 +23,14 @@ public:
     }
 };
 
-TEST_CASE("static_buffer_base")
+TEST_CASE("static_buffer")
 {
     using plusone::buffer_size;
     using plusone::buffer_cast;
 
     char storage[64];
 
-    plusone::static_buffer_base buffer{storage, sizeof(storage)};
+    plusone::static_buffer buffer{storage, sizeof(storage)};
 
     REQUIRE(buffer.capacity() == 64);
     REQUIRE(buffer.size() == 0);
@@ -71,7 +71,7 @@ TEST_CASE("static_buffer_base")
     REQUIRE(buffer_size(b) == 64);
 }
 
-TEST_CASE("static_buffer_base custom")
+TEST_CASE("static_buffer custom")
 {
     using plusone::buffer_size;
     using plusone::buffer_cast;
