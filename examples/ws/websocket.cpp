@@ -5,7 +5,15 @@
 #include "websocket.hpp"
 #include <plusone/fmt.hpp>
 
+/*
+ * @see https://github.com/Corvusoft/restbed/
+ */
+
 namespace app {
+
+using namespace plusone;
+using namespace plusone::string_view_literals;
+
 namespace {
 
 __force_inline std::string prepare_upgrade_request(const string_view& path, const string_view& host, const string_view& origin)
@@ -24,7 +32,7 @@ __force_inline std::string prepare_upgrade_request(const string_view& path, cons
 }
 
 template< class Stream >
-bool send_all(Stream& s, const void* data, std::size_t size)
+__force_inline bool send_all(Stream& s, const void* data, std::size_t size)
 {
     plusone::consuming_buffer buffer{data, size};
     while (buffer.size() > 0) {
@@ -38,10 +46,17 @@ bool send_all(Stream& s, const void* data, std::size_t size)
     return buffer.size() == 0;
 }
 
-} /* namespace */
+__force_inline void mask_buffer(const mutable_buffer& b, std::uint32_t mask)
+{
+    const auto size = buffer_size(b);
+    const std::uint8_t* byte_mask = reinterpret_cast< std::uint8_t* >(&mask);
+    std::uint8_t* data = buffer_cast< std::uint8_t* >(b);
+    for (auto i = 0; i < size; ++i) {
+        data[i] ^= byte_mask[i % sizeof(mask)];
+    }
+}
 
-using namespace plusone;
-using namespace plusone::string_view_literals;
+} /* namespace */
 
 websocket::websocket(const string_view& host, const string_view& service, const string_view& origin)
     : host_{host}
@@ -82,6 +97,24 @@ bool websocket::poll()
         throw_ex< std::runtime_error >("Receive error, {}", rc.str());
     }
     return false;
+}
+
+void websocket::send_ping()
+{
+    std::array< std::uint8_t, 2 > bytes;
+    bytes[0] = 0x80 | static_cast< std::uint8_t >(op_code::ping);
+    bytes[1] = 0x00;
+
+    send_all(socket_, bytes.data(), bytes.size());
+}
+
+void websocket::send_pong()
+{
+    std::array< std::uint8_t, 2 > bytes;
+    bytes[0] = 0x80 | static_cast< std::uint8_t >(op_code::pong);
+    bytes[1] = 0x00;
+
+    send_all(socket_, bytes.data(), bytes.size());
 }
 
 void websocket::parse_buffer()
@@ -139,8 +172,10 @@ __force_inline void websocket::parse_frame()
     }
 
     std::cout << plusone::fmt::format("frame [ opcode={} fin={} masked={} payload_size={} ]", opcode, fin, masked, payload_length) << '\n';
-
     buffer_.consume(payload_length + pos);
+    if (opcode == static_cast< std::uint32_t >(op_code::ping)) {
+        send_pong();
+    }
 }
 
 } /* namespace app */

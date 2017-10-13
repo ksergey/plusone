@@ -18,6 +18,16 @@ namespace app {
 
 using plusone::string_view;
 
+enum class op_code : std::uint8_t
+{
+    continuation = 0x00,
+    text = 0x01,
+    binary = 0x02,
+    close = 0x08,
+    ping = 0x09,
+    pong = 0x0a
+};
+
 class websocket
 {
 private:
@@ -38,6 +48,9 @@ public:
     bool open();
     bool send_upgrade(const string_view& path = "/");
     bool poll();
+
+    void send_ping();
+    void send_pong();
 
 private:
     void parse_buffer();

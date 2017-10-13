@@ -15,6 +15,7 @@ static const std::string service = "http";
 int main(int argc, char* argv[])
 {
     try {
+        std::cout << 5["1234567"] << '\n';
 #if 0
         const string_view data_to_encode = "test";
         base64_encode(data_to_encode.begin(), data_to_encode.end(),
