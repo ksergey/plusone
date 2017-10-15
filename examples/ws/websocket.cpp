@@ -117,6 +117,17 @@ void websocket::send_pong()
     send_all(socket_, bytes.data(), bytes.size());
 }
 
+void websocket::send(const mutable_buffer& b)
+{
+    const std::size_t size = buffer_size(b);
+    std::size_t length = size <= 125
+        ? size
+        : size < 65535 ? 126 : 127;
+
+    std::vector< std::uint8_t > res;
+    res.emplace_back(0x80 | static_cast< std::uint8_t >(op_code::text));
+}
+
 void websocket::parse_buffer()
 {
     std::cout << "parsing\n";

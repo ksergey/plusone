@@ -12,11 +12,18 @@
 #include <plusone/consuming_buffer.hpp>
 #include <plusone/static_buffer.hpp>
 #include <plusone/net/tcp.hpp>
+#include "header.hpp"
 #include "base64.hpp"
 
 namespace app {
 
-using plusone::string_view;
+/*
+ * TODO:
+ *  - URI parser
+ *  - Response parser
+ */
+
+using namespace plusone;
 
 enum class op_code : std::uint8_t
 {
@@ -51,6 +58,7 @@ public:
 
     void send_ping();
     void send_pong();
+    void send(const mutable_buffer& b);
 
 private:
     void parse_buffer();
