@@ -3,6 +3,7 @@
  */
 
 #include <string>
+#include <iostream>
 #include <plusone/tuple.hpp>
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
@@ -28,4 +29,11 @@ TEST_CASE("Tagged Tuple")
     tuple move = std::move(test);
     REQUIRE( plusone::get< x1 >(move) == 999 );
     REQUIRE( plusone::get< x2 >(move) == std::string("xxx") );
+}
+
+TEST_CASE("For each")
+{
+    plusone::for_each(std::make_tuple("test", 1u, -5, 'c'), [](const auto& v){
+        std::cout << v << '\n';
+    });
 }

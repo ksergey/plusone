@@ -82,10 +82,17 @@ using type_of = typename std::tuple_element<
     typename TaggedTuple::values
 >::type;
 
+template< class Tuple, class F, std::size_t... Indices >
+__force_inline constexpr void for_each_impl(Tuple&& tuple, F&& f, std::index_sequence< Indices... >)
+{
+    using swallow = int[];
+    swallow{1, (f(std::get< Indices >(std::forward< Tuple >(tuple))), void(), int{})...};
+}
+
 } /* namespace detail */
 
 /**
- * Improved tuple type
+ * Improved tuple type.
  *
  * Example:
  *  using xtuple = plusone::tagged_tuple<
@@ -114,25 +121,36 @@ struct tagged_tuple
     using tuple_type::operator=;
 };
 
+/** Access tuple element. */
 template< class Key, class... Ts >
-inline detail::type_of< Key, tagged_tuple< Ts... > >&
+__force_inline detail::type_of< Key, tagged_tuple< Ts... > >&
 get(tagged_tuple< Ts... >& t)
 {
     return std::get< detail::key_index< Key, tagged_tuple< Ts... > > >(t);
 }
 
+/** @overload */
 template< class Key, class... Ts >
-inline const detail::type_of< Key, tagged_tuple< Ts... > >&
+__force_inline const detail::type_of< Key, tagged_tuple< Ts... > >&
 get(const tagged_tuple< Ts... >& t)
 {
     return std::get< detail::key_index< Key, tagged_tuple< Ts... > > >(t);
 }
 
+/** @overload */
 template< class Key, class... Ts >
-inline const detail::type_of< Key, tagged_tuple< Ts... > >&&
+__force_inline const detail::type_of< Key, tagged_tuple< Ts... > >&&
 get(const tagged_tuple< Ts... >&& t)
 {
     return std::get< detail::key_index< Key, tagged_tuple< Ts... > > >(t);
+}
+
+/** Foreach over tuple elements. */
+template< typename Tuple, typename F >
+__force_inline constexpr void for_each(Tuple&& tuple, F&& f)
+{
+    constexpr std::size_t N = std::tuple_size< std::remove_reference_t< Tuple > >();
+    detail::for_each_impl(std::forward< Tuple >(tuple), std::forward< F >(f), std::make_index_sequence< N >{});
 }
 
 } /* namespace plusone */
