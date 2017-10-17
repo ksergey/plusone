@@ -2,15 +2,16 @@
  * Copyright (c) 2017 Sergey Kovalevich <inndie@gmail.com>
  */
 
-#ifndef KSERGEY_tagged_tuple_290117191220
-#define KSERGEY_tagged_tuple_290117191220
+#ifndef KSERGEY_tuple_171017172633
+#define KSERGEY_tuple_171017172633
 
 #include <tuple>
 #include <type_traits>
+#include <plusone/compiler.hpp>
 
 namespace plusone {
 
-/** Key and Value type holder */
+/** Key and Value type holder. */
 template< class K, class V >
 struct pair
 {
@@ -136,4 +137,4 @@ get(const tagged_tuple< Ts... >&& t)
 
 } /* namespace plusone */
 
-#endif /* KSERGEY_tagged_tuple_290117191220 */
+#endif /* KSERGEY_tuple_171017172633 */
