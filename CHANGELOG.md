@@ -1,3 +1,7 @@
+# Version 18
+
+* Clear repository
+
 # Version 17
 
 * Removed `commit` from plusone::net::mmap_rx::frame
