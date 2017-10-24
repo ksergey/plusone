@@ -1,3 +1,10 @@
+# Version 19
+
+* Added fixed_object_pool
+* Added type traits
+* Removed process
+* Removed object_pool
+
 # Version 18
 
 * Clear repository
