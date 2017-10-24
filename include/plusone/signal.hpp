@@ -28,6 +28,10 @@ struct signal
     template< class F >
     static void set_handler(int signal_no, F&& func, int flags = 0);
 
+    /** @overload */
+    template< class F >
+    static void set_handler(std::initializer_list< int > signals, F&& func, int flags = 0);
+
     /**
      * Get signal handler.
      * @param[in] signal_no is handler signal number.

@@ -7,13 +7,7 @@
 #include <csignal>
 #include <iostream>
 #include <plusone/net/mmap_rx.hpp>
-
-static sig_atomic_t sigint = 0;
-
-static void sighandler(int num)
-{
-    sigint = 1;
-}
+#include <plusone/signal.hpp>
 
 static void process(const plusone::net::mmap_rx::frame& frame)
 {
@@ -33,7 +27,8 @@ int main(int argc, char* argv[])
     }
 
     try {
-        signal(SIGINT, sighandler);
+        sig_atomic_t sigint = 0;
+        plusone::signal::set_handler({SIGINT, SIGTERM}, [&sigint](int){ sigint = 1; });
 
         if (iface) {
             std::cout << "interface " << iface << '\n';

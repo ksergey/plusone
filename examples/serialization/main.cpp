@@ -68,7 +68,7 @@ struct sample_config
     }
 };
 
-int main(int argc, char* argv[])
+int main(int, char*[])
 {
     try {
         sample_config config;

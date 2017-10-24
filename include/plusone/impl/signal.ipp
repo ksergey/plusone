@@ -81,6 +81,14 @@ __force_inline void signal::set_handler(int signal_no, F&& func, int flags)
     set_handler(signal_no, detail::signal_handler::handle, flags);
 }
 
+template< class F >
+__force_inline void signal::set_handler(std::initializer_list< int > signals, F&& func, int flags)
+{
+    for (int signal_no: signals) {
+        set_handler(signal_no, std::forward< F >(func), flags);
+    }
+}
+
 __force_inline signal::handler_type signal::get_handler(int signal_no) noexcept
 {
     struct ::sigaction sa;
