@@ -5,7 +5,7 @@
 #include <doctest.h>
 #include <plusone/signal.hpp>
 
-void test(int signal_no)
+void test(int)
 {}
 
 TEST_CASE("Signal base")
