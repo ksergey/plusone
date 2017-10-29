@@ -53,7 +53,7 @@ public:
 
         void* p = dlsym(handle_, "__vdso_clock_gettime");
         if (p) {
-            plusone::clock_gettime = (int (*)(clockid_t, timespec*)) p;
+            plusone::clock_gettime = reinterpret_cast< int (*)(clockid_t, timespec*) >(p);
         }
     }
 
