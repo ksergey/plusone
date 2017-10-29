@@ -24,6 +24,7 @@ endif()
 
 # Create library
 add_library(plusone INTERFACE)
+add_library(ksergey::plusone ALIAS plusone)
 target_include_directories(plusone INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(plusone INTERFACE fmt::fmt-header-only)
 
