@@ -51,7 +51,7 @@ public:
             return ;
         }
 
-        void* p = dlsym(m_handle, "__vdso_clock_gettime");
+        void* p = dlsym(handle_, "__vdso_clock_gettime");
         if (p) {
             plusone::clock_gettime = (int (*)(clockid_t, timespec*)) p;
         }
