@@ -5,6 +5,7 @@
 #ifndef KSERGEY_clock_120717232211
 #define KSERGEY_clock_120717232211
 
+#include <dlfcn.h>
 #include <ctime>
 #include <plusone/compiler.hpp>
 
@@ -34,11 +35,44 @@ struct sec
     static constexpr std::uint64_t in_sec = 1000000000ul / ratio;
 };
 
+/* Init with default behaviour. */
+int (*clock_gettime)(clockid_t, timespec* ts) = &::clock_gettime;
+
+class vdso_clock_initializer
+{
+private:
+    void* handle_;
+
+public:
+    __force_inline vdso_clock_initializer() noexcept
+    {
+        handle_ = dlopen("linux-vdso.so.1", RTLD_LAZY | RTLD_LOCAL | RTLD_NOLOAD);
+        if (!handle_) {
+            return ;
+        }
+
+        void* p = dlsym(handle_, "__vdso_clock_gettime");
+        if (p) {
+            plusone::clock_gettime = (int (*)(clockid_t, timespec*)) p;
+        }
+    }
+
+    __force_inline ~vdso_clock_initializer() noexcept
+    {
+        if (handle_) {
+            plusone::clock_gettime = &::clock_gettime;
+            dlclose(handle_);
+        }
+    }
+};
+
+static const vdso_clock_initializer clock_initializer;
+
 template< class PeriodT >
 __force_inline std::uint64_t clock_now(clockid_t clock_id) noexcept
 {
     timespec ts;
-    ::clock_gettime(clock_id, &ts);
+    plusone::clock_gettime(clock_id, &ts);
     return ts.tv_sec * PeriodT::in_sec + ts.tv_nsec / PeriodT::ratio;
 }
 
