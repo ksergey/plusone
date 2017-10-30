@@ -107,9 +107,7 @@ __force_inline std::uint64_t fastclock_time() noexcept
 __force_inline std::uint64_t rdtsc() noexcept
 {
     unsigned reslo, reshi;
-    __asm__ __volatile__  ("xorl %%eax,%%eax \n cpuid \n" ::: "%eax", "%ebx", "%ecx", "%edx");
     __asm__ __volatile__  ("rdtsc\n" : "=a" (reslo), "=d" (reshi));
-    __asm__ __volatile__  ("xorl %%eax,%%eax \n cpuid \n" ::: "%eax", "%ebx", "%ecx", "%edx");
     return (std::uint64_t(reshi) << 32) | reslo;
 }
 
