@@ -21,6 +21,10 @@ add_executable(math_test math.cpp)
 target_link_libraries(math_test plusone doctest)
 add_test(math math_test)
 
+add_executable(parse_test parse.cpp)
+target_link_libraries(parse_test plusone doctest)
+add_test(parse parse_test)
+
 add_executable(socket_test socket.cpp)
 target_link_libraries(socket_test plusone doctest)
 add_test(socket socket_test)
