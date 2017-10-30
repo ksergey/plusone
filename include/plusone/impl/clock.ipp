@@ -35,6 +35,8 @@ struct sec
     static constexpr std::uint64_t in_sec = 1000000000ul / ratio;
 };
 
+#if defined( PLUSONE_VDSO_CLOCK_GETTIME )
+
 /* Init with default behaviour. */
 int (*clock_gettime)(clockid_t, timespec* ts) = &::clock_gettime;
 
@@ -68,11 +70,13 @@ public:
 
 static const vdso_clock_initializer clock_initializer;
 
+#endif /* defined( PLUSONE_VDSO_CLOCK_GETTIME ) */
+
 template< class PeriodT >
 __force_inline std::uint64_t clock_now(clockid_t clock_id) noexcept
 {
     timespec ts;
-    plusone::clock_gettime(clock_id, &ts);
+    clock_gettime(clock_id, &ts);
     return ts.tv_sec * PeriodT::in_sec + ts.tv_nsec / PeriodT::ratio;
 }
 

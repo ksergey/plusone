@@ -13,6 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(Plusone_BUILD_EXAMPLES "Build library examples" ON)
 option(Plusone_BUILD_TESTS "Build library tests" ON)
 option(Plusone_USE_SSL "Build library with SSL support" OFF)
+option(Plusone_VDSO_CLOCK_GETTIME "Build library with VDSO clock_gettime" ON)
 
 # Don't build doctest tests
 set(DOCTEST_WITH_TESTS OFF CACHE BOOL "")
@@ -35,8 +36,10 @@ if (Plusone_USE_SSL)
     target_link_libraries(plusone INTERFACE ${OPENSSL_LIBRARIES})
 endif()
 
-# VDSO clock_gettime
-target_link_libraries(plusone INTERFACE dl)
+if (Plusone_VDSO_CLOCK_GETTIME)
+    target_compile_definitions(plusone INTERFACE -DPLUSONE_VDSO_CLOCK_GETTIME)
+    target_link_libraries(plusone INTERFACE dl)
+endif()
 
 if (Plusone_BUILD_EXAMPLES)
     add_subdirectory(examples)
