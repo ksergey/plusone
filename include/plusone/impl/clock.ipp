@@ -6,7 +6,6 @@
 #define KSERGEY_clock_120717232211
 
 #include <dlfcn.h>
-#include <ctime>
 #include <plusone/compiler.hpp>
 
 namespace plusone {

@@ -5,6 +5,7 @@
 #ifndef MADLIFE_clock_091116011342_MADLIFE
 #define MADLIFE_clock_091116011342_MADLIFE
 
+#include <ctime>
 #include <cstdint>
 
 namespace plusone {
