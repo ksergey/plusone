@@ -5,10 +5,10 @@
 #ifndef KSERGEY_clock_io_210317223431
 #define KSERGEY_clock_io_210317223431
 
+#include <iostream>
 #include <plusone/clock.hpp>
 
 namespace plusone {
-
 namespace detail {
 
 template< class PeriodT, class OutPrecisionT, bool UTC >

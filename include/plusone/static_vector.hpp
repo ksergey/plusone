@@ -5,115 +5,75 @@
 #ifndef KSERGEY_static_vector_030217004526
 #define KSERGEY_static_vector_030217004526
 
-#include <type_traits>
+#include <memory>
+#include <plusone/static_vector_base.hpp>
 
 namespace plusone {
-namespace detail {
 
-/** Iterator implementation for static_vector */
-template< class T >
-class static_vector_iterator;
-
-} /* namespace detail */
-
-/** Vector without reallocations and erasings */
-template< class T >
+/** Vector without reallocations and erasings. */
+template< class T, class Allocator = std::allocator< T > >
 class static_vector
+    : public static_vector_base< T >
 {
 private:
-    using storage_type = typename std::aligned_storage< sizeof(T), alignof(T) >::type;
+    using base = static_vector_base< T >;
 
-    storage_type* data_{nullptr};
-    std::size_t capacity_{0};
-    std::size_t size_{0};
+    Allocator allocator_;
 
 public:
-    using value_type = T;
-    using reference = value_type&;
-    using const_reference = const value_type&;
-
-    /** Iterator type */
-    using iterator = detail::static_vector_iterator< T >;
-
-    /** Const iterator type */
-    using const_iterator = detail::static_vector_iterator< const T >;
+    using allocator_type = Allocator;
 
     /** Default constructor */
-    static_vector() = default;
-
-    /** Move constructor */
-    static_vector(static_vector&& v) noexcept;
-
-    /** Move operator */
-    static_vector& operator=(static_vector&& v) noexcept;
+    explicit static_vector(const Allocator& alloc = Allocator())
+        : allocator_{alloc}
+    {}
 
     /** Construct vector of specific capacity */
-    explicit static_vector(std::size_t capacity);
+    explicit static_vector(std::size_t capacity, const Allocator& alloc = Allocator())
+        : allocator_{alloc}
+    {
+        auto ptr = allocator_.allocate(capacity);
+        if (!ptr) {
+            throw_ex< std::bad_alloc >();
+        }
+        base::reset(ptr, capacity);
+    }
+
+    /** Move constructor */
+    static_vector(static_vector&& v) noexcept
+    {
+        swap(v);
+    }
+
+    /** Move operator */
+    static_vector& operator=(static_vector&& v) noexcept
+    {
+        if (__likely(this != &v)) {
+            swap(v);
+        }
+        return *this;
+    }
 
     /** Destructor */
-    virtual ~static_vector();
+    virtual ~static_vector()
+    {
+        /*
+         * Clear first because of destructor of static_vector_base.
+         * Need to call destructor for each stored element.
+         */
+        base::clear();
+        /* Deallocate memory */
+        allocator_.deallocate(base::data(), base::capacity());
+    }
 
-    /** Return vector capacity */
-    std::size_t capacity() const noexcept;
-
-    /** Return vector size */
-    std::size_t size() const noexcept;
-
-    /** Return true if vector empty */
-    bool empty() const noexcept;
-
-    /** Return true if vector full */
-    bool full() const noexcept;
-
-    /** Return element from vector at index */
-    const_reference operator[](std::size_t index) const noexcept;
-
-    /** Return element from vector at index */
-    reference operator[](std::size_t index) noexcept;
-
-    /** Return front element of vector */
-    const_reference front() const noexcept;
-
-    /** Return front element of vector */
-    reference front() noexcept;
-
-    /** Return back element of vector */
-    const_reference back() const noexcept;
-
-    /** Return back element of vector */
-    reference back() noexcept;
-
-    /** Push back a new element */
-    template< class... Args >
-    reference emplace_back(Args&&... args);
-
-    /** Clear vector */
-    void clear();
-
-    /** Swap content with another vector */
-    void swap(static_vector& other) noexcept;
-
-    /** Return iterator to begin element */
-    iterator begin() noexcept;
-
-    /** Return iterator to next after last element */
-    iterator end() noexcept;
-
-    /** Return const iterator to begin element */
-    const_iterator begin() const noexcept;
-
-    /** Return const iterator to next after last element */
-    const_iterator end() const noexcept;
-
-    /** Return const iterator to begin element */
-    const_iterator cbegin() const noexcept;
-
-    /** Return const iterator to next after last element */
-    const_iterator cend() const noexcept;
+    /** Swap two vectors. */
+    void swap(static_vector& other) noexcept
+    {
+        base::swap(other);
+        std::swap(allocator_, other.allocator_);
+    }
 };
 
 } /* namespace plusone */
-
-#include <plusone/impl/static_vector.ipp>
 
 #endif /* KSERGEY_static_vector_030217004526 */
