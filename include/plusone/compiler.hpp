@@ -7,6 +7,12 @@
 
 #include <cstddef>
 
+/*
+ * XXX(ksergey):
+ * Double underscore reserved for compiler needs, so
+ * need a new naming for compiler stuff
+ */
+
 #ifndef __force_inline
 #   define __force_inline inline __attribute__((always_inline))
 #endif
@@ -34,6 +40,15 @@
 namespace plusone {
 
 static constexpr std::size_t false_sharing_range = 128;
+
+/**
+ * Suspend compiler variable unused warnings.
+ * Function usable in cases when a variable could be unsued in case of
+ * Debug/Release mode.
+ */
+template< class... Args >
+void ignore_unused(Args&&...)
+{}
 
 } /* namespace plusone */
 

@@ -52,7 +52,9 @@ __force_inline void put_subsec(std::ostream& os, unsigned value_ns)
 
 template<>
 __force_inline void put_subsec< sec >(std::ostream& os, unsigned value_ns)
-{}
+{
+    ignore_unused(os, value_ns);
+}
 
 } /* namespace detail */
 

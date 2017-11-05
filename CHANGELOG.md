@@ -1,3 +1,9 @@
+# Version 20
+
+* Added plusone::ignore_unused
+* Replaced macroses \_\_likely -> LIKELY, becase UB (compilers reserve variable names started from double underscore)
+* Refactored static_vector
+
 # Version 19
 
 * Added fixed_object_pool
