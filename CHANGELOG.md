@@ -1,8 +1,7 @@
 # Version 20
 
 * Added plusone::ignore_unused
-* Replaced macroses \_\_likely -> LIKELY, becase UB (compilers reserve variable names started from double underscore)
-* Refactored static_vector
+* Changed static_vector
 
 # Version 19
 
@@ -23,8 +22,8 @@
 
 # Version 16
 
-* plusone::serialization refactoring
-* plusone::serialization added ability to read/write std::array
+* Changed plusone::serialization
+* Added serialization to std::array in plusone::serialization
 
 # Version 15
 
@@ -33,7 +32,7 @@
 
 # Version 14
 
-* Added static string
+* Added static_string
 * Added string_view
 
 # Version 13
