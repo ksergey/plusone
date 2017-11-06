@@ -2,78 +2,146 @@
  * Copyright (c) 2017 Sergey Kovalevich <inndie@gmail.com>
  */
 
-#ifndef KSERGEY_static_vector_030217004526
-#define KSERGEY_static_vector_030217004526
+#ifndef KSERGEY_static_vector_base_051117225636
+#define KSERGEY_static_vector_base_051117225636
 
 #include <memory>
-#include <plusone/static_vector_base.hpp>
 
 namespace plusone {
+namespace detail {
 
-/** Vector without reallocations and erasings. */
+/** Iterator implementation for static_vector */
+template< class T >
+class static_vector_iterator;
+
+} /* namespace detail */
+
 template< class T, class Allocator = std::allocator< T > >
 class static_vector
-    : public static_vector_base< T >
 {
 private:
-    using base = static_vector_base< T >;
-
     Allocator allocator_;
+
+    T* data_{nullptr};
+    typename Allocator::size_type size_{0};
+    typename Allocator::size_type capacity_{0};
 
 public:
     using allocator_type = Allocator;
 
-    /** Default constructor */
-    explicit static_vector(const Allocator& alloc = Allocator())
-        : allocator_{alloc}
-    {}
+    using value_type = typename Allocator::value_type;
+    using reference = typename Allocator::reference;
+    using const_reference = typename Allocator::const_reference;
+    using pointer = typename Allocator::pointer;
+    using const_pointer = typename Allocator::const_pointer;
+    using difference_type = typename Allocator::difference_type;
+    using size_type = typename Allocator::size_type;
 
-    /** Construct vector of specific capacity */
-    explicit static_vector(std::size_t capacity, const Allocator& alloc = Allocator())
-        : allocator_{alloc}
+    using iterator = detail::static_vector_iterator< T >;
+    using const_iterator = detail::static_vector_iterator< const T >;
+
+    static_vector(const static_vector&) = delete;
+
+    /** Construct vector without capacity. */
+    explicit static_vector(const Allocator& alloc = Allocator());
+
+    /** Construct vector with capacity. */
+    explicit static_vector(size_type capacity, const Allocator& alloc = Allocator());
+
+    static_vector(static_vector&& v) noexcept;
+    static_vector& operator=(static_vector&& v) noexcept;
+
+    /** Destructor. */
+    virtual ~static_vector();
+
+    /** @return Pointer to data begin. */
+    const value_type* data() const noexcept
     {
-        auto ptr = allocator_.allocate(capacity);
-        if (!ptr) {
-            throw_ex< std::bad_alloc >();
-        }
-        base::reset(ptr, capacity);
+        return data_;
     }
 
-    /** Move constructor */
-    static_vector(static_vector&& v) noexcept
+    /** @overload */
+    value_type* data() noexcept
     {
-        swap(v);
+        return data_;
     }
 
-    /** Move operator */
-    static_vector& operator=(static_vector&& v) noexcept
+    /** @return Max elements count in vector. */
+    size_type capacity() const noexcept
     {
-        if (__likely(this != &v)) {
-            swap(v);
-        }
-        return *this;
+        return capacity_;
     }
 
-    /** Destructor */
-    virtual ~static_vector()
+    /** @return Number of stored elements. */
+    size_type size() const noexcept
     {
-        /*
-         * Clear first because of destructor of static_vector_base.
-         * Need to call destructor for each stored element.
-         */
-        base::clear();
-        /* Deallocate memory */
-        allocator_.deallocate(base::data(), base::capacity());
+        return size_;
     }
+
+    /** @return True if vector empty. */
+    bool empty() const noexcept
+    {
+        return size_ == 0;
+    }
+
+    /** @return True if vector full. */
+    bool full() const noexcept
+    {
+        return size_ == capacity_;
+    }
+
+    /** @return Element at index. */
+    const_reference operator[](size_type index) const noexcept;
+
+    /** @overload */
+    reference operator[](size_type index) noexcept;
+
+    /** @return Front element. */
+    const_reference front() const noexcept;
+
+    /** @overload */
+    reference front() noexcept;
+
+    /** @return Back element. */
+    const_reference back() const noexcept;
+
+    /** @overload */
+    reference back() noexcept;
+
+    /** Push back a new element. */
+    template< class... Args >
+    reference emplace_back(Args&&... args);
+
+    /**
+     * Clear vector.
+     * Call destructor for each element.
+     */
+    void clear();
+
+    /** @return Iterator to begin element. */
+    iterator begin() noexcept;
+
+    /** @return Iterator to next after last element. */
+    iterator end() noexcept;
+
+    /** @overload */
+    const_iterator begin() const noexcept;
+
+    /** @overload */
+    const_iterator end() const noexcept;
+
+    /** @return Iterator to begin element. */
+    const_iterator cbegin() const noexcept;
+
+    /** @return Iterator to next after last element. */
+    const_iterator cend() const noexcept;
 
     /** Swap two vectors. */
-    void swap(static_vector& other) noexcept
-    {
-        base::swap(other);
-        std::swap(allocator_, other.allocator_);
-    }
+    void swap(static_vector& v) noexcept;
 };
 
 } /* namespace plusone */
 
-#endif /* KSERGEY_static_vector_030217004526 */
+#include <plusone/impl/static_vector.ipp>
+
+#endif /* KSERGEY_static_vector_base_051117225636 */
