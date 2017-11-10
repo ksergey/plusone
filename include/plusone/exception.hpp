@@ -42,11 +42,11 @@ struct tagged_exception
 
 /** Throw exception */
 template< class Ex >
-void throw_ex();
+[[noreturn]] void throw_ex();
 
 /** Throw exception */
 template< class Ex, class... Args >
-void throw_ex(fmt::CStringRef format, Args&&... args);
+[[noreturn]] void throw_ex(fmt::CStringRef format, Args&&... args);
 
 } /* namespace plusone */
 
