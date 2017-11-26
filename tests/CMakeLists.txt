@@ -49,3 +49,7 @@ add_test(fixed_size_memory_pool fixed_size_memory_pool_test)
 add_executable(build_test build.cpp)
 target_link_libraries(build_test plusone doctest)
 add_test(build build_test)
+
+add_executable(lambda_test lambda.cpp)
+target_link_libraries(lambda_test plusone)
+add_test(lambda lambda_test)
