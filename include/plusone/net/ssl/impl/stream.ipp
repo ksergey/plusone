@@ -81,6 +81,7 @@ __force_inline void stream::close() noexcept
         ::SSL_free(handle_);
         handle_ = nullptr;
     }
+    socket_.close();
 }
 
 __force_inline handshake_result stream::handshake() noexcept
