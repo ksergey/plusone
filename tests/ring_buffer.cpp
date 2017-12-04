@@ -26,9 +26,9 @@ TEST_CASE("Ring buffer constructor")
 
 TEST_CASE("Ring buffer bad capacity error")
 {
-    CHECK_THROWS_AS(plusone::ring_buffer< int >{0}, const plusone::ring_buffer_error&);
-    CHECK_THROWS_AS(plusone::ring_buffer< int >{3}, const plusone::ring_buffer_error&);
-    CHECK_THROWS_AS(plusone::ring_buffer< int >{14}, const plusone::ring_buffer_error&);
+    CHECK_THROWS_AS(plusone::ring_buffer< int >{0}, plusone::ring_buffer_error);
+    CHECK_THROWS_AS(plusone::ring_buffer< int >{3}, plusone::ring_buffer_error);
+    CHECK_THROWS_AS(plusone::ring_buffer< int >{14}, plusone::ring_buffer_error);
     CHECK_NOTHROW(plusone::ring_buffer< int >{8});
 }
 

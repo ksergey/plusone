@@ -1,22 +1,30 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(plusone VERSION 21 LANGUAGES CXX)
+project(plusone VERSION 22 LANGUAGES CXX)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build" FORCE)
 endif()
 
+# Doctest download target
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+# TODO(me): Remove from this CMake?
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(Plusone_BUILD_EXAMPLES "Build library examples" ON)
-option(Plusone_BUILD_TESTS "Build library tests" ON)
+get_directory_property(hasParent PARENT_DIRECTORY)
+if (hasParent)
+    set(BUILD_TEST_AND_EXAMPLES OFF)
+else()
+    set(BUILD_TEST_AND_EXAMPLES ON)
+endif()
+
+option(Plusone_BUILD_EXAMPLES "Build library examples" ${BUILD_TEST_AND_EXAMPLES})
+option(Plusone_BUILD_TESTS "Build library tests" ${BUILD_TEST_AND_EXAMPLES})
 option(Plusone_USE_SSL "Build library with SSL support" OFF)
 option(Plusone_VDSO_CLOCK_GETTIME "Build library with VDSO clock_gettime" OFF)
-
-# Don't build doctest tests
-set(DOCTEST_WITH_TESTS OFF CACHE BOOL "")
 
 # Use external fmt lib if target exists
 if (NOT TARGET fmt::fmt-header-only)
@@ -46,10 +54,6 @@ if (Plusone_BUILD_EXAMPLES)
 endif()
 
 if (Plusone_BUILD_TESTS)
-    if (NOT TARGET doctest)
-        add_subdirectory(deps/doctest EXCLUDE_FROM_ALL)
-    endif()
-
     enable_testing()
     add_subdirectory(tests)
 endif()

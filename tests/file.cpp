@@ -46,10 +46,10 @@ TEST_CASE("File open/size/truncate error")
     ::unlink(test_file.c_str());
     plusone::file file;
 
-    CHECK_THROWS_AS(open_file(file), const std::exception&);
+    CHECK_THROWS_AS(open_file(file), std::exception);
     REQUIRE(!file);
-    CHECK_THROWS_AS(file.size(), const std::exception&);
-    CHECK_THROWS_AS(file.truncate(128), const std::exception&);
+    CHECK_THROWS_AS(file.size(), std::exception);
+    CHECK_THROWS_AS(file.truncate(128), std::exception);
 }
 
 TEST_CASE("Lock file")

@@ -15,7 +15,7 @@ TEST_CASE("Static string")
     REQUIRE( str[0] == '\0' );
     REQUIRE( str.at(0) == '\0' );
     REQUIRE( str.capacity() == 8 );
-    CHECK_THROWS_AS( str.at(1), const std::out_of_range& );
+    CHECK_THROWS_AS( str.at(1), std::out_of_range );
 
     str.push_back('X');
 
@@ -52,7 +52,7 @@ TEST_CASE("Static string")
     REQUIRE( str[0] == '\0' );
     REQUIRE( str.at(0) == '\0' );
     REQUIRE( str.capacity() == 8 );
-    CHECK_THROWS_AS( str.at(1), const std::out_of_range& );
+    CHECK_THROWS_AS( str.at(1), std::out_of_range );
 
     str.append("Hello", 3);
     REQUIRE( str.size() == 3 );
