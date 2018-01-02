@@ -58,3 +58,20 @@ TEST_CASE("Test1")
     res = alloc.allocate(2, 2);
     REQUIRE( res );
 }
+
+TEST_CASE("Test2")
+{
+    plusone::linear_allocator alloc1{8};
+    plusone::linear_allocator alloc2;
+
+    auto res = alloc1.allocate(2, 2);
+    REQUIRE( res );
+    res = alloc2.allocate(2, 2);
+    REQUIRE( !res );
+
+    alloc2 = std::move(alloc1);
+    res = alloc2.allocate(2, 2);
+    REQUIRE( res );
+    res = alloc1.allocate(2, 2);
+    REQUIRE( !res );
+}
