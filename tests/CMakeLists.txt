@@ -55,3 +55,7 @@ add_test(build build_test)
 add_executable(lambda_test lambda.cpp)
 target_link_libraries(lambda_test plusone)
 add_test(lambda lambda_test)
+
+add_executable(linear_allocator_test linear_allocator.cpp)
+target_link_libraries(linear_allocator_test plusone doctest)
+add_test(linear_allocator linear_allocator_test)
