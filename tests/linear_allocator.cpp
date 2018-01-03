@@ -75,3 +75,43 @@ TEST_CASE("Test2")
     res = alloc1.allocate(2, 2);
     REQUIRE( !res );
 }
+
+TEST_CASE("Test3")
+{
+    plusone::linear_allocator a1;
+    std::cout << a1.total_size() << '/' << a1.allocated_size() << '/' << a1.free_size() << '\n';
+
+    a1 = plusone::linear_allocator{16};
+    std::cout << a1.total_size() << '/' << a1.allocated_size() << '/' << a1.free_size() << '\n';
+
+    auto res = a1.allocate(2);
+    REQUIRE( res );
+    std::cout << a1.total_size() << '/' << a1.allocated_size() << '/' << a1.free_size() << '\n';
+
+    res = a1.allocate(8);
+    REQUIRE( res );
+    std::cout << a1.total_size() << '/' << a1.allocated_size() << '/' << a1.free_size() << '\n';
+
+    res = a1.allocate(4);
+    REQUIRE( res );
+    REQUIRE( a1.allocated_size() == 14 );
+    REQUIRE( a1.free_size() == 2 );
+    std::cout << a1.total_size() << '/' << a1.allocated_size() << '/' << a1.free_size() << '\n';
+
+    res = a1.allocate(4);
+    REQUIRE( !res );
+    REQUIRE( a1.allocated_size() == 14 );
+    REQUIRE( a1.free_size() == 2 );
+    std::cout << a1.total_size() << '/' << a1.allocated_size() << '/' << a1.free_size() << '\n';
+
+    res = a1.allocate(2);
+    REQUIRE( res );
+    REQUIRE( a1.allocated_size() == 16 );
+    REQUIRE( a1.free_size() == 0 );
+    std::cout << a1.total_size() << '/' << a1.allocated_size() << '/' << a1.free_size() << '\n';
+
+    a1.reset();
+    REQUIRE( a1.allocated_size() == 0 );
+    REQUIRE( a1.free_size() == 16 );
+    std::cout << a1.total_size() << '/' << a1.allocated_size() << '/' << a1.free_size() << '\n';
+}

@@ -16,9 +16,10 @@ namespace plusone {
 class linear_allocator
 {
 private:
+    std::int8_t* own_{nullptr};
     std::int8_t* begin_{nullptr};
     std::int8_t* end_{nullptr};
-    std::int8_t* offset_{nullptr};
+    std::int8_t* ptr_{nullptr};
 
 public:
     using pointer = void*;
@@ -42,29 +43,64 @@ public:
 
     explicit linear_allocator(size_type max_size)
     {
-        begin_ = new std::int8_t[max_size];
+        own_ = new std::int8_t[max_size];
+        begin_ = own_;
         end_ = begin_ + max_size;
-        offset_ = begin_;
+        ptr_ = begin_;
+    }
+
+    /// Construct allocator with non-owning memory
+    linear_allocator(void* buf, size_type size)
+    {
+        begin_ = static_cast< std::int8_t* >(buf);
+        end_ = begin_ + size;
+        ptr_ = begin_;
     }
 
     ~linear_allocator() noexcept
     {
-        delete[] begin_;
+        delete[] own_;
     }
 
-    pointer allocate(size_type size, std::uint8_t alignment = 4) noexcept
+    size_type allocated_size() const noexcept
     {
-        std::uint8_t adjustment = alignment - (reinterpret_cast< std::uintptr_t >(offset_) & static_cast< std::uintptr_t >(alignment - 1));
+        return static_cast< size_type >(ptr_ - begin_);
+    }
+
+    size_type free_size() const noexcept
+    {
+        return static_cast< size_type >(end_ - ptr_);
+    }
+
+    size_type total_size() const noexcept
+    {
+        return static_cast< size_type >(end_ - begin_);
+    }
+
+    pointer allocate(size_type size) noexcept
+    {
+        if (__unlikely(ptr_ + size > end_)) {
+            return nullptr;
+        }
+
+        auto result = ptr_;
+        ptr_ += size;
+        return result;
+    }
+
+    pointer allocate(size_type size, std::uint8_t alignment) noexcept
+    {
+        std::uint8_t adjustment = alignment - (reinterpret_cast< std::uintptr_t >(ptr_) & static_cast< std::uintptr_t >(alignment - 1));
         if (adjustment == alignment) {
             adjustment = 0;
         }
 
-        if (__unlikely(offset_ + adjustment + size > end_)) {
+        if (__unlikely(ptr_ + adjustment + size > end_)) {
             return nullptr;
         }
 
-        auto result = offset_ + adjustment;
-        offset_ = result + size;
+        auto result = ptr_ + adjustment;
+        ptr_ = result + size;
         return result;
     }
 
@@ -75,14 +111,15 @@ public:
 
     void reset() noexcept
     {
-        offset_ = begin_;
+        ptr_ = begin_;
     }
 
     void swap(linear_allocator& v) noexcept
     {
+        std::swap(own_, v.own_);
         std::swap(begin_, v.begin_);
         std::swap(end_, v.end_);
-        std::swap(offset_, v.offset_);
+        std::swap(ptr_, v.ptr_);
     }
 };
 
