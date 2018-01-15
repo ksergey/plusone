@@ -59,3 +59,7 @@ add_test(lambda lambda_test)
 add_executable(linear_allocator_test linear_allocator.cpp)
 target_link_libraries(linear_allocator_test plusone doctest)
 add_test(linear_allocator linear_allocator_test)
+
+add_executable(intrusive_list_test intrusive_list.cpp)
+target_link_libraries(intrusive_list_test plusone doctest)
+add_test(intrusive_list intrusive_list_test)
