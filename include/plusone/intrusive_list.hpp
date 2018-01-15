@@ -194,6 +194,17 @@ public:
     intrusive_list& operator=(const intrusive_list&) = delete;
     intrusive_list() = default;
 
+    intrusive_list(intrusive_list&& v) noexcept
+    {
+        swap(v);
+    }
+
+    intrusive_list& operator=(intrusive_list&& v) noexcept
+    {
+        swap(v);
+        return *this;
+    }
+
     iterator begin() noexcept
     {
         return iterator{static_cast< T* >(anchor_.next)};
@@ -321,6 +332,27 @@ public:
         intrusive_list_node& next = *v.next;
         prev.next = &next;
         next.prev = &prev;
+    }
+
+    void swap(intrusive_list& v) noexcept
+    {
+        intrusive_list_node temp{anchor_};
+        anchor_ = v.anchor_;
+        v.anchor_ = temp;
+
+        // Fixup node pointers into the anchor, since the addresses of
+        // the anchors must stay the same with each list.
+        if (anchor_.next == &v.anchor_) {
+            anchor_.next = anchor_.prev = &anchor_;
+        } else {
+            anchor_.next->prev = anchor_.prev->next = &anchor_;
+        }
+
+        if (v.anchor_.next == &anchor_) {
+            v.anchor_.next = v.anchor_.prev = &v.anchor_;
+        } else {
+            v.anchor_.next->prev = v.anchor_.prev->next = &v.anchor_;
+        }
     }
 };
 
