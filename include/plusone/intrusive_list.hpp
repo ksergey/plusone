@@ -54,16 +54,6 @@ public:
         : node_{node}
     {}
 
-    intrusive_list_node& node() noexcept
-    {
-        return static_cast< intrusive_list_node& >(*node_);
-    }
-
-    const intrusive_list_node& node() const noexcept
-    {
-        return static_cast< const intrusive_list_node& >(*node_);
-    }
-
     reference operator*() const noexcept
     {
         return *node_;
