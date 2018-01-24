@@ -19,6 +19,7 @@ struct point_config
     int x;
     int y;
     int z;
+    float n;
 
     template< class InputOutputT >
     void serialize(InputOutputT& io)
@@ -26,7 +27,8 @@ struct point_config
         io
             & s::required("x", x, s::inside(0, 1000))
             & s::required("y", y)
-            & s::optional("z", z, 0);
+            & s::optional("z", z, 0)
+            & s::optional("n", n, 4.0);
     }
 };
 

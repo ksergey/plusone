@@ -53,16 +53,16 @@ public:
     }
 };
 
-/* Integral types */
+/* Arithmetic types */
 
 template< class T >
-__force_inline void read_value(const json& object, T& value, if_integral_type< T >* = 0)
+__force_inline void read_value(const json& object, T& value, if_arithmetic_type< T >* = 0)
 {
     value = object;
 }
 
 template< class T >
-__force_inline void write_value(T value, json& object, if_integral_type< T >* = 0)
+__force_inline void write_value(T value, json& object, if_arithmetic_type< T >* = 0)
 {
     object = value;
 }

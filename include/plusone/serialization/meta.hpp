@@ -28,9 +28,10 @@ struct has_serialize< T, DTO, typename std::enable_if<
     : std::true_type
 {};
 
+// Check if type is integral or floating point
 template< class T >
-using if_integral_type = typename std::enable_if<
-    std::is_integral< T >::value
+using if_arithmetic_type = typename std::enable_if<
+    std::is_arithmetic< T >::value
 >::type;
 
 template< class T, class DTO >
