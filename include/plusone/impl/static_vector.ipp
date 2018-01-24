@@ -14,14 +14,17 @@ namespace detail {
 
 template< class T >
 class static_vector_iterator
-    : std::iterator< std::random_access_iterator_tag, T >
+    : public std::iterator< std::random_access_iterator_tag, T >
 {
 private:
+    using base = std::iterator< std::random_access_iterator_tag, T >;
     using iterator = static_vector_iterator< T >;
 
     T* pos_{nullptr};
 
 public:
+    using difference_type = typename base::difference_type;
+
     static_vector_iterator() = default;
 
     explicit static_vector_iterator(T* value)
@@ -38,6 +41,11 @@ public:
     {
         --pos_;
         return *this;
+    }
+
+    difference_type operator-(iterator other) const noexcept
+    {
+        return pos_ - other.pos_;
     }
 
     bool operator==(const iterator& it) const noexcept
