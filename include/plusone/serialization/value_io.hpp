@@ -22,7 +22,7 @@ private:
     const json& object_;
 
 public:
-    input(const json& object)
+    explicit input(const json& object)
         : object_(object)
     {}
 
@@ -41,7 +41,7 @@ private:
     json& object_;
 
 public:
-    output(json& object)
+    explicit output(json& object)
         : object_(object)
     {}
 
@@ -84,7 +84,7 @@ __force_inline void write_value(const std::string& value, json& object)
 template< std::size_t N >
 __force_inline void read_value(const json& object, plusone::static_string< N >& value)
 {
-    value = object;
+    value = object.get< std::string >();
 }
 
 template< std::size_t N >

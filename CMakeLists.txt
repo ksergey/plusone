@@ -26,12 +26,16 @@ if (NOT TARGET fmt::fmt-header-only)
     add_subdirectory(deps/fmt EXCLUDE_FROM_ALL)
 endif()
 
+if (NOT TARGET nlohmann_json)
+    add_subdirectory(deps/json EXCLUDE_FROM_ALL)
+endif()
+
 # Create library
 add_library(plusone INTERFACE)
 add_library(ksergey::plusone ALIAS plusone)
 target_include_directories(plusone INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(plusone INTERFACE fmt::fmt-header-only)
-target_compile_features(plusone INTERFACE cxx_std_17)
+target_link_libraries(plusone INTERFACE fmt::fmt-header-only nlohmann_json)
+target_compile_features(plusone INTERFACE cxx_std_14)
 
 # Find OpenSSL in case use SSL
 if (Plusone_USE_SSL)
