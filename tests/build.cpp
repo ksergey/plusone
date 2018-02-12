@@ -35,6 +35,8 @@
 #include <plusone/static_string.hpp>
 #include <plusone/static_vector.hpp>
 #include <plusone/string_view.hpp>
+#include <plusone/optional.hpp>
+#include <plusone/filesystem.hpp>
 #include <plusone/tuple.hpp>
 #include <plusone/type_traits.hpp>
 
