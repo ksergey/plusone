@@ -43,6 +43,28 @@ public:
         return *this;
     }
 
+    iterator& operator+=(difference_type delta) noexcept
+    {
+        pos_ += delta;
+        return *this;
+    }
+
+    iterator& operator-=(difference_type delta) noexcept
+    {
+        pos_ -= delta;
+        return *this;
+    }
+
+    iterator operator+(difference_type delta) noexcept
+    {
+        return iterator{pos_ + delta};
+    }
+
+    iterator operator-(difference_type delta) noexcept
+    {
+        return iterator{pos_ - delta};
+    }
+
     difference_type operator-(iterator other) const noexcept
     {
         return pos_ - other.pos_;

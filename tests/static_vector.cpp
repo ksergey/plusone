@@ -70,4 +70,20 @@ TEST_CASE("static_vector constructor")
         REQUIRE(v.back() == 10000);
         REQUIRE(v.front() == 1000);
     }
+
+    SUBCASE("Iterators math (0)") {
+        v.emplace_back(99);
+        v.emplace_back(123);
+        v.emplace_back(555);
+        auto it = v.begin();
+        it += 2;
+        REQUIRE(*it == 555);
+    }
+
+    SUBCASE("Iterators math (1)") {
+        v.emplace_back(99);
+        v.emplace_back(123);
+        v.emplace_back(555);
+        REQUIRE(*(v.begin() + 2) == 555);
+    }
 }
