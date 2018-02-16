@@ -6,6 +6,7 @@
 #define KSERGEY_visitor_261117141401
 
 #include <type_traits>
+#include <utility>
 
 namespace plusone {
 namespace detail {

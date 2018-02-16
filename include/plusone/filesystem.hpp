@@ -9,13 +9,13 @@
 
 namespace plusone {
 
-namespace filesystem = experimental::filesystem;
+namespace filesystem = std::experimental::filesystem;
 
 } /* namespace plusone */
 
 namespace std {
 
-namespace filesystem = experimental::filesystem;
+namespace filesystem = std::experimental::filesystem;
 
 } /* namespace std */
 
