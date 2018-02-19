@@ -5,11 +5,11 @@
 #ifndef KSERGEY_fmt_140717125217
 #define KSERGEY_fmt_140717125217
 
+#include <type_traits>
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 #include <fmt/time.h>
 #include <fmt/printf.h>
-#include <fmt/string.h>
 
 namespace plusone {
 

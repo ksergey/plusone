@@ -22,7 +22,7 @@ option(Plusone_USE_SSL "Build library with SSL support" OFF)
 option(Plusone_VDSO_CLOCK_GETTIME "Build library with VDSO clock_gettime" OFF)
 
 # Use external fmt lib if target exists
-if (NOT TARGET fmt::fmt-header-only)
+if (NOT TARGET fmt-header-only)
     add_subdirectory(deps/fmt EXCLUDE_FROM_ALL)
 endif()
 
@@ -34,7 +34,7 @@ endif()
 add_library(plusone INTERFACE)
 add_library(ksergey::plusone ALIAS plusone)
 target_include_directories(plusone INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(plusone INTERFACE fmt::fmt-header-only nlohmann_json)
+target_link_libraries(plusone INTERFACE fmt-header-only nlohmann_json)
 target_compile_features(plusone INTERFACE cxx_std_14)
 
 # Find OpenSSL in case use SSL
