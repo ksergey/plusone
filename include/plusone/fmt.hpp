@@ -9,6 +9,7 @@
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 #include <fmt/time.h>
+#include <fmt/posix.h>
 #include <fmt/printf.h>
 
 namespace plusone {
