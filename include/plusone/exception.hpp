@@ -46,7 +46,7 @@ template< class Ex >
 
 /** Throw exception */
 template< class Ex, class... Args >
-[[noreturn]] void throw_ex(fmt::string_view format, Args&&... args);
+[[noreturn]] void throw_ex(fmt::CStringRef format, Args&&... args);
 
 } /* namespace plusone */
 

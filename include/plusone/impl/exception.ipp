@@ -29,7 +29,7 @@ __force_inline void throw_ex()
 }
 
 template< class Ex, class... Args >
-__force_inline void throw_ex(fmt::string_view format, Args&&... args)
+__force_inline void throw_ex(fmt::CStringRef format, Args&&... args)
 {
     static_assert( std::is_convertible< Ex*, std::exception* >::value,
             "Exception must derive from std::exception" );
