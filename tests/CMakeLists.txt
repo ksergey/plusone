@@ -63,3 +63,7 @@ add_test(linear_allocator linear_allocator_test)
 add_executable(intrusive_list_test intrusive_list.cpp)
 target_link_libraries(intrusive_list_test plusone doctest)
 add_test(intrusive_list intrusive_list_test)
+
+add_executable(bit_flags_test bit_flags.cpp)
+target_link_libraries(bit_flags_test plusone doctest)
+add_test(bit_flags bit_flags_test)
