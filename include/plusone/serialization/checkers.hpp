@@ -59,6 +59,11 @@ auto strong_inside(const T& left, const T& right);
 auto not_empty_string();
 
 /**
+ * Create checker to check an input string ends with value
+ */
+auto ends_with(string_view value);
+
+/**
  * Create checker to check an input string size less or equal @c max_length
  */
 auto max_length_string(size_t max_length);

@@ -5,9 +5,10 @@
 #ifndef KSERGEY_checkers_130717112216
 #define KSERGEY_checkers_130717112216
 
-#include <string>
-#include <set>
+#include <algorithm>
 #include <functional>
+#include <set>
+#include <string>
 
 namespace plusone {
 namespace serialization {
@@ -56,6 +57,34 @@ public:
         if (!cmp_left(value, left_) || !cmp_right(value, right_)) {
             throw_ex< check_error >("Value not passed validation, not inside range");
         }
+    }
+};
+
+class ends_with_checker
+{
+private:
+    string_view needle_;
+
+public:
+    ends_with_checker(string_view needle)
+        : needle_{needle}
+    {}
+
+    void operator()(string_view haystack) const
+    {
+        if (!ends_with(haystack, needle_)) {
+            throw_ex< check_error >("Value not passed validation (\"{}\" not ends with \"{}\")",
+                    haystack, needle_);
+        }
+    }
+
+private:
+    static bool ends_with(string_view haystack, string_view needle) noexcept
+    {
+        if (needle.size() > haystack.size()) {
+            return false;
+        }
+        return std::equal(needle.rbegin(), needle.rend(), haystack.rbegin());
     }
 };
 
@@ -129,6 +158,11 @@ struct not_empty_string_impl
 __force_inline auto not_empty_string()
 {
     return detail::not_empty_string_impl{};
+}
+
+__force_inline auto ends_with(string_view value)
+{
+    return detail::ends_with_checker{value};
 }
 
 __force_inline auto max_length_string(size_t max_length)

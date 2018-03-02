@@ -4,7 +4,8 @@
     "value3": [ 1, 5, 7, 10 ],
     "value5": {
         "field1": "test",
-        "field2": 123
+        "field2": 123,
+        "field3": "test_end"
     },
     "value6": [
         { "x": 0, "y": 2 },

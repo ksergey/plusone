@@ -36,13 +36,15 @@ struct object_config
 {
     std::string field1;
     int field2;
+    std::string field3;
 
     template< class InputOutputT >
     void serialize(InputOutputT& io)
     {
         io
             & s::required("field1", field1, s::not_empty_string())
-            & s::optional("field2", field2, 100, s::greater_equal(100));
+            & s::optional("field2", field2, 100, s::greater_equal(100))
+            & s::required("field3", field3, s::ends_with("_end"));
     }
 };
 
