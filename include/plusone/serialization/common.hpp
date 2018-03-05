@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <plusone/compiler.hpp>
 #include <plusone/exception.hpp>
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 
 namespace plusone {
 namespace serialization {
